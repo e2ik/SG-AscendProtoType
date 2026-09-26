@@ -1,6 +1,6 @@
 public interface IInteractable
 {
-    string InteractionPrompt { get; } // e.g. "Talk to Bob" - for UI prompt display
+    string InteractionPrompt { get; }
     bool CanInteract { get; }
     void Interact(PlayerController interactor);
 }

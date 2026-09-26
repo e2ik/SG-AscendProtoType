@@ -3,6 +3,7 @@ using UnityEngine;
 public abstract class MovementController : MonoBehaviour
 {
     public bool InputEnabled { get; private set; } = true;
+    public virtual bool IsGrounded => true;
 
     public void SetInputEnabled(bool enabled)
     {

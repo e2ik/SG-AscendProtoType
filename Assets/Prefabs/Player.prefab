@@ -599,6 +599,7 @@ GameObject:
   - component: {fileID: 2961700349907402783}
   - component: {fileID: 1588608723735046031}
   - component: {fileID: 3046557998961255215}
+  - component: {fileID: 36531956207422248}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -702,11 +703,12 @@ MonoBehaviour:
   maxMoveSpeed: 8
   speedPerAgility: 0.25
   horizontalDeadzone: 0.2
-  groundAcceleration: 100
-  groundDeceleration: 100
-  airAcceleration: 45
-  airTurnAcceleration: 35
-  airDeceleration: 4
+  groundAccelTime: 0.18
+  groundStopTime: 0.12
+  groundSkidTime: 0.08
+  airAccelTime: 0.22
+  airTurnTime: 0.18
+  airStopTime: 1
   canJump: 1
   minJumpHeight: 1
   maxJumpHeight: 4
@@ -718,8 +720,9 @@ MonoBehaviour:
   coyoteTime: 0.1
   jumpBufferTime: 0.1
   stats: {fileID: 0}
-  groundCheck: {fileID: 0}
-  groundCheckSize: {x: 0.5, y: 0.1}
+  groundCheckWidth: 0.95
+  groundCheckDistance: 0.08
+  minGroundNormalY: 0.7
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -761,7 +764,7 @@ MonoBehaviour:
   interactRadius: 1.5
   interactableLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   interactActionPath: Player/Interact
 --- !u!114 &1588608723735046031
 MonoBehaviour:
@@ -797,3 +800,21 @@ MonoBehaviour:
   clothesTop: {fileID: 4944228737760716487}
   clothesBottom: {fileID: 7741387186089954465}
   shoes: {fileID: 4615647365703764230}
+--- !u!114 &36531956207422248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8497367805908112311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fe311b3d3db0d848b6f3198cf385bdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractionPrompt
+  promptPrefab: {fileID: 5159133663071662340, guid: a86755de6a5825d488baca3720615ec7, type: 3}
+  offset: {x: 0, y: 0.5}
+  showInteractionText: 1
+  player: {fileID: 0}
+  interactor: {fileID: 0}
+  playerCollider: {fileID: 0}

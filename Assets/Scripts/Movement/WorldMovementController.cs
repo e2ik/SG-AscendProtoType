@@ -43,8 +43,9 @@ public class WorldMovementController : MovementController, IStatCapProvider
     [SerializeField] private PlayerStatsController stats;
 
     [Header("Ground Check")]
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private Vector2 groundCheckSize = new Vector2(0.5f, 0.1f);
+    [SerializeField] [Range(0.1f, 1f)] private float groundCheckWidth = 0.95f;
+    [SerializeField] private float groundCheckDistance = 0.08f;
+    [SerializeField] [Range(0f, 1f)] private float minGroundNormalY = 0.7f;
     [SerializeField] private LayerMask groundLayer = ~0;
 
     [Header("Facing")]
@@ -54,20 +55,22 @@ public class WorldMovementController : MovementController, IStatCapProvider
     [SerializeField] private string moveActionPath = "Player/Move";
     [SerializeField] private string jumpActionPath = "Player/Jump";
 
-    public bool IsGrounded { get; private set; }
+    public override bool IsGrounded => _isGrounded;
     public bool IsFacingRight { get; private set; } = true;
 
     public float CurrentMoveSpeed => Evaluate(GetStat(StatType.Agility), minMoveSpeed, maxMoveSpeed, speedPerAgility);
     public float CurrentJumpHeight => Evaluate(GetStat(StatType.Strength), minJumpHeight, maxJumpHeight, jumpHeightPerStrength);
 
-    private const float GroundStickVelocity = 1f;
+    private const float GroundCastStartOffset = 0.05f;
+    private const float GroundCastThickness = 0.02f;
 
-    private readonly Collider2D[] _groundHits = new Collider2D[8];
+    private readonly RaycastHit2D[] _groundHits = new RaycastHit2D[8];
     private Rigidbody2D _body;
     private Collider2D _collider;
     private InputAction _moveAction;
     private InputAction _jumpAction;
 
+    private bool _isGrounded;
     private float _moveInput;
     private bool _jumpHeld;
     private float _lastGroundedTime = float.NegativeInfinity;
@@ -164,7 +167,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
     {
         float now = Time.time;
 
-        IsGrounded = CheckGrounded();
+        _isGrounded = CheckGrounded();
         if (IsGrounded)
             _lastGroundedTime = now;
 
@@ -186,7 +189,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
         }
         else if (IsGrounded && velocity.y <= 0f)
         {
-            velocity.y = -GroundStickVelocity;
+            velocity.y = 0f;
         }
         else
         {
@@ -216,30 +219,30 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
     private bool CheckGrounded()
     {
+        if (_collider == null) return false;
+
+        GetGroundCast(out var origin, out var size, out float distance);
+
         var filter = new ContactFilter2D { useLayerMask = true, layerMask = groundLayer, useTriggers = false };
-        int count = Physics2D.OverlapBox(GetGroundCheckPoint(), groundCheckSize, 0f, filter, _groundHits);
+        int count = Physics2D.BoxCast(origin, size, 0f, Vector2.down, filter, _groundHits, distance);
 
         for (int i = 0; i < count; i++)
         {
-            if (_groundHits[i].attachedRigidbody != _body)
+            var hit = _groundHits[i];
+            if (hit.collider.attachedRigidbody == _body) continue;
+            if (hit.normal.y >= minGroundNormalY)
                 return true;
         }
 
         return false;
     }
 
-    private Vector2 GetGroundCheckPoint()
+    private void GetGroundCast(out Vector2 origin, out Vector2 size, out float distance)
     {
-        if (groundCheck != null)
-            return groundCheck.position;
-
-        if (_collider != null)
-        {
-            var bounds = _collider.bounds;
-            return new Vector2(bounds.center.x, bounds.min.y);
-        }
-
-        return transform.position;
+        var bounds = _collider.bounds;
+        size = new Vector2(bounds.size.x * groundCheckWidth, GroundCastThickness);
+        origin = new Vector2(bounds.center.x, bounds.min.y + GroundCastStartOffset);
+        distance = GroundCastStartOffset + groundCheckDistance;
     }
 
     private void UpdateFacing()
@@ -273,8 +276,15 @@ public class WorldMovementController : MovementController, IStatCapProvider
     {
         if (_collider == null)
             _collider = GetComponent<Collider2D>();
+        if (_collider == null) return;
+
+        GetGroundCast(out var origin, out var size, out float distance);
+        var end = origin + Vector2.down * distance;
 
         Gizmos.color = IsGrounded ? Color.green : Color.red;
-        Gizmos.DrawWireCube(GetGroundCheckPoint(), groundCheckSize);
+        Gizmos.DrawWireCube(origin, size);
+        Gizmos.DrawWireCube(end, size);
+        Gizmos.DrawLine(origin + Vector2.left * size.x * 0.5f, end + Vector2.left * size.x * 0.5f);
+        Gizmos.DrawLine(origin + Vector2.right * size.x * 0.5f, end + Vector2.right * size.x * 0.5f);
     }
 }
