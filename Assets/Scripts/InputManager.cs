@@ -32,11 +32,14 @@ public class InputManager : MonoBehaviour
             Debug.LogWarning($"No '{globalMapName}' action map found - skipping persistent global input");
     }
 
-    public InputAction FindAction(string path)
+    public InputAction FindAction(string path, UnityEngine.Object context = null)
     {
         var action = playerInput.actions.FindAction(path);
         if (action == null)
-            Debug.LogError($"No input action '{path}' found in the Input Actions asset");
+        {
+            string source = context != null ? $" (requested by '{context.name}')" : string.Empty;
+            Debug.LogError($"No input action '{path}' found in the Input Actions asset{source}", context);
+        }
         return action;
     }
 

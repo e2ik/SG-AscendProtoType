@@ -12,11 +12,13 @@ public enum StatType
 [Serializable]
 public class PlayerStats
 {
-    public int strength;
-    public int agility;
-    public int intelligence;
-    public int endurance;
-    public int unallocatedPoints; // earned from minigames, spent via TryAllocate
+    public const int StartingValue = 1;
+
+    public int strength = StartingValue;
+    public int agility = StartingValue;
+    public int intelligence = StartingValue;
+    public int endurance = StartingValue;
+    public int unallocatedPoints;
 
     public int GetStat(StatType type) => type switch
     {
@@ -32,9 +34,10 @@ public class PlayerStats
         if (amount > 0) unallocatedPoints += amount;
     }
 
-    public bool TryAllocate(StatType type, int amount = 1)
+    public bool TryAllocate(StatType type, int amount = 1, int maxValue = int.MaxValue)
     {
         if (amount <= 0 || unallocatedPoints < amount) return false;
+        if (GetStat(type) + amount > maxValue) return false;
 
         switch (type)
         {

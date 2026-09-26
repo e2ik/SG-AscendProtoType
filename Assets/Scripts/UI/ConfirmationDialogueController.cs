@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
@@ -31,12 +32,15 @@ public class ConfirmationDialogueController : MonoBehaviour
         uiPanel.OnBack += Cancel;
     }
 
-    public void Show(string message, Action onConfirm, Action onCancel = null)
+    public void Show(string message, Action onConfirm, Action onCancel = null, bool focusCancel = false)
     {
         _onConfirm = onConfirm;
         _onCancel = onCancel;
         messageText.text = message;
         panel.SetActive(true);
+
+        if (focusCancel && EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(noButton.gameObject);
     }
 
     private void Confirm() => Close(_onConfirm);

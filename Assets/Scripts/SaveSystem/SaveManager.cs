@@ -126,7 +126,22 @@ public class SaveManager : MonoBehaviour
     public void DeleteSave(string saveId)
     {
         string path = PathFor(saveId);
-        if (File.Exists(path)) File.Delete(path);
+        if (File.Exists(path))
+            File.Delete(path);
+
+        if (CurrentSave != null && CurrentSave.saveId == saveId)
+            CurrentSave = null;
+    }
+
+    public void DeleteAllSaves()
+    {
+        if (Directory.Exists(SaveFolder))
+        {
+            foreach (var file in Directory.GetFiles(SaveFolder, "*.json"))
+                File.Delete(file);
+        }
+
+        CurrentSave = null;
     }
 
     public List<SaveData> GetAllSaves()

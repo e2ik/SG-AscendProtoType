@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -7,18 +9,22 @@ public class SaveSlotUI : MonoBehaviour
     [SerializeField] private TMP_Text saveNameText;
     [SerializeField] private TMP_Text lastPlayedText;
     [SerializeField] private Button selectButton;
+    [SerializeField] private Button deleteButton;
 
-    private string _saveId;
-
-    public void Setup(SaveData save)
+    public void Setup(SaveData save, Action<SaveData> onDeleteRequested)
     {
-        _saveId = save.saveId;
         saveNameText.text = save.saveName;
-
-        if (System.DateTime.TryParse(save.lastPlayedUtc, out var parsed))
-            lastPlayedText.text = parsed.ToLocalTime().ToString("g");
+        lastPlayedText.text = DateTime.TryParse(save.lastPlayedUtc, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsed)
+            ? parsed.ToLocalTime().ToString("g")
+            : string.Empty;
 
         selectButton.onClick.RemoveAllListeners();
-        selectButton.onClick.AddListener(() => GameManager.Instance.LoadGame(_saveId));
+        selectButton.onClick.AddListener(() => GameManager.Instance.LoadGame(save.saveId));
+
+        if (deleteButton != null)
+        {
+            deleteButton.onClick.RemoveAllListeners();
+            deleteButton.onClick.AddListener(() => onDeleteRequested?.Invoke(save));
+        }
     }
 }

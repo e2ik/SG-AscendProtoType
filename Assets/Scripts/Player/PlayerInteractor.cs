@@ -7,7 +7,7 @@ public class PlayerInteractor : MonoBehaviour
     [SerializeField] private PlayerController player;
     [SerializeField] private float interactRadius = 1.5f;
     [SerializeField] private LayerMask interactableLayer;
-    [SerializeField] private string interactActionPath = "Gameplay/Interact";
+    [SerializeField] private string interactActionPath = "Player/Interact";
 
     public event Action<IInteractable> OnInteractableChanged;
 
@@ -17,7 +17,7 @@ public class PlayerInteractor : MonoBehaviour
 
     private void Start()
     {
-        _interactAction = InputManager.Instance.FindAction(interactActionPath);
+        _interactAction = InputManager.Instance.FindAction(interactActionPath, this);
     }
 
     private void Update()

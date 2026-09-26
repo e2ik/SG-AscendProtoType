@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string rhythmGameSceneName = "Rhythm";
 
     [Header("Input action map names")]
-    [SerializeField] private string worldActionMap = "Gameplay";
+    [SerializeField] private string worldActionMap = "Player";
     [SerializeField] private string uiActionMap = "UI";
     [SerializeField] private string endlessRunnerActionMap = "EndlessRunner";
     [SerializeField] private string memoryGameActionMap = "MemoryGame";
@@ -134,14 +134,13 @@ public class GameManager : MonoBehaviour
             SaveManager.Instance.SaveCurrent();
         }
 
-        SceneLoader.Instance.UnloadScene(SceneNameFor(_activeMinigame), () =>
-        {
-            ChangeState(GameState.World);
-            InputManager.Instance.SwitchMap(worldActionMap);
-        });
-
+        string sceneName = SceneNameFor(_activeMinigame);
         _activeMinigame = default;
         _pendingMinigameFlag = null;
+
+        ChangeState(GameState.World);
+        InputManager.Instance.SwitchMap(worldActionMap);
+        SceneLoader.Instance.UnloadScene(sceneName);
     }
 
     private static bool IsMinigame(GameState state) =>

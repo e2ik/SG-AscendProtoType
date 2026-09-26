@@ -60,11 +60,11 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        _pauseAction = InputManager.Instance.FindAction("Pause");
+        _pauseAction = InputManager.Instance.FindAction("Pause", this);
         if (_pauseAction != null)
             _pauseAction.performed += OnPausePressed;
 
-        _cancelAction = InputManager.Instance.FindAction($"{uiMapName}/Cancel");
+        _cancelAction = InputManager.Instance.FindAction($"{uiMapName}/Cancel", this);
         if (_cancelAction != null)
             _cancelAction.performed += OnCancelPressed;
     }
