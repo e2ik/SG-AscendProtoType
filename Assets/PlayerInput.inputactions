@@ -1,5 +1,6 @@
 {
-    "name": "InputSystem_Actions",
+    "version": 1,
+    "name": "PlayerInput",
     "maps": [
         {
             "name": "Player",
@@ -986,6 +987,146 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Global",
+            "id": "e489fc2d-ac3d-4833-a53b-7a3daa187ea6",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "69ae13e1-c8d9-4a48-831b-0a848df9c9b4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "40c06cd4-422e-4475-815b-5d45c1f31d23",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "EndlessRunner",
+            "id": "f9a23165-f259-4a68-ae78-219f45e8361a",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "d4b58eac-cf75-4cf8-9974-37aabc5f0266",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d7db50bd-20be-43f3-b1c4-d9a1251f1f9d",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "MemoryGame",
+            "id": "fdb64d3a-1cab-4b54-a7da-901682f11a4c",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "53729435-cfae-4195-82e3-ff4cc538ce44",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "d8e14f0f-0d87-41b4-a1b6-321181ee85b5",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Rhythm",
+            "id": "bb2ab000-2cfe-4695-aea6-53e0ca34eaa5",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "a2220d9b-0b68-438f-baa6-4c484260b046",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "770079f3-7713-4b52-8731-c1c8e7af0107",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "CharacterCreation",
+            "id": "c13c1040-1c9b-4ae9-a47b-b063911a0d3a",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "5d8a40c2-a870-4cb6-9e61-f4c0993b8e4d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "902e74e7-773d-4025-aa9d-fce70c16a81a",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
