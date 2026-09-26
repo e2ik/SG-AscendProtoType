@@ -17,6 +17,10 @@ public class CharacterProfile : ScriptableObject
     public Sprite defaultPortrait;
     public List<Expression> expressions = new List<Expression>();
 
+    [Header("Voice")]
+    public string blipKey;
+    [Range(0.5f, 2f)] public float blipPitch = 1f;
+
     public bool HasExpression(string expressionName) => Find(expressionName) != null;
 
     public Sprite GetPortrait(string expressionName)

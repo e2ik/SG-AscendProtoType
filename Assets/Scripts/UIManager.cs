@@ -23,6 +23,7 @@ public class UIManager : MonoBehaviour
     private const float MoveDeadzone = 0.6f;
 
     [SerializeField] private string uiMapName = "UI";
+    [SerializeField] private string backSound = "UIback";
 
     [Header("Selection Outline Defaults")]
     [SerializeField] private Color selectionHighlightColor = Color.white;
@@ -90,6 +91,10 @@ public class UIManager : MonoBehaviour
     {
         if (_layers.Count == 0 || _escapeHandledFrame == Time.frameCount) return;
         _escapeHandledFrame = Time.frameCount;
+
+        if (!string.IsNullOrEmpty(backSound) && ASpawner.Instance != null)
+            ASpawner.Play(backSound);
+
         _layers.Peek().OnBack.Invoke();
     }
 

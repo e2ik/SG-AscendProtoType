@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 3328127555511876161}
   - component: {fileID: 4731171837902350099}
   - component: {fileID: 1183797585117477535}
+  - component: {fileID: 381338695975687096}
   m_Layer: 5
   m_Name: LoadBtn
   m_TagString: Untagged
@@ -258,6 +259,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &381338695975687096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449238017789549688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df23243f6484c48428c54baf8572eefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  moveSound: UIclick
+  confirmSound: UIconfirm
+  playOnHover: 1
 --- !u!1 &1041972684516531565
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,6 +423,7 @@ GameObject:
   - component: {fileID: 2629822145286201591}
   - component: {fileID: 4578384965929560360}
   - component: {fileID: 6850394432425460925}
+  - component: {fileID: 1862857744894973307}
   m_Layer: 5
   m_Name: DeleteBtn
   m_TagString: Untagged
@@ -516,6 +533,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1862857744894973307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2874582380003537773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df23243f6484c48428c54baf8572eefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  moveSound: UIclick
+  confirmSound: UIconfirm
+  playOnHover: 1
 --- !u!1 &3473267915930322734
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6271082867807411929}
   - component: {fileID: 1454111445423737464}
   - component: {fileID: 5958958783732018401}
+  - component: {fileID: 8415900967455615716}
   m_Layer: 5
   m_Name: ColorSlot
   m_TagString: Untagged
@@ -135,9 +136,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SelectionOutline
   outline: {fileID: 0}
-  pulseSpeed: 15
   minAlpha: 0.4
   maxAlpha: 1
+  sortingOrderOffset: 1
+--- !u!114 &8415900967455615716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784083620586447109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df23243f6484c48428c54baf8572eefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  moveSound: UIclick
+  confirmSound: UIconfirm
+  playOnHover: 1
 --- !u!1 &8666612452348524739
 GameObject:
   m_ObjectHideFlags: 0

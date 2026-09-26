@@ -857,6 +857,7 @@ MonoBehaviour:
   defaultSelected: {fileID: 1375478261}
   saveListContentParent: {fileID: 947441108}
   saveSlotPrefab: {fileID: 7908630968434510704, guid: aeb5405479ac6114b824063a89e7ee39, type: 3}
+  deleteAllButton: {fileID: 0}
 --- !u!4 &581764446
 Transform:
   m_ObjectHideFlags: 0
@@ -1062,6 +1063,7 @@ GameObject:
   - component: {fileID: 1119817594}
   - component: {fileID: 1119817593}
   - component: {fileID: 1119817596}
+  - component: {fileID: 1119817597}
   m_Layer: 5
   m_Name: QuitBtn
   m_TagString: Untagged
@@ -1200,6 +1202,21 @@ MonoBehaviour:
   minAlpha: 0.4
   maxAlpha: 1
   sortingOrderOffset: 1
+--- !u!114 &1119817597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1119817591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df23243f6484c48428c54baf8572eefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  moveSound: UIclick
+  confirmSound: UIconfirm
+  playOnHover: 1
 --- !u!1 &1156621407
 GameObject:
   m_ObjectHideFlags: 0
@@ -1499,6 +1516,7 @@ GameObject:
   - component: {fileID: 1375478264}
   - component: {fileID: 1375478263}
   - component: {fileID: 1375478266}
+  - component: {fileID: 1375478267}
   m_Layer: 5
   m_Name: NewGameBtn
   m_TagString: Untagged
@@ -1637,6 +1655,21 @@ MonoBehaviour:
   minAlpha: 0.4
   maxAlpha: 1
   sortingOrderOffset: 1
+--- !u!114 &1375478267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375478261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df23243f6484c48428c54baf8572eefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  moveSound: UIclick
+  confirmSound: UIconfirm
+  playOnHover: 1
 --- !u!1 &1795313493
 GameObject:
   m_ObjectHideFlags: 0
@@ -2017,6 +2050,7 @@ GameObject:
   - component: {fileID: 2049399920}
   - component: {fileID: 2049399919}
   - component: {fileID: 2049399922}
+  - component: {fileID: 2049399923}
   m_Layer: 5
   m_Name: LoadGameBtn
   m_TagString: Untagged
@@ -2155,6 +2189,21 @@ MonoBehaviour:
   minAlpha: 0.4
   maxAlpha: 1
   sortingOrderOffset: 1
+--- !u!114 &2049399923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049399917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df23243f6484c48428c54baf8572eefc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  moveSound: UIclick
+  confirmSound: UIconfirm
+  playOnHover: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

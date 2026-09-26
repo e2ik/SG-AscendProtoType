@@ -32,6 +32,10 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private Button choiceButtonPrefab;
     [SerializeField] private float charactersPerSecond = 40f;
 
+    [Header("Typing Blips")]
+    [SerializeField] private string defaultBlipKey = "NPCblip";
+    [SerializeField] [Min(1)] private int blipEveryNCharacters = 2;
+
     public bool IsActive => _dialogue != null;
     public event Action<DialogueData> DialogueStarted;
     public event Action<DialogueData> DialogueEnded;
@@ -49,6 +53,7 @@ public class DialogueManager : MonoBehaviour
     private CharacterProfile _lineSpeaker;
     private DialogueSide _lineSide;
     private int _nextExpression;
+    private int _blipCounter;
     private Action _onComplete;
     private Coroutine _typing;
     private int _openedFrame = -1;
@@ -185,6 +190,23 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    private void TryPlayBlip(int characterIndex)
+    {
+        if (ASpawner.Instance == null) return;
+
+        var info = bodyText.textInfo;
+        if (characterIndex < 0 || characterIndex >= info.characterCount) return;
+        if (!char.IsLetterOrDigit(info.characterInfo[characterIndex].character)) return;
+
+        if (_blipCounter++ % blipEveryNCharacters != 0) return;
+
+        string key = _lineSpeaker != null && !string.IsNullOrEmpty(_lineSpeaker.blipKey) ? _lineSpeaker.blipKey : defaultBlipKey;
+        if (string.IsNullOrEmpty(key)) return;
+
+        float pitch = _lineSpeaker != null ? _lineSpeaker.blipPitch : 1f;
+        ASpawner.Play(key, 1f, pitch);
+    }
+
     private void OnSequenceFinished()
     {
         if (_respondingTo != null)
@@ -210,6 +232,7 @@ public class DialogueManager : MonoBehaviour
         Predicate<string> isExpression = _lineSpeaker != null ? _lineSpeaker.HasExpression : (Predicate<string>)null;
         textEffects.SetText(text, isExpression);
         _nextExpression = 0;
+        _blipCounter = 0;
 
         bodyText.maxVisibleCharacters = 0;
         bodyText.ForceMeshUpdate();
@@ -249,6 +272,7 @@ public class DialogueManager : MonoBehaviour
 
                     budget -= secondsPerCharacter;
                     ApplyExpressionsUpTo(visible);
+                    TryPlayBlip(visible);
                     visible++;
                     bodyText.maxVisibleCharacters = visible;
 

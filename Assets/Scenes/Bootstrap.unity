@@ -1866,6 +1866,8 @@ GameObject:
   - component: {fileID: 1222042127}
   - component: {fileID: 1222042133}
   - component: {fileID: 1222042126}
+  - component: {fileID: 1222042136}
+  - component: {fileID: 1222042135}
   - component: {fileID: 1222042129}
   - component: {fileID: 1222042128}
   - component: {fileID: 1222042131}
@@ -2043,6 +2045,85 @@ MonoBehaviour:
   choicesParent: {fileID: 853289584}
   choiceButtonPrefab: {fileID: 1895507300863491552, guid: eb20f8d9316d1d74fa9d8b1da9d12f93, type: 3}
   charactersPerSecond: 40
+  defaultBlipKey: NPCblip
+  blipEveryNCharacters: 2
+--- !u!114 &1222042135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222042125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 868963451c4b3ee4396bb05d281c4ba1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PSpawner
+  database: []
+--- !u!114 &1222042136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222042125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0be62030a45088644b0f2ab87cb85364, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ASpawner
+  database:
+  - key: UIclick
+    clips:
+    - {fileID: 8300000, guid: de1ed9611ee6d0e4d99456fb6b389854, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.1
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: UIconfirm
+    clips:
+    - {fileID: 8300000, guid: 3dd3b4f23b2a4ad47ac65d9e936e48be, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.1
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: NPCblip
+    clips:
+    - {fileID: 8300000, guid: 88ec7b778be4ba949804b19fecd50370, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.2
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 6512568849920868739, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: UIback
+    clips:
+    - {fileID: 8300000, guid: 7ece05b255782654385513629aa57332, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.2
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 6512568849920868739, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  maxVoices: 24
+  initialPoolSize: 8
+  defaultMixerGroup: {fileID: 6512568849920868739, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
 --- !u!1 &1415817543
 GameObject:
   m_ObjectHideFlags: 0
