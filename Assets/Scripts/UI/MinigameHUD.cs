@@ -88,7 +88,7 @@ public class MinigameHUD : MonoBehaviour
             introInstructionsText.gameObject.SetActive(!string.IsNullOrEmpty(instructions));
         }
 
-        introPanel.SetActive(true);
+        UIPanelAnimator.SetVisible(introPanel, true);
     }
 
     public void HideIntro()
@@ -97,20 +97,20 @@ public class MinigameHUD : MonoBehaviour
         _onCancel = null;
 
         if (introPanel != null)
-            introPanel.SetActive(false);
+            UIPanelAnimator.SetVisible(introPanel, false);
     }
 
     public void ShowCountdown(string text)
     {
         if (countdownRoot == null) return;
         countdownText.text = text;
-        countdownRoot.SetActive(true);
+        UIPanelAnimator.SetVisible(countdownRoot, true);
     }
 
     public void HideCountdown()
     {
         if (countdownRoot != null)
-            countdownRoot.SetActive(false);
+            UIPanelAnimator.SetVisible(countdownRoot, false);
     }
 
     public void ShowResults(MinigameResult result, Action onRetry, Action onReturn)
@@ -125,13 +125,13 @@ public class MinigameHUD : MonoBehaviour
             ? $"+{result.Reward} stat point{(result.Reward == 1 ? "" : "s")}"
             : string.Empty;
 
-        resultsPanel.SetActive(true);
+        UIPanelAnimator.SetVisible(resultsPanel, true);
     }
 
     public void HideResults()
     {
         _onRetry = null;
         _onReturn = null;
-        resultsPanel.SetActive(false);
+        UIPanelAnimator.SetVisible(resultsPanel, false);
     }
 }

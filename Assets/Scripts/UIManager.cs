@@ -151,7 +151,13 @@ public class UIManager : MonoBehaviour
 
     public void PopBackHandler(Action onBack)
     {
-        if (_layers.Count == 0 || _layers.Peek().OnBack != onBack) return;
+        if (_layers.Count == 0) return;
+
+        if (_layers.Peek().OnBack != onBack)
+        {
+            RemoveBuriedLayer(onBack);
+            return;
+        }
 
         var layer = _layers.Pop();
         RefreshKeyboardNavigation();
@@ -173,6 +179,23 @@ public class UIManager : MonoBehaviour
             input.SwitchMap(_mapBeforeUI);
 
         _mapBeforeUI = null;
+    }
+
+    private void RemoveBuriedLayer(Action onBack)
+    {
+        var layers = _layers.ToArray();
+        bool found = false;
+
+        _layers.Clear();
+        for (int i = layers.Length - 1; i >= 0; i--)
+        {
+            if (!found && layers[i].OnBack == onBack)
+            {
+                found = true;
+                continue;
+            }
+            _layers.Push(layers[i]);
+        }
     }
 
     private static bool IsValidSelection(GameObject candidate, Transform root)

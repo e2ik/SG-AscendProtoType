@@ -91,6 +91,16 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
             outline.SetActive(_isSelected || _isHovered || _isChosen);
     }
 
+    private void LateUpdate()
+    {
+        var eventSystem = EventSystem.current;
+        bool selected = eventSystem != null && eventSystem.currentSelectedGameObject == gameObject;
+        if (selected == _isSelected) return;
+
+        _isSelected = selected;
+        RefreshVisibility();
+    }
+
     private void Update()
     {
         var ui = UIManager.Instance;

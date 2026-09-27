@@ -31,13 +31,13 @@ public class TitleScreenController : MonoBehaviour
 
     public void OnLoadGamePressed()
     {
-        loadGamePanel.SetActive(true);
+        UIPanelAnimator.SetVisible(loadGamePanel, true);
         RefreshSaveList();
     }
 
     public void OnBackPressed()
     {
-        loadGamePanel.SetActive(false);
+        UIPanelAnimator.SetVisible(loadGamePanel, false);
     }
 
     public void OnQuitPressed()

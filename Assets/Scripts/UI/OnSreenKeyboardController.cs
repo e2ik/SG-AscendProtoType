@@ -39,6 +39,7 @@ public class OnScreenKeyboardController : MonoBehaviour
     private readonly List<(TMP_Text label, char baseChar)> _letterLabels = new List<(TMP_Text, char)>();
     private Action<string> _onConfirm;
     private bool _built;
+    private UIPanelAnimator _panelAnimator;
     private bool _capsLock = true;
     private bool _shiftHeld;
     private bool _typedDuringShift;
@@ -52,6 +53,7 @@ public class OnScreenKeyboardController : MonoBehaviour
     private void Awake()
     {
         panel.SetActive(false);
+        _panelAnimator = panel.GetComponent<UIPanelAnimator>();
         spaceButton.onClick.AddListener(() => AppendChar(' '));
         backspaceButton.onClick.AddListener(Backspace);
         doneButton.onClick.AddListener(Confirm);
@@ -75,7 +77,7 @@ public class OnScreenKeyboardController : MonoBehaviour
             BuildKeys();
 
         _openedFrame = Time.frameCount;
-        panel.SetActive(true);
+        UIPanelAnimator.SetVisible(panel, true);
     }
 
     private void BuildKeys()
@@ -185,7 +187,7 @@ public class OnScreenKeyboardController : MonoBehaviour
 
     private void Update()
     {
-        if (!panel.activeSelf) return;
+        if (!panel.activeSelf || (_panelAnimator != null && _panelAnimator.IsHiding)) return;
 
         if (_hasTyped && Time.unscaledTime >= _nextBlinkTime)
         {
@@ -300,7 +302,7 @@ public class OnScreenKeyboardController : MonoBehaviour
 
     private void Confirm()
     {
-        panel.SetActive(false);
+        UIPanelAnimator.SetVisible(panel, false);
         _onConfirm?.Invoke(_hasTyped ? _text.ToString() : _initialText);
     }
 }

@@ -21,6 +21,8 @@ public abstract class MinigameBase : MonoBehaviour
     [Header("Countdown")]
     [SerializeField] [Min(0)] private int countdownSeconds = 3;
 
+    public static MinigameBase Current { get; private set; }
+
     public Phase CurrentPhase { get; private set; } = Phase.Idle;
     public float Score { get; protected set; }
     public float BestScore { get; private set; }
@@ -29,6 +31,17 @@ public abstract class MinigameBase : MonoBehaviour
     public event Action Ended;
 
     private Coroutine _countdown;
+
+    protected virtual void OnEnable()
+    {
+        Current = this;
+    }
+
+    protected virtual void OnDisable()
+    {
+        if (Current == this)
+            Current = null;
+    }
 
     protected virtual void Start()
     {
@@ -73,7 +86,7 @@ public abstract class MinigameBase : MonoBehaviour
         for (int i = countdownSeconds; i > 0; i--)
         {
             if (hud != null) hud.ShowCountdown(i.ToString());
-            yield return new WaitForSecondsRealtime(1f);
+            yield return new WaitForSeconds(1f);
         }
 
         if (hud != null) hud.ShowCountdown("GO!");
@@ -82,7 +95,7 @@ public abstract class MinigameBase : MonoBehaviour
         OnBegin();
         Began?.Invoke();
 
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSeconds(0.5f);
 
         if (hud != null) hud.HideCountdown();
         _countdown = null;

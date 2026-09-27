@@ -10,18 +10,27 @@ public class UIPanel : MonoBehaviour
 
     public event Action OnBack;
 
-    private void OnEnable()
-    {
-        if (UIManager.Instance == null) return;
+    private bool _registered;
 
+    private void OnEnable() => Register();
+    private void OnDisable() => Unregister();
+
+    public void Register()
+    {
+        if (_registered || UIManager.Instance == null) return;
+
+        _registered = true;
         var selected = defaultSelected != null ? defaultSelected.gameObject : null;
         UIManager.Instance.PushBackHandler(HandleBack, transform, selected, blockKeyboardNavigation);
     }
 
-    private void OnDisable()
+    public void Unregister()
     {
-        if (UIManager.Instance == null) return;
-        UIManager.Instance.PopBackHandler(HandleBack);
+        if (!_registered) return;
+
+        _registered = false;
+        if (UIManager.Instance != null)
+            UIManager.Instance.PopBackHandler(HandleBack);
     }
 
     private void HandleBack()
@@ -29,6 +38,6 @@ public class UIPanel : MonoBehaviour
         OnBack?.Invoke();
 
         if (closeOnBack)
-            gameObject.SetActive(false);
+            UIPanelAnimator.SetVisible(gameObject, false);
     }
 }

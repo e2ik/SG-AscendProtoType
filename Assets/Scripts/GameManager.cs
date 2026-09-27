@@ -158,6 +158,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator Transition(GameState state, string actionMap, Func<IEnumerator> sceneWork)
     {
         IsTransitioning = true;
+        Time.timeScale = 1f;
         InputManager.Instance.DisableModeMaps();
 
         yield return SceneLoader.Instance.FadeOut();
@@ -170,6 +171,8 @@ public class GameManager : MonoBehaviour
 
         IsTransitioning = false;
     }
+
+    public static bool IsMinigameState(GameState state) => IsMinigame(state);
 
     private static bool IsMinigame(GameState state) =>
         state == GameState.Minigame_EndlessRunner ||

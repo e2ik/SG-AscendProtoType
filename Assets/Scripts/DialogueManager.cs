@@ -103,7 +103,7 @@ public class DialogueManager : MonoBehaviour
 
         textEffects.SetText(string.Empty);
         ShowSpeaker(defaultSpeaker);
-        panel.SetActive(true);
+        UIPanelAnimator.SetVisible(panel, true);
 
         DialogueStarted?.Invoke(dialogue);
         PlayDialogue(dialogue);
@@ -398,7 +398,7 @@ public class DialogueManager : MonoBehaviour
         _lineSpeaker = null;
         _pendingActions.Clear();
 
-        panel.SetActive(false);
+        UIPanelAnimator.SetVisible(panel, false);
 
         onComplete?.Invoke();
         DialogueEnded?.Invoke(started);

@@ -38,7 +38,7 @@ public class ColourSwatchPicker : MonoBehaviour
         if (!_built)
             BuildSwatches();
 
-        panel.SetActive(true);
+        UIPanelAnimator.SetVisible(panel, true);
     }
 
     private void BuildSwatches()

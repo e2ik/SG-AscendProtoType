@@ -37,7 +37,7 @@ public class ConfirmationDialogueController : MonoBehaviour
         _onConfirm = onConfirm;
         _onCancel = onCancel;
         messageText.text = message;
-        panel.SetActive(true);
+        UIPanelAnimator.SetVisible(panel, true);
 
         if (focusCancel && EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(noButton.gameObject);
@@ -51,7 +51,7 @@ public class ConfirmationDialogueController : MonoBehaviour
     {
         _onConfirm = null;
         _onCancel = null;
-        panel.SetActive(false);
+        UIPanelAnimator.SetVisible(panel, false);
         callback?.Invoke();
     }
 }
