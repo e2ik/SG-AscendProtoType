@@ -43,6 +43,18 @@ public class InputManager : MonoBehaviour
         return action;
     }
 
+    public void DisableModeMaps()
+    {
+        foreach (var map in playerInput.actions.actionMaps)
+        {
+            if (map.name != globalMapName)
+                map.Disable();
+        }
+
+        CurrentMap = null;
+        OnMapChanged?.Invoke(null);
+    }
+
     public void SwitchMap(string mapName)
     {
         if (CurrentMap == mapName) return;

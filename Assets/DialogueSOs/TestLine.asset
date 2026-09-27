@@ -33,6 +33,6 @@ MonoBehaviour:
       speaker: {fileID: 0}
     next: {fileID: 0}
     action:
-      type: 0
-      minigame: 0
+      type: 2
+      minigame: 3
       flag: 

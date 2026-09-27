@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public enum GameState
@@ -32,10 +33,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string memoryGameActionMap = "MemoryGame";
     [SerializeField] private string rhythmGameActionMap = "Rhythm";
 
+    public bool IsTransitioning { get; private set; }
+
     private GameState _activeMinigame;
     private string _pendingMinigameFlag;
-
-    private bool IsBusy => SceneLoader.Instance.IsTransitioning;
 
     private void Awake()
     {
@@ -49,18 +50,18 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        GoTo(GameState.Title, titleSceneName, uiActionMap);
+        StartCoroutine(Transition(GameState.Title, uiActionMap, () => SceneLoader.Instance.ReplaceAll(titleSceneName)));
     }
 
     public void StartNewGame()
     {
-        if (IsBusy) return;
-        GoTo(GameState.CharacterCreation, characterCreationSceneName, uiActionMap);
+        if (IsTransitioning) return;
+        StartCoroutine(Transition(GameState.CharacterCreation, uiActionMap, () => SceneLoader.Instance.ReplaceAll(characterCreationSceneName)));
     }
 
     public void LoadGame(string saveId)
     {
-        if (IsBusy) return;
+        if (IsTransitioning) return;
 
         if (!SaveManager.Instance.LoadSave(saveId))
         {
@@ -68,32 +69,32 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        GoTo(GameState.World, mainWorldSceneName, worldActionMap);
+        EnterWorld();
     }
 
     public void CompleteCharacterCreation(CharacterData character)
     {
-        if (IsBusy) return;
+        if (IsTransitioning) return;
 
         SaveManager.Instance.CreateNewSave(character, mainWorldSceneName);
-        GoTo(GameState.World, mainWorldSceneName, worldActionMap);
+        EnterWorld();
     }
 
     public void ReturnToTitle()
     {
-        if (IsBusy) return;
-        GoTo(GameState.Title, titleSceneName, uiActionMap);
+        if (IsTransitioning) return;
+        StartCoroutine(Transition(GameState.Title, uiActionMap, () => SceneLoader.Instance.ReplaceAll(titleSceneName)));
     }
 
-    private void GoTo(GameState state, string sceneName, string actionMap)
+    private void EnterWorld()
     {
-        ChangeState(state);
-        SceneLoader.Instance.TransitionTo(sceneName);
-        InputManager.Instance.SwitchMap(actionMap);
+        StartCoroutine(Transition(GameState.World, worldActionMap, () => SceneLoader.Instance.ReplaceAll(mainWorldSceneName)));
     }
 
     public void StartMinigame(GameState minigame, string completionFlag = null)
     {
+        if (IsTransitioning) return;
+
         if (!IsMinigame(minigame))
         {
             Debug.LogError($"{minigame} is not a minigame state");
@@ -109,13 +110,26 @@ public class GameManager : MonoBehaviour
         _activeMinigame = minigame;
         _pendingMinigameFlag = completionFlag;
 
-        ChangeState(minigame);
-        SceneLoader.Instance.LoadAdditive(SceneNameFor(minigame));
-        InputManager.Instance.SwitchMap(ActionMapFor(minigame));
+        string sceneName = SceneNameFor(minigame);
+        StartCoroutine(Transition(minigame, ActionMapFor(minigame), () => EnterMinigameScene(sceneName)));
+    }
+
+    private IEnumerator EnterMinigameScene(string sceneName)
+    {
+        yield return SceneLoader.Instance.LoadAdditive(sceneName);
+        SceneLoader.Instance.HideScene(mainWorldSceneName);
+    }
+
+    private IEnumerator ExitMinigameScene(string sceneName)
+    {
+        SceneLoader.Instance.ShowScene(mainWorldSceneName);
+        yield return SceneLoader.Instance.Unload(sceneName);
     }
 
     public void CompleteMinigame(bool success, int statPointsAwarded = 0)
     {
+        if (IsTransitioning) return;
+
         if (!IsMinigame(CurrentState))
         {
             Debug.LogWarning("CompleteMinigame called but no minigame is active");
@@ -138,9 +152,23 @@ public class GameManager : MonoBehaviour
         _activeMinigame = default;
         _pendingMinigameFlag = null;
 
-        ChangeState(GameState.World);
-        InputManager.Instance.SwitchMap(worldActionMap);
-        SceneLoader.Instance.UnloadScene(sceneName);
+        StartCoroutine(Transition(GameState.World, worldActionMap, () => ExitMinigameScene(sceneName)));
+    }
+
+    private IEnumerator Transition(GameState state, string actionMap, Func<IEnumerator> sceneWork)
+    {
+        IsTransitioning = true;
+        InputManager.Instance.DisableModeMaps();
+
+        yield return SceneLoader.Instance.FadeOut();
+
+        ChangeState(state);
+        InputManager.Instance.SwitchMap(actionMap);
+
+        yield return sceneWork();
+        yield return SceneLoader.Instance.FadeIn();
+
+        IsTransitioning = false;
     }
 
     private static bool IsMinigame(GameState state) =>

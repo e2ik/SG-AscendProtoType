@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainLevel.unity
     guid: 6b6c1790d015e66448e41ca2c2a054ea
+  - enabled: 1
+    path: Assets/Scenes/EndlessRunner.unity
+    guid: 509930db4bd6ae141935c99364231fdc
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
