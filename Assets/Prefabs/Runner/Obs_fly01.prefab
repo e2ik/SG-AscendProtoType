@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8073955864422546725}
   - component: {fileID: 6738435131160825874}
-  - component: {fileID: 1264906972399768083}
   - component: {fileID: -6435725525749815449}
+  - component: {fileID: -7458708797646618026}
+  - component: {fileID: -1280550579276920143}
   m_Layer: 7
-  m_Name: Obs_01
+  m_Name: Obs_fly01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -84,7 +85,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 4933f6a8333c7eb4c9a16eced138e663, type: 3}
-  m_Color: {r: 0.7484276, g: 0.27065766, b: 0.27065766, a: 1}
+  m_Color: {r: 0.9748427, g: 0.6620572, b: 0.07050741, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -92,21 +93,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 1
---- !u!114 &1264906972399768083
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6953644608594959060}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27aec7aa3f27fa74197d2015f5d5138e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RunnerObstacle
-  heightOverride: 0
-  widthOverride: 0
+  m_SpriteSortPoint: 0
 --- !u!61 &-6435725525749815449
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -141,7 +128,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.50199383, y: 0.50199383}
+  m_Offset: {x: 0.5005104, y: 0.50457954}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -151,5 +138,34 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.0164586, y: 1.0082294}
+  m_Size: {x: 1.0081381, y: 1.0081382}
   m_EdgeRadius: 0
+--- !u!114 &-7458708797646618026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6953644608594959060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27aec7aa3f27fa74197d2015f5d5138e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RunnerObstacle
+  heightOverride: 0
+  widthOverride: 0
+--- !u!114 &-1280550579276920143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6953644608594959060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f92e3a96916d2e944a11ad8a129d7756, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RunnerFlyer
+  bobAmplitude: 0.5
+  bobCyclesPerSecond: 1.2
+  halfHeightOverride: 0

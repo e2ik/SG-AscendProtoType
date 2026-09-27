@@ -10,16 +10,20 @@ public class EndlessRunnerGame : MinigameBase
     [SerializeField] private List<LoopingScroller> scrollers = new List<LoopingScroller>();
     [SerializeField] private TMP_Text distanceText;
 
-    [Header("Speed")]
+    [Header("Difficulty")]
+    [SerializeField] private float timeToMaxDifficulty = 90f;
     [SerializeField] private float startSpeed = 7f;
     [SerializeField] private float maxSpeed = 16f;
-    [SerializeField] private float acceleration = 0.25f;
+    [SerializeField] private AnimationCurve speedCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
     [Header("Reward")]
     [SerializeField] private float metresPerPoint = 150f;
     [SerializeField] [Min(0)] private int maxReward = 3;
 
     public float Speed { get; private set; }
+    public float Difficulty { get; private set; }
+
+    private float _elapsed;
 
     private void Awake()
     {
@@ -34,10 +38,12 @@ public class EndlessRunnerGame : MinigameBase
 
     protected override void OnSetup()
     {
+        _elapsed = 0f;
+        Difficulty = 0f;
         Speed = startSpeed;
         player.ResetRunner();
         player.SetControlsEnabled(false);
-        spawner.Setup(player.JumpHeight);
+        spawner.Setup(player);
         UpdateDistanceText();
     }
 
@@ -56,10 +62,13 @@ public class EndlessRunnerGame : MinigameBase
         if (CurrentPhase != Phase.Playing) return;
 
         float dt = Time.deltaTime;
-        Speed = Mathf.Min(maxSpeed, Speed + acceleration * dt);
+        _elapsed += dt;
+
+        Difficulty = timeToMaxDifficulty > 0f ? Mathf.Clamp01(_elapsed / timeToMaxDifficulty) : 1f;
+        Speed = Mathf.Lerp(startSpeed, maxSpeed, Mathf.Clamp01(speedCurve.Evaluate(Difficulty)));
         Score += Speed * dt;
 
-        spawner.Tick(Speed, dt, player.AirTime);
+        spawner.Tick(Speed, dt, Difficulty);
         foreach (var scroller in scrollers)
         {
             if (scroller != null)

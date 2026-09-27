@@ -321,7 +321,7 @@ Transform:
   m_GameObject: {fileID: 1645469359}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.71, y: 0, z: 0}
+  m_LocalPosition: {x: 11.71, y: -0.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -376,7 +376,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4933f6a8333c7eb4c9a16eced138e663, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -385,7 +385,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!1 &1732893856
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,12 +418,36 @@ MonoBehaviour:
   obstaclePrefabs:
   - {fileID: 1264906972399768083, guid: eece16eb25f998449845d976a8a8cc99, type: 3}
   - {fileID: 1264906972399768083, guid: c8c4111b923b480448b0af88e173e941, type: 3}
+  - {fileID: 1264906972399768083, guid: 81a09893615f4d240879523c994ce24a, type: 3}
+  - {fileID: 1264906972399768083, guid: 2be062d4fb152be428d87a28190f9ba6, type: 3}
+  - {fileID: 1264906972399768083, guid: 14a7b240e3ff91740b490e9920052fb2, type: 3}
   spawnPoint: {fileID: 1645469360}
   despawnDistance: 30
-  minGap: 5
-  maxGap: 11
-  landingMargin: 1.25
-  clearanceFactor: 0.8
+  firstObstacleDelay: 1.5
+  easyGapSeconds: {x: 1, y: 1.5}
+  hardGapSeconds: {x: 0.1, y: 0.3}
+  reactionTime: 0.05
+  clearanceFactor: 0.9
+  easyHeightFraction: 0.7
+  clearSafety: 0.925
+  tapStartDifficulty: 0.15
+  maxTapChance: 0.75
+  tapHoldTime: 0.03
+  airPrefabs:
+  - {fileID: -1280550579276920143, guid: 68eda576831fd3e44bf9cd76e1d64242, type: 3}
+  - {fileID: -1280550579276920143, guid: 38d59d46407cdc143bebb756f343d66a, type: 3}
+  - {fileID: -1280550579276920143, guid: 6f3f989fa1fa032409927ff6319f62ae, type: 3}
+  airStartDifficulty: 0.25
+  maxAirChance: 0.35
+  airHeightFactor: 1
+  airGroundClearance: 0.15
+  swaySpacing: 0
+  comboStartDifficulty: 0.35
+  maxComboChance: 0.75
+  maxBirdFollowUpChance: 0.8
+  maxTapComboChance: 0.35
+  comboLandingMargin: 0.05
+  comboReactionTime: 0.075
 --- !u!4 &1732893858
 Transform:
   m_ObjectHideFlags: 0
@@ -433,7 +457,7 @@ Transform:
   m_GameObject: {fileID: 1732893856}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.39, z: 0}
+  m_LocalPosition: {x: 0, y: -0.32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -542,7 +566,7 @@ GameObject:
   - component: {fileID: 1806826847}
   - component: {fileID: 1806826846}
   m_Layer: 0
-  m_Name: Game
+  m_Name: GameControls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -570,10 +594,34 @@ MonoBehaviour:
   scrollers:
   - {fileID: 1982896362}
   distanceText: {fileID: 2113305625}
-  startSpeed: 7
-  maxSpeed: 16
-  acceleration: 0.25
-  metresPerPoint: 150
+  timeToMaxDifficulty: 60
+  startSpeed: 8
+  maxSpeed: 13
+  speedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  metresPerPoint: 200
   maxReward: 3
 --- !u!4 &1806826847
 Transform:

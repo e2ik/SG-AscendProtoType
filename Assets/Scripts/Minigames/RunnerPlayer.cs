@@ -34,6 +34,8 @@ public class RunnerPlayer : MonoBehaviour
 
     public float JumpHeight { get; private set; }
     public float AirTime { get; private set; }
+    public float StandingHitboxCenter { get; private set; }
+    public float StandingHitboxTop { get; private set; }
     public bool IsGrounded { get; private set; } = true;
 
     private readonly Collider2D[] _hits = new Collider2D[4];
@@ -89,8 +91,94 @@ public class RunnerPlayer : MonoBehaviour
         _lastJumpPressedTime = float.NegativeInfinity;
         _lastDebugSignature = null;
 
+        if (hitbox != null)
+        {
+            Physics2D.SyncTransforms();
+            var bounds = hitbox.bounds;
+            StandingHitboxCenter = bounds.center.y;
+            StandingHitboxTop = bounds.center.y + bounds.extents.y * hitboxScale;
+        }
+        else
+        {
+            StandingHitboxCenter = _groundY + 0.5f;
+            StandingHitboxTop = _groundY + 1f;
+        }
+
         if (debugCollisions)
             LogSetup();
+    }
+
+    public float HitboxWidth => hitbox != null ? hitbox.bounds.size.x * hitboxScale : 0.5f;
+
+    public JumpArc FullArc => GetArc(float.MaxValue);
+
+    public JumpArc GetArc(float holdTime)
+    {
+        float rise = RiseGravity;
+        float release = RiseGravity * lowJumpMultiplier;
+        float fall = FallGravity;
+        float launch = Mathf.Sqrt(2f * rise * JumpHeight);
+        float fullApexTime = launch / rise;
+
+        var arc = new JumpArc
+        {
+            LaunchVelocity = launch,
+            RiseGravity = rise,
+            ReleaseGravity = release,
+            FallGravity = fall
+        };
+
+        if (holdTime >= fullApexTime)
+        {
+            arc.ReleaseTime = fullApexTime;
+            arc.ReleaseHeight = JumpHeight;
+            arc.ReleaseVelocity = 0f;
+            arc.ApexTime = fullApexTime;
+            arc.Height = JumpHeight;
+        }
+        else
+        {
+            float hold = Mathf.Max(0f, holdTime);
+            float releaseVelocity = launch - rise * hold;
+            float releaseHeight = launch * hold - 0.5f * rise * hold * hold;
+
+            arc.ReleaseTime = hold;
+            arc.ReleaseHeight = releaseHeight;
+            arc.ReleaseVelocity = releaseVelocity;
+            arc.ApexTime = hold + releaseVelocity / release;
+            arc.Height = releaseHeight + releaseVelocity * releaseVelocity / (2f * release);
+        }
+
+        arc.AirTime = arc.ApexTime + Mathf.Sqrt(2f * arc.Height / fall);
+        return arc;
+    }
+
+    public JumpArc MinimumArc => GetArc(0f);
+
+    public JumpArc GetArcForHeight(float targetHeight)
+    {
+        var full = FullArc;
+        if (targetHeight >= full.Height) return full;
+
+        float low = 0f;
+        float high = full.ApexTime;
+        for (int i = 0; i < 16; i++)
+        {
+            float mid = (low + high) * 0.5f;
+            if (GetArc(mid).Height > targetHeight)
+                high = mid;
+            else
+                low = mid;
+        }
+
+        return GetArc(low);
+    }
+
+    public bool CanClear(JumpArc arc, float obstacleHeight, float obstacleWidth, float speed, float safety = 0.9f)
+    {
+        if (speed <= 0f) return false;
+        float timeNeeded = (obstacleWidth + HitboxWidth) / speed;
+        return arc.TimeAbove(obstacleHeight) * safety >= timeNeeded;
     }
 
     public void SetControlsEnabled(bool enabled)
@@ -107,8 +195,7 @@ public class RunnerPlayer : MonoBehaviour
         float height = minJumpHeight + Mathf.Max(0, strength - PlayerStats.StartingValue) * jumpHeightPerStrength;
         JumpHeight = Mathf.Clamp(height, minJumpHeight, maxJumpHeight);
 
-        float launchVelocity = Mathf.Sqrt(2f * RiseGravity * JumpHeight);
-        AirTime = launchVelocity / RiseGravity + Mathf.Sqrt(2f * JumpHeight / FallGravity);
+        AirTime = FullArc.AirTime;
     }
 
     private static int GetSavedStrength()
@@ -249,5 +336,43 @@ public class RunnerPlayer : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(col.bounds.center, col.bounds.size * hitboxScale);
+    }
+}
+
+public struct JumpArc
+{
+    public float LaunchVelocity;
+    public float RiseGravity;
+    public float ReleaseGravity;
+    public float FallGravity;
+    public float ReleaseTime;
+    public float ReleaseHeight;
+    public float ReleaseVelocity;
+    public float ApexTime;
+    public float Height;
+    public float AirTime;
+
+    public float TimeToReach(float height)
+    {
+        if (height <= 0f) return 0f;
+        if (height >= Height) return ApexTime;
+
+        if (height <= ReleaseHeight)
+        {
+            float disc = Mathf.Max(0f, LaunchVelocity * LaunchVelocity - 2f * RiseGravity * height);
+            return (LaunchVelocity - Mathf.Sqrt(disc)) / RiseGravity;
+        }
+
+        float releaseDisc = Mathf.Max(0f, ReleaseVelocity * ReleaseVelocity - 2f * ReleaseGravity * (height - ReleaseHeight));
+        return ReleaseTime + (ReleaseVelocity - Mathf.Sqrt(releaseDisc)) / ReleaseGravity;
+    }
+
+    public float TimeAbove(float height)
+    {
+        if (height <= 0f) return AirTime;
+        if (height >= Height) return 0f;
+
+        float timeDown = ApexTime + Mathf.Sqrt(2f * (Height - height) / FallGravity);
+        return Mathf.Max(0f, timeDown - TimeToReach(height));
     }
 }
