@@ -59,6 +59,7 @@ public class DialogueData : ScriptableObject
 {
     public List<DialogueLine> lines = new List<DialogueLine>();
     public List<DialogueChoice> choices = new List<DialogueChoice>();
+    public string setFlagOnFinish;
 
     public bool HasLines => lines != null && lines.Count > 0;
     public bool HasChoices => choices != null && choices.Count > 0;

@@ -5357,7 +5357,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9556,6 +9556,7 @@ MonoBehaviour:
   backButton: {fileID: 267418435}
   confirmMessage: Spend {0} point{1}?
   memoryFlipBonus: {fileID: 11400000, guid: fdf9ba1e3bf380a43a7868c545db802b, type: 2}
+  rhythmZoneBonus: {fileID: 11400000, guid: 2727634823371ae4d987901f65a44cca, type: 2}
 --- !u!114 &1469864613
 MonoBehaviour:
   m_ObjectHideFlags: 0

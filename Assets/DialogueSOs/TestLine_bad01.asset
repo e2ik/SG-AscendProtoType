@@ -10,34 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82a1cc0faf2c6474caa547c2be9cbc42, type: 3}
-  m_Name: TestLine
+  m_Name: TestLine_bad01
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: Why... <pause=0.4><pulse>HELLO</pulse></pause> there!
-    speaker: {fileID: 0}
-  - text: <happy>How are you today?
+  - text: <angry>Talk to me when you found some manners!
     speaker: {fileID: 0}
   choices:
-  - text: Go Away
+  - text: Sorry
     responseLines:
-    - text: '<angry>That''s <shake=2><color=red>rude!</color>
-
-        </shake>'
+    - text: <angry><pause=0.5>...<pause></angry><happy>Okay fine you're forgiven!
       speaker: {fileID: 0}
-    next: {fileID: 11400000, guid: 95196339f0e3e494e9fbf8da07ea56ca, type: 2}
-    action:
-      type: 1
-      minigame: 0
-      config: {fileID: 0}
-      flag: npc_bad
-  - text: Hi!
-    responseLines:
-    - text: <happy>Welcome!
-      speaker: {fileID: 0}
-    next: {fileID: 11400000, guid: d0a76fb6bc54c42488db22be15164c07, type: 2}
+    next: {fileID: 11400000, guid: 293db37859cd03d4f82e0bb6185c43ce, type: 2}
     action:
       type: 1
       minigame: 0
       config: {fileID: 0}
       flag: npc_good
+  - text: ?????
+    responseLines: []
+    next: {fileID: 0}
+    action:
+      type: 1
+      minigame: 0
+      config: {fileID: 0}
+      flag: npc_bad
   setFlagOnFinish: 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -42,6 +43,12 @@ public class WorldMovementController : MovementController, IStatCapProvider
     [Header("Stats")]
     [SerializeField] private PlayerStatsController stats;
 
+    [Header("One-Way Platforms")]
+    [SerializeField] private bool allowDropThrough = true;
+    [SerializeField] [Range(0.1f, 1f)] private float dropDownThreshold = 0.5f;
+    [SerializeField] private float dropDuration = 0.25f;
+    [SerializeField] private float dropKickVelocity = 3f;
+
     [Header("Ground Check")]
     [SerializeField] [Range(0.1f, 1f)] private float groundCheckWidth = 0.95f;
     [SerializeField] private float groundCheckDistance = 0.08f;
@@ -72,6 +79,11 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
     private bool _isGrounded;
     private float _moveInput;
+    private float _moveInputY;
+    private bool _dropRequested;
+    private readonly List<Collider2D> _standingOneWay = new List<Collider2D>();
+    private readonly Dictionary<Collider2D, float> _droppingThrough = new Dictionary<Collider2D, float>();
+    private readonly List<Collider2D> _restoreBuffer = new List<Collider2D>();
     private bool _jumpHeld;
     private float _lastGroundedTime = float.NegativeInfinity;
     private float _lastJumpPressedTime = float.NegativeInfinity;
@@ -151,26 +163,32 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
     private void Update()
     {
-        _moveInput = InputEnabled && _moveAction != null ? ReadHorizontal() : 0f;
+        var move = InputEnabled && _moveAction != null ? _moveAction.ReadValue<Vector2>() : Vector2.zero;
+        _moveInput = Mathf.Abs(move.x) >= horizontalDeadzone ? Mathf.Sign(move.x) : 0f;
+        _moveInputY = move.y;
         _jumpHeld = InputEnabled && _jumpAction != null && _jumpAction.IsPressed();
 
         if (InputEnabled && _jumpAction != null && _jumpAction.WasPressedThisFrame())
-            _lastJumpPressedTime = Time.time;
+        {
+            if (allowDropThrough && _moveInputY <= -dropDownThreshold && _standingOneWay.Count > 0)
+                _dropRequested = true;
+            else
+                _lastJumpPressedTime = Time.time;
+        }
 
         UpdateFacing();
-    }
-
-    private float ReadHorizontal()
-    {
-        float x = _moveAction.ReadValue<Vector2>().x;
-        return Mathf.Abs(x) >= horizontalDeadzone ? Mathf.Sign(x) : 0f;
     }
 
     private void FixedUpdate()
     {
         float now = Time.time;
 
+        RestoreFinishedDrops(now);
         _isGrounded = CheckGrounded();
+
+        bool dropping = _dropRequested && StartDrop(now);
+        _dropRequested = false;
+
         if (IsGrounded)
             _lastGroundedTime = now;
 
@@ -178,6 +196,9 @@ public class WorldMovementController : MovementController, IStatCapProvider
         float jumpVelocity = Mathf.Sqrt(2f * riseGravity * CurrentJumpHeight);
 
         var velocity = _body.linearVelocity;
+        if (dropping)
+            velocity.y = -dropKickVelocity;
+
         float targetX = _moveInput * CurrentMoveSpeed;
         velocity.x = Mathf.MoveTowards(velocity.x, targetX, GetHorizontalAcceleration(velocity.x, targetX) * Time.fixedDeltaTime);
 
@@ -229,15 +250,77 @@ public class WorldMovementController : MovementController, IStatCapProvider
         var filter = new ContactFilter2D { useLayerMask = true, layerMask = groundLayer, useTriggers = false };
         int count = Physics2D.BoxCast(origin, size, 0f, Vector2.down, filter, _groundHits, distance);
 
+        _standingOneWay.Clear();
+        bool grounded = false;
+
         for (int i = 0; i < count; i++)
         {
             var hit = _groundHits[i];
-            if (hit.collider.attachedRigidbody == _body) continue;
-            if (hit.normal.y >= minGroundNormalY)
-                return true;
+            var col = hit.collider;
+
+            if (col.attachedRigidbody == _body) continue;
+            if (_droppingThrough.ContainsKey(col)) continue;
+            if (hit.normal.y < minGroundNormalY) continue;
+
+            bool oneWay = col.usedByEffector && col.TryGetComponent<PlatformEffector2D>(out _);
+            if (oneWay && _body.linearVelocity.y > 0.01f) continue;
+
+            grounded = true;
+            if (oneWay)
+                _standingOneWay.Add(col);
         }
 
-        return false;
+        return grounded;
+    }
+
+    private bool StartDrop(float now)
+    {
+        if (_standingOneWay.Count == 0 || _collider == null) return false;
+
+        foreach (var platform in _standingOneWay)
+        {
+            Physics2D.IgnoreCollision(_collider, platform, true);
+            _droppingThrough[platform] = now + dropDuration;
+        }
+
+        _standingOneWay.Clear();
+        _isGrounded = CheckGrounded();
+        _lastGroundedTime = float.NegativeInfinity;
+        _lastJumpPressedTime = float.NegativeInfinity;
+        return true;
+    }
+
+    private void RestoreFinishedDrops(float now)
+    {
+        if (_droppingThrough.Count == 0) return;
+
+        _restoreBuffer.Clear();
+        foreach (var pair in _droppingThrough)
+        {
+            var platform = pair.Key;
+            if (platform == null || (now >= pair.Value && !_collider.bounds.Intersects(platform.bounds)))
+                _restoreBuffer.Add(platform);
+        }
+
+        foreach (var platform in _restoreBuffer)
+        {
+            if (platform != null && _collider != null)
+                Physics2D.IgnoreCollision(_collider, platform, false);
+            _droppingThrough.Remove(platform);
+        }
+    }
+
+    private void OnDisable()
+    {
+        foreach (var platform in _droppingThrough.Keys)
+        {
+            if (platform != null && _collider != null)
+                Physics2D.IgnoreCollision(_collider, platform, false);
+        }
+
+        _droppingThrough.Clear();
+        _standingOneWay.Clear();
+        _dropRequested = false;
     }
 
     private void GetGroundCast(out Vector2 origin, out Vector2 size, out float distance)

@@ -1082,39 +1082,11 @@
             ]
         },
         {
-            "name": "MemoryGame",
-            "id": "fdb64d3a-1cab-4b54-a7da-901682f11a4c",
-            "actions": [
-                {
-                    "name": "New action",
-                    "type": "Button",
-                    "id": "53729435-cfae-4195-82e3-ff4cc538ce44",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "d8e14f0f-0d87-41b4-a1b6-321181ee85b5",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "New action",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
             "name": "Rhythm",
             "id": "bb2ab000-2cfe-4695-aea6-53e0ca34eaa5",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "Press",
                     "type": "Button",
                     "id": "a2220d9b-0b68-438f-baa6-4c484260b046",
                     "expectedControlType": "",
@@ -1127,11 +1099,22 @@
                 {
                     "name": "",
                     "id": "770079f3-7713-4b52-8731-c1c8e7af0107",
-                    "path": "",
+                    "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Press",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "57d74aa4-ba89-4a68-a987-af1b5c7b0cf9",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Press",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -112,6 +112,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5878424477624678969}
   - component: {fileID: 5456791331915735020}
+  - component: {fileID: -4033875538567431753}
   m_Layer: 0
   m_Name: InteractionPrefab
   m_TagString: Untagged
@@ -185,7 +186,7 @@ SpriteRenderer:
   m_SortingOrder: 30
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.99487233, g: 1, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -194,6 +195,25 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &-4033875538567431753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5159133663071662340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b97855e8db6fafb4b8633e3cc1e20460, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputPromptIcon
+  spriteRenderer: {fileID: 5456791331915735020}
+  image: {fileID: 0}
+  label: {fileID: 6379729751382624811}
+  keyboardSprite: {fileID: 21300000, guid: 73b181b73aeae154492d20c540cee6cc, type: 3}
+  keyboardText: 
+  gamepadSprite: {fileID: 21300000, guid: 17f30da8dd644ad49ad35297ea8f4632, type: 3}
+  gamepadText: 
 --- !u!1 &8368959270728507593
 GameObject:
   m_ObjectHideFlags: 0

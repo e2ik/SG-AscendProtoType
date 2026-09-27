@@ -1,6 +1,13 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
+
+public enum InputDeviceType
+{
+    KeyboardMouse,
+    Gamepad
+}
 
 public class InputManager : MonoBehaviour
 {
@@ -12,6 +19,11 @@ public class InputManager : MonoBehaviour
     public PlayerInput PlayerInput => playerInput;
     public string CurrentMap { get; private set; }
     public event Action<string> OnMapChanged;
+
+    public InputDeviceType ActiveDevice { get; private set; } = InputDeviceType.KeyboardMouse;
+    public event Action<InputDeviceType> OnDeviceChanged;
+
+    private IDisposable _anyButtonListener;
 
     private void Awake()
     {
@@ -30,6 +42,36 @@ public class InputManager : MonoBehaviour
             globalMap.Enable();
         else
             Debug.LogWarning($"No '{globalMapName}' action map found - skipping persistent global input");
+    }
+
+    private void OnEnable()
+    {
+        if (Instance != null && Instance != this) return;
+        _anyButtonListener = InputSystem.onAnyButtonPress.Call(OnAnyButtonPressed);
+    }
+
+    private void OnDisable()
+    {
+        _anyButtonListener?.Dispose();
+        _anyButtonListener = null;
+    }
+
+    private void OnAnyButtonPressed(InputControl control)
+    {
+        var device = control.device;
+        InputDeviceType type;
+
+        if (device is Gamepad)
+            type = InputDeviceType.Gamepad;
+        else if (device is Keyboard || device is Mouse)
+            type = InputDeviceType.KeyboardMouse;
+        else
+            return;
+
+        if (type == ActiveDevice) return;
+
+        ActiveDevice = type;
+        OnDeviceChanged?.Invoke(type);
     }
 
     public InputAction FindAction(string path, UnityEngine.Object context = null)

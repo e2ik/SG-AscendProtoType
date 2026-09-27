@@ -19,6 +19,7 @@ public class StatsMenuController : MonoBehaviour
 
     [Header("Effect Previews")]
     [SerializeField] private MemoryFlipBonus memoryFlipBonus;
+    [SerializeField] private RhythmZoneBonus rhythmZoneBonus;
 
     public bool CanOpen => PlayerStatsController.Active != null;
 
@@ -180,9 +181,18 @@ public class StatsMenuController : MonoBehaviour
                 return FormatChange("Jump", _movement.JumpHeightAt(now), _movement.JumpHeightAt(next));
             case StatType.Endurance when memoryFlipBonus != null:
                 return FormatBonus("Memory flips", memoryFlipBonus.BonusFor(now), memoryFlipBonus.BonusFor(next));
+            case StatType.Intelligence when rhythmZoneBonus != null:
+                return FormatPercentBonus("Timing zones", rhythmZoneBonus.BonusFor(now), rhythmZoneBonus.BonusFor(next));
             default:
                 return null;
         }
+    }
+
+    private static string FormatPercentBonus(string label, float now, float next)
+    {
+        int nowPercent = Mathf.RoundToInt(now * 100f);
+        int nextPercent = Mathf.RoundToInt(next * 100f);
+        return nowPercent == nextPercent ? $"{label} +{nowPercent}%" : $"{label} +{nowPercent}% → +{nextPercent}%";
     }
 
     private static string FormatBonus(string label, int now, int next) =>

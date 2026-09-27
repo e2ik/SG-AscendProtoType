@@ -221,10 +221,25 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
+        QueueFinishFlag(_dialogue);
+
         if (_dialogue.HasChoices)
             ShowChoices(_dialogue.choices);
         else
             EndDialogue();
+    }
+
+    private void QueueFinishFlag(DialogueData dialogue)
+    {
+        if (dialogue == null || string.IsNullOrEmpty(dialogue.setFlagOnFinish)) return;
+
+        foreach (var pending in _pendingActions)
+        {
+            if (pending.type == DialogueActionType.SetFlag && pending.flag == dialogue.setFlagOnFinish)
+                return;
+        }
+
+        _pendingActions.Add(new DialogueAction { type = DialogueActionType.SetFlag, flag = dialogue.setFlagOnFinish });
     }
 
     private IEnumerator TypeLine(string text)
@@ -299,7 +314,10 @@ public class DialogueManager : MonoBehaviour
         ApplyExpressionsUpTo(int.MaxValue);
 
         if (IsLastLine && ChoicesDueAfterSequence)
+        {
+            QueueFinishFlag(_dialogue);
             ShowChoices(_dialogue.choices);
+        }
         else
             SetIndicatorVisible(true);
     }
