@@ -9,6 +9,7 @@ public class PauseMenuController : MonoBehaviour
     [SerializeField] private UIPanel uiPanel;
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button optionsButton;
+    [SerializeField] private Button statsButton;
     [SerializeField] private Button leaveMinigameButton;
     [SerializeField] private Button returnToTitleButton;
     [SerializeField] private string returnToTitleMessage = "Return to the title screen?";
@@ -31,6 +32,8 @@ public class PauseMenuController : MonoBehaviour
         resumeButton.onClick.AddListener(Resume);
         if (optionsButton != null)
             optionsButton.onClick.AddListener(OpenOptions);
+        if (statsButton != null)
+            statsButton.onClick.AddListener(OpenStats);
         if (leaveMinigameButton != null)
             leaveMinigameButton.onClick.AddListener(LeaveMinigame);
         if (returnToTitleButton != null)
@@ -73,6 +76,9 @@ public class PauseMenuController : MonoBehaviour
         if (leaveMinigameButton != null)
             leaveMinigameButton.gameObject.SetActive(inMinigame && MinigameBase.Current != null);
 
+        if (statsButton != null)
+            statsButton.gameObject.SetActive(state == GameState.World && StatsMenuController.Instance != null && StatsMenuController.Instance.CanOpen);
+
         UIPanelAnimator.SetVisible(panel, true);
     }
 
@@ -91,6 +97,12 @@ public class PauseMenuController : MonoBehaviour
             OptionsMenuController.Instance.Open();
         else
             Debug.LogWarning("No OptionsMenuController in Bootstrap", this);
+    }
+
+    private void OpenStats()
+    {
+        if (StatsMenuController.Instance != null)
+            StatsMenuController.Instance.Open();
     }
 
     private void LeaveMinigame()

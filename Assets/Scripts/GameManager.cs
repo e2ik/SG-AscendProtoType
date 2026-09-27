@@ -30,10 +30,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string worldActionMap = "Player";
     [SerializeField] private string uiActionMap = "UI";
     [SerializeField] private string endlessRunnerActionMap = "EndlessRunner";
-    [SerializeField] private string memoryGameActionMap = "MemoryGame";
+    [SerializeField] private string memoryGameActionMap = "UI";
     [SerializeField] private string rhythmGameActionMap = "Rhythm";
 
     public bool IsTransitioning { get; private set; }
+    public MinigameConfig ActiveMinigameConfig { get; private set; }
 
     private GameState _activeMinigame;
     private string _pendingMinigameFlag;
@@ -91,7 +92,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(Transition(GameState.World, worldActionMap, () => SceneLoader.Instance.ReplaceAll(mainWorldSceneName)));
     }
 
-    public void StartMinigame(GameState minigame, string completionFlag = null)
+    public void StartMinigame(GameState minigame, string completionFlag = null, MinigameConfig config = null)
     {
         if (IsTransitioning) return;
 
@@ -109,6 +110,7 @@ public class GameManager : MonoBehaviour
 
         _activeMinigame = minigame;
         _pendingMinigameFlag = completionFlag;
+        ActiveMinigameConfig = config;
 
         string sceneName = SceneNameFor(minigame);
         StartCoroutine(Transition(minigame, ActionMapFor(minigame), () => EnterMinigameScene(sceneName)));
@@ -151,6 +153,7 @@ public class GameManager : MonoBehaviour
         string sceneName = SceneNameFor(_activeMinigame);
         _activeMinigame = default;
         _pendingMinigameFlag = null;
+        ActiveMinigameConfig = null;
 
         StartCoroutine(Transition(GameState.World, worldActionMap, () => ExitMinigameScene(sceneName)));
     }

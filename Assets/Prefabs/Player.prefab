@@ -600,6 +600,7 @@ GameObject:
   - component: {fileID: 1588608723735046031}
   - component: {fileID: 3046557998961255215}
   - component: {fileID: 36531956207422248}
+  - component: {fileID: 5095142103470013498}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -818,3 +819,16 @@ MonoBehaviour:
   player: {fileID: 0}
   interactor: {fileID: 0}
   playerCollider: {fileID: 0}
+--- !u!114 &5095142103470013498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8497367805908112311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a6dc9da6eabbc34db6fc538e0a09fa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MemoryFlipCapProvider
+  flipBonus: {fileID: 11400000, guid: fdf9ba1e3bf380a43a7868c545db802b, type: 2}

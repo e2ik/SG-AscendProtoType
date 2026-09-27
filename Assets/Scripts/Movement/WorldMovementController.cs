@@ -125,6 +125,9 @@ public class WorldMovementController : MovementController, IStatCapProvider
         _ => int.MaxValue
     };
 
+    public float MoveSpeedAt(int agility) => Evaluate(agility, minMoveSpeed, maxMoveSpeed, speedPerAgility);
+    public float JumpHeightAt(int strength) => Evaluate(strength, minJumpHeight, maxJumpHeight, jumpHeightPerStrength);
+
     private static int MaxStatFor(float min, float max, float perPoint)
     {
         if (perPoint <= 0f) return int.MaxValue;

@@ -6,6 +6,8 @@ public class PlayerStatsController : MonoBehaviour
     [SerializeField] private PlayerStats testStats = new PlayerStats();
     [SerializeField] private bool overrideSaveStats;
 
+    public static PlayerStatsController Active { get; private set; }
+
     public event Action OnStatsChanged;
 
     private IStatCapProvider[] _capProviders;
@@ -26,6 +28,17 @@ public class PlayerStatsController : MonoBehaviour
     private void Awake()
     {
         _capProviders = GetComponents<IStatCapProvider>();
+    }
+
+    private void OnEnable()
+    {
+        Active = this;
+    }
+
+    private void OnDisable()
+    {
+        if (Active == this)
+            Active = null;
     }
 
     public int Get(StatType type) => Stats.GetStat(type);

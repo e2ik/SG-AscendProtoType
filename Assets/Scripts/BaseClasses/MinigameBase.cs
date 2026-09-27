@@ -21,11 +21,18 @@ public abstract class MinigameBase : MonoBehaviour
     [Header("Countdown")]
     [SerializeField] [Min(0)] private int countdownSeconds = 3;
 
+    [Header("Play Area")]
+    [SerializeField] private CanvasGroup playArea;
+
     public static MinigameBase Current { get; private set; }
 
     public Phase CurrentPhase { get; private set; } = Phase.Idle;
     public float Score { get; protected set; }
     public float BestScore { get; private set; }
+    public bool HasBest { get; private set; }
+
+    protected virtual bool HigherIsBetter => true;
+    protected virtual bool FailedRunsCount => true;
 
     public event Action Began;
     public event Action Ended;
@@ -57,13 +64,17 @@ public abstract class MinigameBase : MonoBehaviour
         }
 
         Score = 0f;
+        SetPlayAreaInteractable(false);
         OnSetup();
 
         var hud = MinigameHUD.Instance;
         if (withIntro && hud != null && hud.HasIntro)
         {
             CurrentPhase = Phase.Intro;
-            hud.ShowIntro(displayName, instructions, BeginCountdown, CancelToWorld);
+            var config = Config;
+            string title = config != null && !string.IsNullOrEmpty(config.displayNameOverride) ? config.displayNameOverride : displayName;
+            string text = config != null && !string.IsNullOrEmpty(config.instructionsOverride) ? config.instructionsOverride : instructions;
+            hud.ShowIntro(title, BuildInstructions(text), BeginCountdown, CancelToWorld);
             return;
         }
 
@@ -92,6 +103,7 @@ public abstract class MinigameBase : MonoBehaviour
         if (hud != null) hud.ShowCountdown("GO!");
 
         CurrentPhase = Phase.Playing;
+        SetPlayAreaInteractable(true);
         OnBegin();
         Began?.Invoke();
 
@@ -101,20 +113,31 @@ public abstract class MinigameBase : MonoBehaviour
         _countdown = null;
     }
 
-    protected void EndRun()
+    protected void EndRun(bool success = true)
     {
         if (CurrentPhase != Phase.Playing) return;
 
         CurrentPhase = Phase.Ended;
-        BestScore = Mathf.Max(BestScore, Score);
+        SetPlayAreaInteractable(false);
+
+        bool counts = success || FailedRunsCount;
+        bool better = !HasBest || (HigherIsBetter ? Score > BestScore : Score < BestScore);
+        if (counts && better)
+        {
+            BestScore = Score;
+            HasBest = true;
+        }
 
         OnEnd();
         Ended?.Invoke();
 
         var hud = MinigameHUD.Instance;
+        string runText = FormatRunResult(Score, success);
+        string bestText = HasBest ? FormatScore(BestScore) : "-";
+
         if (hud == null)
         {
-            Debug.Log($"{name} ended - score {FormatScore(Score)}, best {FormatScore(BestScore)}. No MinigameHUD found, retrying.");
+            Debug.Log($"{name} ended - {runText}, best {bestText}. No MinigameHUD found, retrying.");
             StartRun(false);
             return;
         }
@@ -122,9 +145,9 @@ public abstract class MinigameBase : MonoBehaviour
         hud.HideCountdown();
         hud.ShowResults(new MinigameResult
         {
-            Score = FormatScore(Score),
-            Best = FormatScore(BestScore),
-            Reward = CalculateReward(BestScore)
+            Score = runText,
+            Best = bestText,
+            Reward = CurrentReward()
         }, Retry, ReturnToWorld);
     }
 
@@ -154,13 +177,30 @@ public abstract class MinigameBase : MonoBehaviour
             hud.HideCountdown();
         }
 
-        int reward = CalculateReward(BestScore);
+        int reward = CurrentReward();
 
         if (GameManager.Instance != null)
             GameManager.Instance.CompleteMinigame(reward > 0, reward);
         else
             Debug.Log($"{name} finished with reward {reward}. No GameManager - playing this scene on its own?");
     }
+
+    private int CurrentReward() => HasBest ? CalculateReward(BestScore) : 0;
+
+    protected virtual MinigameConfig Config =>
+        GameManager.Instance != null ? GameManager.Instance.ActiveMinigameConfig : null;
+
+    protected T GetConfig<T>() where T : MinigameConfig => Config as T;
+
+    private void SetPlayAreaInteractable(bool interactable)
+    {
+        if (playArea == null) return;
+        playArea.interactable = interactable;
+        playArea.blocksRaycasts = interactable;
+    }
+
+    protected virtual string BuildInstructions(string template) => template;
+    protected virtual string FormatRunResult(float score, bool success) => FormatScore(score);
 
     protected abstract void OnSetup();
     protected abstract void OnBegin();

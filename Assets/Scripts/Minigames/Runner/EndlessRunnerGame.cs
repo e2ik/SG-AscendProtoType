@@ -27,14 +27,16 @@ public class EndlessRunnerGame : MinigameBase
 
     private void Awake()
     {
-        player.Crashed += EndRun;
+        player.Crashed += OnCrashed;
     }
 
     private void OnDestroy()
     {
         if (player != null)
-            player.Crashed -= EndRun;
+            player.Crashed -= OnCrashed;
     }
+
+    private void OnCrashed() => EndRun();
 
     protected override void OnSetup()
     {

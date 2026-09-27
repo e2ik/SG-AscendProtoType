@@ -26,6 +26,7 @@ MonoBehaviour:
     action:
       type: 0
       minigame: 0
+      config: {fileID: 0}
       flag: 
   - text: Hi!
     responseLines:
@@ -34,5 +35,6 @@ MonoBehaviour:
     next: {fileID: 0}
     action:
       type: 2
-      minigame: 3
+      minigame: 4
+      config: {fileID: 11400000, guid: 22018deedf9677649b3ab8cd717ee484, type: 2}
       flag: 

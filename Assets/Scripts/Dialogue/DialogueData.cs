@@ -14,6 +14,7 @@ public class DialogueAction
 {
     public DialogueActionType type;
     public GameState minigame = GameState.Minigame_EndlessRunner;
+    public MinigameConfig config;
     public string flag;
 
     public void Execute()
@@ -29,7 +30,7 @@ public class DialogueAction
 
             case DialogueActionType.StartMinigame:
                 if (GameManager.Instance != null)
-                    GameManager.Instance.StartMinigame(minigame, string.IsNullOrEmpty(flag) ? null : flag);
+                    GameManager.Instance.StartMinigame(minigame, string.IsNullOrEmpty(flag) ? null : flag, config);
                 break;
         }
     }

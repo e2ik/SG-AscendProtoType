@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/EndlessRunner.unity
     guid: 509930db4bd6ae141935c99364231fdc
+  - enabled: 1
+    path: Assets/Scenes/MemoryGame.unity
+    guid: 6241e45898b615c45b3c2619e3b3676f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
