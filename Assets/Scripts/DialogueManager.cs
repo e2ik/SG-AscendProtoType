@@ -362,6 +362,9 @@ public class DialogueManager : MonoBehaviour
     {
         if (!IsActive) return;
 
+        TelemetryManager.Log("dialogue_choice", _dialogue != null ? _dialogue.name : null,
+        _dialogue != null ? _dialogue.choices.IndexOf(choice) : -1, choice.text);
+
         if (choice.action != null && choice.action.type != DialogueActionType.None)
             _pendingActions.Add(choice.action);
 

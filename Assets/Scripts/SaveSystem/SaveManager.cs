@@ -44,8 +44,12 @@ public class SaveData
     public void SetFlag(string key, bool value)
     {
         var entry = flags.Find(f => f.key == key);
+        if (entry != null && entry.value == value) return;
+
         if (entry != null) entry.value = value;
         else flags.Add(new FlagEntry { key = key, value = value });
+
+        TelemetryManager.Log("flag_set", key, value ? 1f : 0f);
     }
 }
 

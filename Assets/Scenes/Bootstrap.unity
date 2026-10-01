@@ -7979,6 +7979,8 @@ GameObject:
   - component: {fileID: 1222042132}
   - component: {fileID: 1222042134}
   - component: {fileID: 1222042137}
+  - component: {fileID: 1222042139}
+  - component: {fileID: 1222042138}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -8249,6 +8251,34 @@ MonoBehaviour:
   sfxParameter: SFXVolume
   uiParameter: UIVolume
   defaultVolume: 0.8
+--- !u!114 &1222042138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222042125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d88e31198584ec49842caf12c7e4724, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TelemetryManager
+  enableTelemetry: 1
+  folderName: Telemetry
+--- !u!114 &1222042139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222042125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0062fcfd02dde4439dc5f1ec5bb4753, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StudySettings
+  condition: 1
+  participantId: TEST
 --- !u!1 &1250149720
 GameObject:
   m_ObjectHideFlags: 0

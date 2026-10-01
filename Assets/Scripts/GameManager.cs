@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
             Debug.LogError($"Failed to load save {saveId}");
             return;
         }
-
+        TelemetryManager.Log("save_loaded", saveId);
         EnterWorld();
     }
 
@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
         if (IsTransitioning) return;
 
         SaveManager.Instance.CreateNewSave(character, mainWorldSceneName);
+        TelemetryManager.Log("new_game");
         EnterWorld();
     }
 

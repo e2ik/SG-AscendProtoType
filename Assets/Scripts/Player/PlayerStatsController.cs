@@ -64,6 +64,7 @@ public class PlayerStatsController : MonoBehaviour
         if (!Stats.TryAllocate(type, amount, GetMaxStat(type))) return false;
 
         OnStatsChanged?.Invoke();
+        TelemetryManager.Log("stat_allocate", type.ToString(), Get(type));
 
         if (UsingSaveStats)
             SaveManager.Instance.SaveCurrent();
