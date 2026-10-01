@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f9cfcee4b163fc43a450df1918d7800, type: 3}
   m_Name: MG_Easy
   m_EditorClassIdentifier: Assembly-CSharp::MemoryGameConfig
-  displayNameOverride: 
-  instructionsOverride: 
+  displayNameOverride: One Pair at a Time
+  instructionsOverride: Find the matching tiles, one pair at a time. Each mismatch
+    uses up a flip.
   columns: 4
   rows: 3
   missesPerPair: 0.6

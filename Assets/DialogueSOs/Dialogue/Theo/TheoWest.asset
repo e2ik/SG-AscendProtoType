@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a1cc0faf2c6474caa547c2be9cbc42, type: 3}
+  m_Name: TheoWest
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - text: 'You made it up too! <happy>Okay, that''s actually great.
+
+      ...I should''ve
+      been up here ages ago, though.'
+    speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+  choices:
+  - text: What do you mean?
+    responseLines: []
+    next: {fileID: 11400000, guid: 3e70d9a5a5eff4a4ebe66ad2a4efa351, type: 2}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  - text: Catch you later.
+    responseLines:
+    - text: Yeah. See you around.
+      speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+    next: {fileID: 0}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  setFlagOnFinish: 

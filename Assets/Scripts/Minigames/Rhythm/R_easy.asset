@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a05c258ee659b464d904996b769700ef, type: 3}
   m_Name: R_easy
   m_EditorClassIdentifier: Assembly-CSharp::RhythmGameConfig
-  displayNameOverride: 
-  instructionsOverride: 
+  displayNameOverride: Steady Breath
+  instructionsOverride: Watch the light rise and fall like a slow breath. Press when
+    it settles in the calm zone. The closer to the centre, the steadier the breath.
   attempts: 3
   cyclesPerSecond: 0.5
   speedIncreasePerAttempt: 0.1

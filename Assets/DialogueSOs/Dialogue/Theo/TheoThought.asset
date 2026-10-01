@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a1cc0faf2c6474caa547c2be9cbc42, type: 3}
+  m_Name: TheoThought
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - text: 'I slipped off that ledge like ten times. Everyone probably saw.
+
+      I
+      always mess things up.'
+    speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+  choices:
+  - text: Ten times is a lot.
+    responseLines:
+    - text: ...Yeah. <pause=0.4>It is.
+      speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+    - text: But that doesn't feel like the whole story, does it?
+      speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+    next: {fileID: 11400000}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  - text: Just don't think about it!
+    responseLines:
+    - text: I wish it worked like that. It kind of just... sits there.
+      speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+    next: {fileID: 11400000}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  - text: Always? You're standing up here right now.
+    responseLines:
+    - text: ...Huh.
+      speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+    - text: I did keep trying. <pause=0.3>Ten times, and then I got it.
+      speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+    - text: <happy>Maybe "I slipped a lot" and "I made it" are both true.
+      speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+    next: {fileID: 0}
+    action:
+      type: 1
+      minigame: 0
+      config: {fileID: 0}
+      flag: theo_reframe_done
+  setFlagOnFinish: 

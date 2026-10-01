@@ -441,7 +441,19 @@ MonoBehaviour:
   maxAirChance: 0.35
   airHeightFactor: 1
   airGroundClearance: 0.15
-  swaySpacing: 0
+  swaySpacingEasy: 0
+  swaySpacingHard: -1
+  lowFlyerStartDifficulty: 0.4
+  maxLowFlyerChance: 0.3
+  lowFlyerMinAltitude: 0.3
+  lowFlyerCompanionChance: 0.5
+  lowFlyerCompanionGap: 0.15
+  needleStartDifficulty: 0.6
+  maxNeedleChance: 0.3
+  needleWindow: 0.4
+  needleHeadroom: 0.1
+  needleMaxHopFraction: 0.85
+  toleranceAtMaxDifficulty: 0
   comboStartDifficulty: 0.35
   maxComboChance: 0.75
   maxBirdFollowUpChance: 0.8
@@ -584,11 +596,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b3bb5f959036614a83781a8adf5cc02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndlessRunnerGame
-  displayName: Endless Runner
-  instructions: Press "Space" to Jump! Avoid the obstacles coming at you, see how
-    far you can make it!
+  displayName: Aqueduct Run
+  instructions: Press Space to jump over whatever's in your way. Every metre counts.
   showIntro: 1
   countdownSeconds: 3
+  playArea: {fileID: 0}
   player: {fileID: 8497367806424557070}
   spawner: {fileID: 1732893857}
   scrollers:

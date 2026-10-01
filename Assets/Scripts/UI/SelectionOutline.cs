@@ -75,12 +75,22 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        // Hovering a selectable selects it, so mouse and keyboard/gamepad share one highlight.
+        var selectable = GetComponent<Selectable>();
+        if (selectable != null && selectable.IsInteractable() && EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(gameObject);
+            return;
+        }
+
         _isHovered = true;
         RefreshVisibility();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (!_isHovered) return;
+
         _isHovered = false;
         RefreshVisibility();
     }

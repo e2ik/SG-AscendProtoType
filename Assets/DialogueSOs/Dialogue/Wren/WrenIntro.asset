@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a1cc0faf2c6474caa547c2be9cbc42, type: 3}
+  m_Name: WrenIntro
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - text: Hi. <pause=0.4>Sorry, I'm a bit slow today. The fog makes everything feel
+      far away.
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  - text: When it gets loud in my head, I breathe. In while the light rises... out
+      while it falls.
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  - text: It sounds too simple. But it gives me somewhere to put my attention.
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  - text: Want to try it with me?
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  choices:
+  - text: Okay, I'll try.
+    responseLines:
+    - text: Just follow the light. There's no rush.
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    next: {fileID: 0}
+    action:
+      type: 2
+      minigame: 5
+      config: {fileID: 11400000, guid: 3554ecafaf802da42b0605b381ba945f, type: 2}
+      flag: wren_breath_done
+  - text: Not right now.
+    responseLines:
+    - text: That's okay. I'll be here.
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    next: {fileID: 0}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  setFlagOnFinish: 

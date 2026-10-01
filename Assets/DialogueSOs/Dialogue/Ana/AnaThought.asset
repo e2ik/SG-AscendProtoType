@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a1cc0faf2c6474caa547c2be9cbc42, type: 3}
+  m_Name: AnaThought
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - text: If I can't even remember a few tiles, I'm just not smart enough for anything.
+    speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
+  choices:
+  - text: It's probably just not your thing.
+    responseLines:
+    - text: ...Maybe.
+      speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
+    - text: I did match some of them, though. That's not nothing, right?
+      speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
+    next: {fileID: 11400000}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  - text: Would you say that to a friend who forgot some tiles?
+    responseLines:
+    - text: ...No. I'd tell them the fog makes it harder for everyone.
+      speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
+    - text: <happy>I guess I'm allowed to say that to myself too.
+      speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
+    next: {fileID: 0}
+    action:
+      type: 1
+      minigame: 0
+      config: {fileID: 0}
+      flag: ana_reframe_done
+  - text: Cheer up! Don't be sad about it.
+    responseLines:
+    - text: I'm trying. It doesn't really switch off like that.
+      speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
+    next: {fileID: 11400000}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  setFlagOnFinish: 
