@@ -702,8 +702,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldMovementController
   minMoveSpeed: 2
-  maxMoveSpeed: 8
-  speedPerAgility: 0.25
+  maxMoveSpeed: 7.6
+  speedPerAgility: 0.4
   horizontalDeadzone: 0.2
   groundAccelTime: 0.18
   groundStopTime: 0.12
@@ -713,8 +713,8 @@ MonoBehaviour:
   airStopTime: 1
   canJump: 1
   minJumpHeight: 1
-  maxJumpHeight: 4
-  jumpHeightPerStrength: 0.15
+  maxJumpHeight: 5.9
+  jumpHeightPerStrength: 0.35
   timeToApex: 0.2
   timeToFall: 0.1
   lowJumpMultiplier: 2.5
@@ -722,6 +722,10 @@ MonoBehaviour:
   coyoteTime: 0.1
   jumpBufferTime: 0.1
   stats: {fileID: 0}
+  allowDropThrough: 1
+  dropDownThreshold: 0.5
+  dropDuration: 0.25
+  dropKickVelocity: 3
   groundCheckWidth: 0.95
   groundCheckDistance: 0.08
   minGroundNormalY: 0.7

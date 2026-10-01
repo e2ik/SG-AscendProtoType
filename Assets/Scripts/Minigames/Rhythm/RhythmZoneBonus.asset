@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 755ff07c7c8059b4fa36fa9be67ee052, type: 3}
   m_Name: RhythmZoneBonus
   m_EditorClassIdentifier: Assembly-CSharp::RhythmZoneBonus
-  sizePerIntelligence: 0.005
-  maxBonus: 0.15
+  sizePerIntelligence: 0.01
+  maxBonus: 0.14

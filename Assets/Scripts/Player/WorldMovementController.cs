@@ -64,6 +64,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
     public override bool IsGrounded => _isGrounded;
     public bool IsFacingRight { get; private set; } = true;
+    public float MoveInput => _moveInput;
 
     public float CurrentMoveSpeed => Evaluate(GetStat(StatType.Agility), minMoveSpeed, maxMoveSpeed, speedPerAgility);
     public float CurrentJumpHeight => Evaluate(GetStat(StatType.Strength), minJumpHeight, maxJumpHeight, jumpHeightPerStrength);

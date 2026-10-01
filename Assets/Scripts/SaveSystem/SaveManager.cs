@@ -34,6 +34,7 @@ public class SaveData
     public Vector3 playerPosition;
     public PlayerStats stats = new PlayerStats();
     public List<FlagEntry> flags = new List<FlagEntry>();
+    public static event Action<string, bool> FlagChanged;
 
     public bool GetFlag(string key)
     {
@@ -50,6 +51,7 @@ public class SaveData
         else flags.Add(new FlagEntry { key = key, value = value });
 
         TelemetryManager.Log("flag_set", key, value ? 1f : 0f);
+        FlagChanged?.Invoke(key, value);
     }
 }
 

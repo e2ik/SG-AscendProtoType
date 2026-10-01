@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: FlipSettings
   m_EditorClassIdentifier: Assembly-CSharp::MemoryFlipBonus
   baseExtraFlips: 4
-  extraFlipsPerEndurance: 0.5
-  maxExtraFlips: 20
+  extraFlipsPerEndurance: 1
+  maxExtraFlips: 18
