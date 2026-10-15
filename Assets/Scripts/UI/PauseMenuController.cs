@@ -80,6 +80,7 @@ public class PauseMenuController : MonoBehaviour
             statsButton.gameObject.SetActive(state == GameState.World && StatsMenuController.Instance != null && StatsMenuController.Instance.CanOpen);
 
         UIPanelAnimator.SetVisible(panel, true);
+        TutorialEvents.Raise(TutorialEvents.PauseOpened);
     }
 
     public void Resume()

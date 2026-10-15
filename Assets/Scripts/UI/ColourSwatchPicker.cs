@@ -16,6 +16,9 @@ public class ColourSwatchPicker : MonoBehaviour
 
     public event Action OnClosed;
 
+    public bool IsOpen => panel.activeSelf;
+    public Transform PanelRoot => panel.transform;
+
     private Action<Color> _onSelected;
     private bool _built;
     private int _columns;
@@ -39,6 +42,14 @@ public class ColourSwatchPicker : MonoBehaviour
             BuildSwatches();
 
         UIPanelAnimator.SetVisible(panel, true);
+    }
+
+    public void Close()
+    {
+        if (!IsOpen) return;
+
+        UIPanelAnimator.SetVisible(panel, false);
+        OnClosed?.Invoke();
     }
 
     private void BuildSwatches()

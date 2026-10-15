@@ -2,15 +2,15 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
-public class StatBarrier : MonoBehaviour
+public class StatBarrier : MonoBehaviour, IInteractable
 {
     [Header("Requirement")]
     [SerializeField] private StatType stat = StatType.Strength;
     [SerializeField][Min(1)] private int requiredValue = 5;
     [SerializeField] private string openedFlag = "gate_tier2_open";
 
-    [Header("Pushing")]
-    [SerializeField] private float pushTimeToOpen = 0.35f;
+    [Header("Prompt")]
+    [SerializeField] private string promptText = "Push ({0} {1})";
 
     [Header("Opening")]
     [SerializeField] private Vector2 openOffset = new Vector2(0f, 3f);
@@ -28,11 +28,12 @@ public class StatBarrier : MonoBehaviour
 
     public bool IsOpen { get; private set; }
 
+    public string InteractionPrompt => string.Format(promptText, stat, requiredValue);
+    public bool CanInteract => !IsOpen && !_wobbling;
+
     private Collider2D _collider;
     private Vector3 _closedPosition;
-    private float _pushTimer;
     private bool _wobbling;
-    private bool _loggedThisContact;
 
     private void Awake()
     {
@@ -51,40 +52,13 @@ public class StatBarrier : MonoBehaviour
         transform.position = _closedPosition + (Vector3)openOffset;
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    public void Interact(PlayerController interactor)
     {
-        if (IsOpen || _wobbling) return;
+        if (!CanInteract || interactor == null) return;
 
-        var player = collision.collider.GetComponentInParent<PlayerController>();
-        if (player == null || !IsPushing(player, collision.collider))
-        {
-            _pushTimer = 0f;
-            return;
-        }
-
-        _pushTimer += Time.fixedDeltaTime;
-        if (_pushTimer < pushTimeToOpen) return;
-        _pushTimer = 0f;
-
-        int current = player.Stats != null ? player.Stats.Get(stat) : PlayerStats.StartingValue;
+        int current = interactor.Stats != null ? interactor.Stats.Get(stat) : PlayerStats.StartingValue;
         if (current >= requiredValue) Open(current);
         else Strain(current);
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        _pushTimer = 0f;
-        _loggedThisContact = false;
-    }
-
-    private bool IsPushing(PlayerController player, Collider2D playerCollider)
-    {
-        if (!(player.Movement is WorldMovementController movement)) return false;
-        if (!movement.InputEnabled || !movement.IsGrounded) return false;
-        if (playerCollider.bounds.min.y >= _collider.bounds.max.y - 0.05f) return false;
-
-        float towardBarrier = Mathf.Sign(_collider.bounds.center.x - playerCollider.bounds.center.x);
-        return Mathf.Approximately(movement.MoveInput, towardBarrier);
     }
 
     private void Open(int current)
@@ -106,12 +80,7 @@ public class StatBarrier : MonoBehaviour
 
     private void Strain(int current)
     {
-        if (!_loggedThisContact)
-        {
-            TelemetryManager.Log("barrier_blocked", openedFlag, current, $"{stat} {requiredValue}");
-            _loggedThisContact = true;
-        }
-
+        TelemetryManager.Log("barrier_blocked", openedFlag, current, $"{stat} {requiredValue}");
         PlaySound(strainSound);
         StartCoroutine(Wobble());
     }

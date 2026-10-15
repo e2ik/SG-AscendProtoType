@@ -7,6 +7,12 @@ public class InteractionPrompt : MonoBehaviour
     [SerializeField] private Vector2 offset = new Vector2(0f, 0.5f);
     [SerializeField] private bool showInteractionText = true;
 
+    [Header("Hover")]
+    [SerializeField] private bool hover = true;
+    [SerializeField] private float hoverHeight = 0.08f;
+    [SerializeField] [Min(0.01f)] private float hoverSpeed = 1.5f;
+    [SerializeField] [Min(0f)] private float hoverPixelsPerUnit;
+
     [Header("References")]
     [SerializeField] private PlayerController player;
     [SerializeField] private PlayerInteractor interactor;
@@ -14,6 +20,10 @@ public class InteractionPrompt : MonoBehaviour
 
     private GameObject _prompt;
     private TMP_Text _label;
+    private Transform _hoverTarget;
+    private Vector3 _hoverRest;
+    private SpriteRenderer[] _outlineRenderers;
+    private MaterialPropertyBlock _block;
 
     private void Awake()
     {
@@ -25,7 +35,35 @@ public class InteractionPrompt : MonoBehaviour
 
         _prompt = Instantiate(promptPrefab, transform);
         _label = _prompt.GetComponentInChildren<TMP_Text>(true);
+        _outlineRenderers = _prompt.GetComponentsInChildren<SpriteRenderer>(true);
+        _block = new MaterialPropertyBlock();
+
+        _hoverTarget = FindHoverTarget();
+        if (_hoverTarget != null)
+            _hoverRest = _hoverTarget.localPosition;
+
         _prompt.SetActive(false);
+    }
+
+    private void Start()
+    {
+        var manager = InteractableHighlighter.Instance;
+        if (manager != null && manager.PromptSettings != null)
+            OutlineDriver.AssignMaterial(_outlineRenderers, manager.OutlineMaterial);
+    }
+
+    private Transform FindHoverTarget()
+    {
+        var icon = _prompt.GetComponentInChildren<InputPromptIcon>(true);
+        if (icon != null && icon.transform != _prompt.transform) return icon.transform;
+
+        foreach (var sprite in _outlineRenderers)
+        {
+            if (sprite.transform != _prompt.transform)
+                return sprite.transform;
+        }
+
+        return null;
     }
 
     private void LateUpdate()
@@ -50,6 +88,35 @@ public class InteractionPrompt : MonoBehaviour
 
         if (!_prompt.activeSelf)
             _prompt.SetActive(true);
+
+        UpdateHover();
+        UpdateOutline();
+    }
+
+    private void UpdateHover()
+    {
+        if (_hoverTarget == null) return;
+
+        if (!hover)
+        {
+            _hoverTarget.localPosition = _hoverRest;
+            return;
+        }
+
+        float y = Mathf.Sin(Time.time * hoverSpeed * Mathf.PI * 2f) * hoverHeight;
+        if (hoverPixelsPerUnit > 0f)
+            y = Mathf.Round(y * hoverPixelsPerUnit) / hoverPixelsPerUnit;
+
+        _hoverTarget.localPosition = _hoverRest + new Vector3(0f, y, 0f);
+    }
+
+    private void UpdateOutline()
+    {
+        var manager = InteractableHighlighter.Instance;
+        var settings = manager != null ? manager.PromptSettings : null;
+        if (settings == null) return;
+
+        OutlineDriver.Apply(_outlineRenderers, _block, settings, settings.color, OutlineDriver.Evaluate(settings));
     }
 
     private bool IsPlayerFrozen() =>

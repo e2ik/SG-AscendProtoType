@@ -705,22 +705,21 @@ MonoBehaviour:
   maxMoveSpeed: 7.6
   speedPerAgility: 0.4
   horizontalDeadzone: 0.2
-  groundAccelTime: 0.18
-  groundStopTime: 0.12
-  groundSkidTime: 0.08
-  airAccelTime: 0.22
-  airTurnTime: 0.18
-  airStopTime: 1
+  acceleration: 8
+  deceleration: 8
+  velocityPower: 1.2
+  friction: 0.2
   canJump: 1
   minJumpHeight: 1
   maxJumpHeight: 5.9
-  jumpHeightPerStrength: 0.35
-  timeToApex: 0.2
-  timeToFall: 0.1
-  lowJumpMultiplier: 2.5
+  jumpHeightPerStrength: 0.25
+  tapJumpMultiplier: 0.2
   maxFallSpeed: 20
   coyoteTime: 0.1
   jumpBufferTime: 0.1
+  normGravity: 3
+  jumpGravity: 2.5
+  fallGravity: 4.5
   stats: {fileID: 0}
   allowDropThrough: 1
   dropDownThreshold: 0.5
@@ -748,12 +747,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStatsController
   testStats:
-    strength: 1
-    agility: 1
+    strength: 15
+    agility: 15
     intelligence: 1
     endurance: 1
     unallocatedPoints: 0
-  overrideSaveStats: 0
+  overrideSaveStats: 1
 --- !u!114 &2961700349907402783
 MonoBehaviour:
   m_ObjectHideFlags: 0

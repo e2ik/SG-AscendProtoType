@@ -80,6 +80,7 @@ public class StatsMenuController : MonoBehaviour
         ClearPending();
         Refresh();
         UIPanelAnimator.SetVisible(panel, true);
+        TutorialEvents.Raise(TutorialEvents.StatsMenuOpened);
     }
 
     public void Close()
@@ -133,14 +134,18 @@ public class StatsMenuController : MonoBehaviour
     {
         if (_stats == null) return;
 
+        bool spent = false;
         foreach (var pair in new List<KeyValuePair<StatType, int>>(_pending))
         {
-            if (pair.Value > 0)
-                _stats.TryAllocate(pair.Key, pair.Value);
+            if (pair.Value > 0 && _stats.TryAllocate(pair.Key, pair.Value))
+                spent = true;
         }
 
         ClearPending();
         Refresh();
+
+        if (spent)
+            TutorialEvents.Raise(TutorialEvents.StatPointsSpent);
     }
 
     private void Refresh()

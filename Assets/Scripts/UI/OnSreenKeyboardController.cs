@@ -14,6 +14,7 @@ public class OnScreenKeyboardController : MonoBehaviour
     [SerializeField] private Vector2 spacing = new Vector2(4f, 4f);
     [SerializeField] private Button keyButtonPrefab;
     [SerializeField] private GameObject fillerPrefab;
+    [SerializeField] [Range(0f, 1f)] private float fillerAlpha;
     [SerializeField] private Button spaceButton;
     [SerializeField] private Button backspaceButton;
     [SerializeField] private Button doneButton;
@@ -38,6 +39,7 @@ public class OnScreenKeyboardController : MonoBehaviour
     private readonly StringBuilder _text = new StringBuilder();
     private readonly List<(TMP_Text label, char baseChar)> _letterLabels = new List<(TMP_Text, char)>();
     private Action<string> _onConfirm;
+    private Func<string, string> _displayFilter;
     private bool _built;
     private UIPanelAnimator _panelAnimator;
     private bool _capsLock = true;
@@ -63,9 +65,12 @@ public class OnScreenKeyboardController : MonoBehaviour
 
     private bool IsUppercase => _capsLock != _shiftHeld;
 
-    public void Open(string initialText, Action<string> onConfirm)
+    public void Open(string initialText, Action<string> onConfirm) => Open(initialText, null, onConfirm);
+
+    public void Open(string initialText, Func<string, string> displayFilter, Action<string> onConfirm)
     {
         _onConfirm = onConfirm;
+        _displayFilter = displayFilter;
         _initialText = initialText;
         _text.Clear();
         _hasTyped = false;
@@ -137,11 +142,22 @@ public class OnScreenKeyboardController : MonoBehaviour
             {
                 var filler = Instantiate(fillerPrefab, keysParent);
                 filler.SetActive(true);
+                ApplyFillerAlpha(filler);
 
                 if (preview)
                     MarkAsPreview(filler);
             }
         }
+    }
+
+    private void ApplyFillerAlpha(GameObject filler)
+    {
+        if (!filler.TryGetComponent<CanvasGroup>(out var group))
+            group = filler.AddComponent<CanvasGroup>();
+
+        group.alpha = fillerAlpha;
+        group.interactable = false;
+        group.blocksRaycasts = false;
     }
 
     [ContextMenu("Preview Keys")]
@@ -297,7 +313,11 @@ public class OnScreenKeyboardController : MonoBehaviour
             return;
         }
 
-        previewText.text = _text + (_cursorVisible ? "_" : "<alpha=#00>_");
+        string typed = _text.ToString();
+        if (_displayFilter != null)
+            typed = _displayFilter(typed);
+
+        previewText.text = typed + (_cursorVisible ? "_" : "<alpha=#00>_");
     }
 
     private void Confirm()

@@ -105,8 +105,8 @@ public abstract class MinigameBase : MonoBehaviour
         CurrentPhase = Phase.Playing;
         SetPlayAreaInteractable(true);
         OnBegin();
-        TelemetryManager.Log("minigame_start", ConfigName);
         Began?.Invoke();
+        TutorialEvents.Raise(TutorialEvents.MinigameBegan, StateName);
 
         yield return new WaitForSeconds(0.5f);
 
@@ -130,8 +130,8 @@ public abstract class MinigameBase : MonoBehaviour
         }
 
         OnEnd();
-        TelemetryManager.Log("minigame_end", ConfigName, Score, success ? "success" : "fail");
         Ended?.Invoke();
+        TutorialEvents.Raise(success ? TutorialEvents.MinigameSucceeded : TutorialEvents.MinigameFailed, StateName);
 
         var hud = MinigameHUD.Instance;
         string runText = FormatRunResult(Score, success);
@@ -155,7 +155,6 @@ public abstract class MinigameBase : MonoBehaviour
 
     public void Retry()
     {
-        TelemetryManager.Log("minigame_retry", ConfigName);
         if (MinigameHUD.Instance != null)
             MinigameHUD.Instance.HideResults();
 
@@ -164,7 +163,6 @@ public abstract class MinigameBase : MonoBehaviour
 
     private void CancelToWorld()
     {
-        TelemetryManager.Log("minigame_cancel", ConfigName);
         if (MinigameHUD.Instance != null)
             MinigameHUD.Instance.HideIntro();
 
@@ -182,7 +180,6 @@ public abstract class MinigameBase : MonoBehaviour
         }
 
         int reward = CurrentReward();
-        TelemetryManager.Log("minigame_exit", ConfigName, reward, HasBest ? FormatScore(BestScore) : "no_best");
 
         if (GameManager.Instance != null)
             GameManager.Instance.CompleteMinigame(reward > 0, reward);
@@ -192,7 +189,7 @@ public abstract class MinigameBase : MonoBehaviour
 
     private int CurrentReward() => HasBest ? CalculateReward(BestScore) : 0;
 
-    private string ConfigName => Config != null ? Config.name : "default";
+    private static string StateName => GameManager.Instance != null ? GameManager.Instance.CurrentState.ToString() : null;
 
     protected virtual MinigameConfig Config =>
         GameManager.Instance != null ? GameManager.Instance.ActiveMinigameConfig : null;

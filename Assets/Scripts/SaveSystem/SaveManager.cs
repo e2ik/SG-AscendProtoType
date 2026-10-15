@@ -34,6 +34,7 @@ public class SaveData
     public Vector3 playerPosition;
     public PlayerStats stats = new PlayerStats();
     public List<FlagEntry> flags = new List<FlagEntry>();
+    public List<string> completedTutorials = new List<string>();
     public static event Action<string, bool> FlagChanged;
 
     public bool GetFlag(string key)
@@ -179,6 +180,7 @@ public class SaveManager : MonoBehaviour
 
             save.stats ??= new PlayerStats();
             save.flags ??= new List<FlagEntry>();
+            save.completedTutorials ??= new List<string>();
             return save;
         }
         catch (Exception e)

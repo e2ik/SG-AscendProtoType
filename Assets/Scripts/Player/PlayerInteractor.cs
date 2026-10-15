@@ -41,7 +41,10 @@ public class PlayerInteractor : MonoBehaviour
 
         var target = Available;
         if (target != null && _interactAction != null && _interactAction.WasPressedThisFrame())
+        {
             target.Interact(player);
+            TutorialEvents.Raise(TutorialEvents.Interacted);
+        }
     }
 
     private void DetectNearest()

@@ -1876,7 +1876,7 @@ GameObject:
   - component: {fileID: 910000026}
   - component: {fileID: 910000027}
   - component: {fileID: 910000028}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tier2_Gate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1960,7 +1960,7 @@ MonoBehaviour:
   stat: 0
   requiredValue: 7
   openedFlag: gate_tier2_open
-  pushTimeToOpen: 0.35
+  promptText: Push ({0} {1})
   openOffset: {x: 0, y: 1.95}
   openDuration: 1.2
   openCurve:
@@ -2002,7 +2002,7 @@ GameObject:
   m_Component:
   - component: {fileID: 910000030}
   - component: {fileID: 910000031}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5145,7 +5145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.PixelPerfectCamera
   m_ComponentVersion: 1
-  m_AssetsPPU: 16
+  m_AssetsPPU: 32
   m_RefResolutionX: 320
   m_RefResolutionY: 180
   m_CropFrame: 0
@@ -5226,7 +5226,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.625
+  orthographic size: 2.8125
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2

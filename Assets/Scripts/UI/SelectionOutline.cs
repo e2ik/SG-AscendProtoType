@@ -9,11 +9,19 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
     [SerializeField] private float maxAlpha = 1f;
     [SerializeField] private int sortingOrderOffset = 1;
 
+    [Header("Own Settings")]
+    [SerializeField] private bool ignoreUIManager;
+    [SerializeField] private float pulseSpeed = 4f;
+    [SerializeField] private ActiveCategoryStyle activeCategoryStyle = new ActiveCategoryStyle();
+
+    public ActiveCategoryStyle OverrideCategoryStyle => ignoreUIManager ? activeCategoryStyle : null;
+
     private Graphic _outlineGraphic;
     private bool _isSelected;
     private bool _isHovered;
     private bool _isChosen;
     private Color? _chosenColorOverride;
+    private Color _ownColor = Color.white;
 
     private void Awake()
     {
@@ -33,7 +41,10 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
 
         _outlineGraphic = outline.GetComponent<Graphic>();
         if (_outlineGraphic != null)
+        {
             _outlineGraphic.raycastTarget = false;
+            _ownColor = _outlineGraphic.color;
+        }
 
         var parentCanvas = GetComponentInParent<Canvas>();
         int baseSortingOrder = parentCanvas != null ? parentCanvas.sortingOrder : 0;
@@ -75,9 +86,9 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // Hovering a selectable selects it, so mouse and keyboard/gamepad share one highlight.
         var selectable = GetComponent<Selectable>();
-        if (selectable != null && selectable.IsInteractable() && EventSystem.current != null)
+        bool navigable = selectable != null && selectable.navigation.mode != Navigation.Mode.None;
+        if (navigable && selectable.IsInteractable() && EventSystem.current != null)
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
             return;
@@ -113,19 +124,22 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
 
     private void Update()
     {
+        if (_outlineGraphic == null || !outline.activeSelf) return;
+
         var ui = UIManager.Instance;
-        if (ui == null || _outlineGraphic == null || !outline.activeSelf) return;
+        bool useOwn = ignoreUIManager || ui == null;
 
         if (_isChosen && !_isSelected && !_isHovered)
         {
-            var staticColor = _chosenColorOverride ?? ui.SelectionChosenColor;
+            var staticColor = _chosenColorOverride ?? (useOwn ? _ownColor : ui.SelectionChosenColor);
             staticColor.a = maxAlpha;
             _outlineGraphic.color = staticColor;
             return;
         }
 
-        float pulse = (Mathf.Sin(Time.unscaledTime * ui.SelectionPulseSpeed) + 1f) * 0.5f;
-        var color = ui.SelectionHighlightColor;
+        float speed = useOwn ? pulseSpeed : ui.SelectionPulseSpeed;
+        float pulse = (Mathf.Sin(Time.unscaledTime * speed) + 1f) * 0.5f;
+        var color = useOwn ? _ownColor : ui.SelectionHighlightColor;
         color.a = Mathf.Lerp(minAlpha, maxAlpha, pulse);
         _outlineGraphic.color = color;
     }

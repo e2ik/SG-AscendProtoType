@@ -14,15 +14,11 @@ public class WorldMovementController : MovementController, IStatCapProvider
     [SerializeField] private float speedPerAgility = 0.25f;
     [SerializeField] [Range(0f, 1f)] private float horizontalDeadzone = 0.2f;
 
-    [Header("Ground Control (seconds)")]
-    [SerializeField] private float groundAccelTime = 0.18f;
-    [SerializeField] private float groundStopTime = 0.12f;
-    [SerializeField] private float groundSkidTime = 0.08f;
-
-    [Header("Air Control (seconds)")]
-    [SerializeField] private float airAccelTime = 0.22f;
-    [SerializeField] private float airTurnTime = 0.18f;
-    [SerializeField] private float airStopTime = 1f;
+    [Header("Acceleration")]
+    [SerializeField] private float acceleration = 8f;
+    [SerializeField] private float deceleration = 8f;
+    [SerializeField] private float velocityPower = 1.2f;
+    [SerializeField] private float friction = 0.2f;
 
     [Header("Jump (Strength)")]
     [SerializeField] private bool canJump = true;
@@ -33,12 +29,15 @@ public class WorldMovementController : MovementController, IStatCapProvider
     [SerializeField] private float jumpHeightPerStrength = 0.15f;
 
     [Header("Jump Feel")]
-    [SerializeField] private float timeToApex = 0.3f;
-    [SerializeField] private float timeToFall = 0.2f;
-    [SerializeField] private float lowJumpMultiplier = 2.5f;
+    [SerializeField] [Range(0f, 1f)] private float tapJumpMultiplier = 0.2f;
     [SerializeField] private float maxFallSpeed = 20f;
-    [SerializeField] private float coyoteTime = 0.1f;
+    [SerializeField] private float coyoteTime = 0.15f;
     [SerializeField] private float jumpBufferTime = 0.1f;
+
+    [Header("Gravity")]
+    [SerializeField] private float normGravity = 3f;
+    [SerializeField] private float jumpGravity = 2.5f;
+    [SerializeField] private float fallGravity = 4.5f;
 
     [Header("Stats")]
     [SerializeField] private PlayerStatsController stats;
@@ -71,6 +70,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
     private const float GroundCastStartOffset = 0.05f;
     private const float GroundCastThickness = 0.02f;
+    private const float GravityVelocityThreshold = 0.1f;
 
     private readonly RaycastHit2D[] _groundHits = new RaycastHit2D[8];
     private Rigidbody2D _body;
@@ -85,7 +85,8 @@ public class WorldMovementController : MovementController, IStatCapProvider
     private readonly List<Collider2D> _standingOneWay = new List<Collider2D>();
     private readonly Dictionary<Collider2D, float> _droppingThrough = new Dictionary<Collider2D, float>();
     private readonly List<Collider2D> _restoreBuffer = new List<Collider2D>();
-    private bool _jumpHeld;
+    private bool _jumpReleased;
+    private bool _wasMoving;
     private float _lastGroundedTime = float.NegativeInfinity;
     private float _lastJumpPressedTime = float.NegativeInfinity;
 
@@ -94,7 +95,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
         _body = GetComponent<Rigidbody2D>();
         _collider = GetComponent<Collider2D>();
 
-        _body.gravityScale = 0f;
+        _body.gravityScale = normGravity;
         _body.freezeRotation = true;
         _body.interpolation = RigidbodyInterpolation2D.Interpolate;
         _body.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
@@ -116,20 +117,15 @@ public class WorldMovementController : MovementController, IStatCapProvider
         maxJumpHeight = Mathf.Max(minJumpHeight, maxJumpHeight);
         jumpHeightPerStrength = Mathf.Max(0f, jumpHeightPerStrength);
 
-        groundAccelTime = Mathf.Max(0f, groundAccelTime);
-        groundStopTime = Mathf.Max(0f, groundStopTime);
-        groundSkidTime = Mathf.Max(0f, groundSkidTime);
-        airAccelTime = Mathf.Max(0f, airAccelTime);
-        airTurnTime = Mathf.Max(0f, airTurnTime);
-        airStopTime = Mathf.Max(0f, airStopTime);
+        acceleration = Mathf.Max(0f, acceleration);
+        deceleration = Mathf.Max(0f, deceleration);
+        velocityPower = Mathf.Max(0.01f, velocityPower);
+        friction = Mathf.Max(0f, friction);
 
-        timeToApex = Mathf.Max(0.01f, timeToApex);
-        timeToFall = Mathf.Max(0.01f, timeToFall);
-        lowJumpMultiplier = Mathf.Max(1f, lowJumpMultiplier);
+        normGravity = Mathf.Max(0f, normGravity);
+        jumpGravity = Mathf.Max(0.01f, jumpGravity);
+        fallGravity = Mathf.Max(0f, fallGravity);
     }
-
-    private float RiseGravity => 2f * minJumpHeight / (timeToApex * timeToApex);
-    private float FallGravity => 2f * minJumpHeight / (timeToFall * timeToFall);
 
     public int GetMaxStat(StatType type) => type switch
     {
@@ -155,6 +151,15 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
     private int GetStat(StatType type) => stats != null ? stats.Get(type) : PlayerStats.StartingValue;
 
+    private float JumpVelocity
+    {
+        get
+        {
+            float gravity = Mathf.Abs(Physics2D.gravity.y) * jumpGravity;
+            return Mathf.Sqrt(2f * gravity * CurrentJumpHeight);
+        }
+    }
+
     private void Start()
     {
         _moveAction = InputManager.Instance.FindAction(moveActionPath, this);
@@ -165,16 +170,26 @@ public class WorldMovementController : MovementController, IStatCapProvider
     private void Update()
     {
         var move = InputEnabled && _moveAction != null ? _moveAction.ReadValue<Vector2>() : Vector2.zero;
-        _moveInput = Mathf.Abs(move.x) >= horizontalDeadzone ? Mathf.Sign(move.x) : 0f;
+        _moveInput = Mathf.Abs(move.x) >= horizontalDeadzone ? Mathf.Sign(move.x) * Mathf.Clamp01(move.magnitude) : 0f;
         _moveInputY = move.y;
-        _jumpHeld = InputEnabled && _jumpAction != null && _jumpAction.IsPressed();
 
-        if (InputEnabled && _jumpAction != null && _jumpAction.WasPressedThisFrame())
+        bool moving = !Mathf.Approximately(_moveInput, 0f);
+        if (moving && !_wasMoving)
+            TutorialEvents.Raise(TutorialEvents.PlayerMoved);
+        _wasMoving = moving;
+
+        if (InputEnabled && _jumpAction != null)
         {
-            if (allowDropThrough && _moveInputY <= -dropDownThreshold && _standingOneWay.Count > 0)
-                _dropRequested = true;
-            else
-                _lastJumpPressedTime = Time.time;
+            if (_jumpAction.WasPressedThisFrame())
+            {
+                if (allowDropThrough && _moveInputY <= -dropDownThreshold && _standingOneWay.Count > 0)
+                    _dropRequested = true;
+                else
+                    _lastJumpPressedTime = Time.time;
+            }
+
+            if (_jumpAction.WasReleasedThisFrame())
+                _jumpReleased = true;
         }
 
         UpdateFacing();
@@ -193,53 +208,66 @@ public class WorldMovementController : MovementController, IStatCapProvider
         if (IsGrounded)
             _lastGroundedTime = now;
 
-        float riseGravity = RiseGravity;
-        float jumpVelocity = Mathf.Sqrt(2f * riseGravity * CurrentJumpHeight);
+        HandleMovement();
 
         var velocity = _body.linearVelocity;
-        if (dropping)
-            velocity.y = -dropKickVelocity;
 
-        float targetX = _moveInput * CurrentMoveSpeed;
-        velocity.x = Mathf.MoveTowards(velocity.x, targetX, GetHorizontalAcceleration(velocity.x, targetX) * Time.fixedDeltaTime);
+        if (dropping)
+        {
+            velocity.y = -dropKickVelocity;
+            TutorialEvents.Raise(TutorialEvents.PlayerDropped);
+        }
 
         bool jumpBuffered = now - _lastJumpPressedTime <= jumpBufferTime;
         bool withinCoyote = now - _lastGroundedTime <= coyoteTime;
 
         if (canJump && jumpBuffered && withinCoyote)
         {
-            velocity.y = jumpVelocity;
+            velocity.y = JumpVelocity;
             _lastJumpPressedTime = float.NegativeInfinity;
             _lastGroundedTime = float.NegativeInfinity;
-        }
-        else if (IsGrounded && velocity.y <= 0f)
-        {
-            velocity.y = 0f;
-        }
-        else
-        {
-            float gravity = velocity.y < 0f
-                ? FallGravity
-                : riseGravity * (_jumpHeld ? 1f : lowJumpMultiplier);
-
-            velocity.y = Mathf.Max(velocity.y - gravity * Time.fixedDeltaTime, -maxFallSpeed);
+            TutorialEvents.Raise(TutorialEvents.PlayerJumped);
         }
 
+        if (_jumpReleased)
+        {
+            if (velocity.y > 0f)
+                velocity.y *= tapJumpMultiplier;
+            _jumpReleased = false;
+        }
+
+        velocity.y = Mathf.Max(velocity.y, -maxFallSpeed);
         _body.linearVelocity = velocity;
+
+        UpdateGravity(velocity.y);
     }
 
-    private float GetHorizontalAcceleration(float current, float target)
+    private void HandleMovement()
     {
-        bool hasInput = !Mathf.Approximately(target, 0f);
-        bool reversing = hasInput && !Mathf.Approximately(current, 0f) && Mathf.Sign(current) != Mathf.Sign(target);
+        bool hasInput = Mathf.Abs(_moveInput) > 0f;
+        float targetSpeed = _moveInput * CurrentMoveSpeed;
+        float speedDif = targetSpeed - _body.linearVelocity.x;
+        float accelRate = hasInput ? acceleration : deceleration;
+        float movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velocityPower) * Mathf.Sign(speedDif);
 
-        float time;
-        if (IsGrounded)
-            time = !hasInput ? groundStopTime : reversing ? groundSkidTime : groundAccelTime;
+        _body.AddForce(movement * Vector2.right);
+
+        if (IsGrounded && !hasInput)
+        {
+            float vx = _body.linearVelocity.x;
+            float f = Mathf.Min(Mathf.Abs(vx), friction) * Mathf.Sign(vx);
+            _body.AddForce(Vector2.right * -f, ForceMode2D.Impulse);
+        }
+    }
+
+    private void UpdateGravity(float verticalVelocity)
+    {
+        if (verticalVelocity > GravityVelocityThreshold)
+            _body.gravityScale = jumpGravity;
+        else if (verticalVelocity < -GravityVelocityThreshold)
+            _body.gravityScale = fallGravity;
         else
-            time = !hasInput ? airStopTime : reversing ? airTurnTime : airAccelTime;
-
-        return time <= 0f ? float.PositiveInfinity : CurrentMoveSpeed / time;
+            _body.gravityScale = normGravity;
     }
 
     private bool CheckGrounded()
@@ -322,6 +350,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
         _droppingThrough.Clear();
         _standingOneWay.Clear();
         _dropRequested = false;
+        _jumpReleased = false;
     }
 
     private void GetGroundCast(out Vector2 origin, out Vector2 size, out float distance)
@@ -348,7 +377,8 @@ public class WorldMovementController : MovementController, IStatCapProvider
     protected override void StopMovement()
     {
         _moveInput = 0f;
-        _jumpHeld = false;
+        _wasMoving = false;
+        _jumpReleased = false;
         _lastJumpPressedTime = float.NegativeInfinity;
 
         if (_body != null)

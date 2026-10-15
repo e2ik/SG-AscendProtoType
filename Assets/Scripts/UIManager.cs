@@ -6,6 +6,47 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
+public enum ActiveButtonStyle
+{
+    Brighten,
+    Darken,
+    Colour,
+    None
+}
+
+[Serializable]
+public class ActiveCategoryStyle
+{
+    public ActiveButtonStyle buttonStyle = ActiveButtonStyle.Brighten;
+    [Range(0f, 1f)] public float brighten = 0.4f;
+    public Color buttonColor = Color.cyan;
+    public bool changeText = true;
+    public Color textColor = Color.white;
+    public bool changeOutline = true;
+    public Color outlineColor = Color.cyan;
+
+    public bool UsesTint => buttonStyle == ActiveButtonStyle.Colour;
+
+    public Color GetTextColor(Color baseColor) => changeText ? textColor : baseColor;
+
+    public Color GetButtonColor(Color baseColor)
+    {
+        switch (buttonStyle)
+        {
+            case ActiveButtonStyle.Colour:
+                return buttonColor;
+            case ActiveButtonStyle.Darken:
+                return new Color(baseColor.r * (1f - brighten), baseColor.g * (1f - brighten), baseColor.b * (1f - brighten), baseColor.a);
+            case ActiveButtonStyle.None:
+                return baseColor;
+            default:
+                var bright = Color.Lerp(baseColor, Color.white, brighten);
+                bright.a = baseColor.a;
+                return bright;
+        }
+    }
+}
+
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
@@ -28,16 +69,41 @@ public class UIManager : MonoBehaviour
     [Header("Selection Outline Defaults")]
     [SerializeField] private Color selectionHighlightColor = Color.white;
     [SerializeField] private Color selectionChosenColor = Color.yellow;
-    [SerializeField] private Color selectionActiveCategoryColor = Color.cyan;
     [SerializeField] private float selectionPulseSpeed = 4f;
+
+    [Header("Category Buttons")]
+    [SerializeField] private ActiveButtonStyle activeCategoryButtonStyle = ActiveButtonStyle.Brighten;
+    [SerializeField] [Range(0f, 1f)] private float activeCategoryBrighten = 0.4f;
+    [SerializeField] private Color activeCategoryButtonColor = Color.cyan;
+    [SerializeField] private bool changeActiveCategoryText = true;
+    [SerializeField] private Color activeCategoryTextColor = Color.white;
+    [SerializeField] private bool changeActiveCategoryOutline = true;
+    [SerializeField] private Color selectionActiveCategoryColor = Color.cyan;
 
     public Color SelectionHighlightColor => selectionHighlightColor;
     public Color SelectionChosenColor => selectionChosenColor;
     public Color SelectionActiveCategoryColor => selectionActiveCategoryColor;
     public float SelectionPulseSpeed => selectionPulseSpeed;
+    public ActiveCategoryStyle ActiveCategoryStyle
+    {
+        get
+        {
+            _activeCategoryStyle.buttonStyle = activeCategoryButtonStyle;
+            _activeCategoryStyle.brighten = activeCategoryBrighten;
+            _activeCategoryStyle.buttonColor = activeCategoryButtonColor;
+            _activeCategoryStyle.changeText = changeActiveCategoryText;
+            _activeCategoryStyle.textColor = activeCategoryTextColor;
+            _activeCategoryStyle.changeOutline = changeActiveCategoryOutline;
+            _activeCategoryStyle.outlineColor = selectionActiveCategoryColor;
+            return _activeCategoryStyle;
+        }
+    }
+
+    private readonly ActiveCategoryStyle _activeCategoryStyle = new ActiveCategoryStyle();
 
     public event Action OnPauseRequested;
     public bool IsAnyUIOpen => _layers.Count > 0;
+    public Transform TopLayerRoot => _layers.Count > 0 ? _layers.Peek().Root : null;
 
     private readonly Dictionary<Type, object> _registry = new Dictionary<Type, object>();
     private readonly Stack<UILayer> _layers = new Stack<UILayer>();
@@ -48,6 +114,8 @@ public class UIManager : MonoBehaviour
     private string _mapBeforeUI;
     private bool _keyboardNavBlocked;
     private int _escapeHandledFrame = -1;
+    private GameObject _lastBaseSelection;
+    private bool _restoreRequested;
 
     private void Awake()
     {
@@ -68,6 +136,14 @@ public class UIManager : MonoBehaviour
         _cancelAction = InputManager.Instance.FindAction($"{uiMapName}/Cancel", this);
         if (_cancelAction != null)
             _cancelAction.performed += OnCancelPressed;
+
+        InputManager.Instance.OnDeviceChanged += OnDeviceChanged;
+    }
+
+    private void OnDeviceChanged(InputDeviceType device)
+    {
+        if (device == InputDeviceType.Gamepad)
+            _restoreRequested = true;
     }
 
     private void OnDestroy()
@@ -76,6 +152,9 @@ public class UIManager : MonoBehaviour
             _pauseAction.performed -= OnPausePressed;
         if (_cancelAction != null)
             _cancelAction.performed -= OnCancelPressed;
+
+        if (InputManager.Instance != null)
+            InputManager.Instance.OnDeviceChanged -= OnDeviceChanged;
 
         RestoreKeyboardNavigation();
     }
@@ -100,10 +179,14 @@ public class UIManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_layers.Count == 0) return;
-
         var eventSystem = EventSystem.current;
         if (eventSystem == null) return;
+
+        if (_layers.Count == 0)
+        {
+            KeepBaseSelection(eventSystem);
+            return;
+        }
 
         var layer = _layers.Peek();
         var current = eventSystem.currentSelectedGameObject;
@@ -120,6 +203,50 @@ public class UIManager : MonoBehaviour
 
         if (target != null)
             eventSystem.SetSelectedGameObject(target);
+    }
+
+    private void KeepBaseSelection(EventSystem eventSystem)
+    {
+        var current = eventSystem.currentSelectedGameObject;
+        if (IsNavigable(current))
+        {
+            _lastBaseSelection = current;
+            _restoreRequested = false;
+            return;
+        }
+
+        bool wantsSelection = _restoreRequested || ReadMoveInput() != Vector2.zero || SubmitPressed();
+        if (!wantsSelection) return;
+
+        _restoreRequested = false;
+
+        var target = IsNavigable(_lastBaseSelection) ? _lastBaseSelection : FindAnyNavigable();
+        if (target != null)
+            eventSystem.SetSelectedGameObject(target);
+    }
+
+    private bool SubmitPressed()
+    {
+        var module = UIModule;
+        return module != null && module.submit != null && module.submit.action != null && module.submit.action.WasPressedThisFrame();
+    }
+
+    private static bool IsNavigable(GameObject candidate)
+    {
+        if (candidate == null || !candidate.activeInHierarchy) return false;
+
+        var selectable = candidate.GetComponent<Selectable>();
+        return selectable != null && selectable.IsInteractable() && selectable.navigation.mode != Navigation.Mode.None;
+    }
+
+    private static GameObject FindAnyNavigable()
+    {
+        foreach (var selectable in Selectable.allSelectablesArray)
+        {
+            if (IsNavigable(selectable.gameObject))
+                return selectable.gameObject;
+        }
+        return null;
     }
 
     public void PushBackHandler(Action onBack, Transform root, GameObject defaultSelected = null, bool blockKeyboardNavigation = false)
