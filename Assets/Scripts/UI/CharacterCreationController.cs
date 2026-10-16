@@ -18,6 +18,7 @@ public class CharacterColourSlot
     public string displayName;
     [TextArea(2, 5)] public string flavourText;
     public Sprite categoryImage;
+    public SwatchPalette palette = SwatchPalette.Generated;
     public bool overrideLabelColour;
     public Color labelColour = Color.white;
 
@@ -377,14 +378,14 @@ public class CharacterCreationController : MonoBehaviour
         {
             if (stylePicker != null)
                 stylePicker.Hide();
-            colourPicker.Open(slot.ApplyColour, slot.selectedColor);
+            colourPicker.Open(slot.ApplyColour, slot.selectedColor, slot.palette);
         }
     }
 
     private void OnStyleChosen(CharacterColourSlot slot, int index)
     {
         slot.ApplyStyle(index);
-        colourPicker.Open(slot.ApplyColour, slot.selectedColor);
+        colourPicker.Open(slot.ApplyColour, slot.selectedColor, slot.palette);
     }
 
     private void OnColourPickerClosed()

@@ -1279,6 +1279,7 @@ MonoBehaviour:
   defaultSelected: {fileID: 0}
   closeOnBack: 1
   blockKeyboardNavigation: 0
+  keyboardSelectsOnNavigate: 0
 --- !u!114 &1157617750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1737,6 +1738,7 @@ MonoBehaviour:
     flavourText: "Wild, neat or somewhere in between: there\u2019s no wrong way to
       wear it."
     categoryImage: {fileID: 21300000, guid: 1f9384bd160d48f44bc3767f4a4f0f35, type: 3}
+    palette: 0
     overrideLabelColour: 0
     labelColour: {r: 1, g: 1, b: 1, a: 1}
   skinSlot:
@@ -1749,6 +1751,7 @@ MonoBehaviour:
     displayName: 
     flavourText: Every shade belongs on this mountain, including yours.
     categoryImage: {fileID: 21300000, guid: dbab9d44e5e8d5d4fb4c05d6f7d8435e, type: 3}
+    palette: 1
     overrideLabelColour: 0
     labelColour: {r: 1, g: 1, b: 1, a: 1}
   eyeSlot:
@@ -1761,6 +1764,7 @@ MonoBehaviour:
     displayName: 
     flavourText: Every great adventure starts with how you see the world.
     categoryImage: {fileID: 21300000, guid: c79d2ed7be837294ab11af1a0ff825f6, type: 3}
+    palette: 0
     overrideLabelColour: 0
     labelColour: {r: 1, g: 1, b: 1, a: 1}
   clothesTopSlot:
@@ -1773,6 +1777,7 @@ MonoBehaviour:
     displayName: 
     flavourText: Pick what feels like you today; you can always change it later.
     categoryImage: {fileID: 21300000, guid: 46cfa52142dbab44fbf269d00c7f1e15, type: 3}
+    palette: 0
     overrideLabelColour: 0
     labelColour: {r: 1, g: 1, b: 1, a: 1}
   clothesBottomSlot:
@@ -1785,6 +1790,7 @@ MonoBehaviour:
     displayName: 
     flavourText: Comfy enough for climbing, bold enough for you.
     categoryImage: {fileID: 21300000, guid: eb5be79971c9e3d4e9edc9f7bfe5fbfc, type: 3}
+    palette: 0
     overrideLabelColour: 0
     labelColour: {r: 1, g: 1, b: 1, a: 1}
   shoesSlot:
@@ -1797,6 +1803,7 @@ MonoBehaviour:
     displayName: 
     flavourText: Every climb begins with a single step, so make it a stylish one.
     categoryImage: {fileID: 21300000, guid: c410b1dc5b7398a458072c68f6ef85af, type: 3}
+    palette: 0
     overrideLabelColour: 0
     labelColour: {r: 1, g: 1, b: 1, a: 1}
   nextCategoryActionPath: UI/NextFilter
@@ -1844,6 +1851,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3425609838243946061, guid: 27cf102de15725640bb2eff57e793bee, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3425609838243946061, guid: 27cf102de15725640bb2eff57e793bee, type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3425609838243946061, guid: 27cf102de15725640bb2eff57e793bee, type: 3}
@@ -2176,6 +2187,7 @@ MonoBehaviour:
   sortingOrderOffset: 1
   ignoreUIManager: 0
   pulseSpeed: 4
+  pulseWhenChosen: 1
   activeCategoryStyle:
     buttonStyle: 0
     brighten: 0.4
@@ -2645,6 +2657,7 @@ MonoBehaviour:
   sortingOrderOffset: 1
   ignoreUIManager: 0
   pulseSpeed: 4
+  pulseWhenChosen: 1
   activeCategoryStyle:
     buttonStyle: 0
     brighten: 0.4
@@ -2894,38 +2907,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 41413584093475188, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 293
-      objectReference: {fileID: 0}
-    - target: {fileID: 41413584093475188, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 85
-      objectReference: {fileID: 0}
-    - target: {fileID: 3425609838243946061, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3425609838243946061, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3425609838243946061, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3425609838243946061, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3425609838243946061, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3425609838243946061, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5629122074934582657, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -3009,38 +2990,6 @@ PrefabInstance:
     - target: {fileID: 5692074100474356294, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
       propertyPath: m_Name
       value: ColorPickerCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 5692074100474356294, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6022385033889377222, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6022385033889377222, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6022385033889377222, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6022385033889377222, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6022385033889377222, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6022385033889377222, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6193056603027888961, guid: 4aaa3048a5dac2c47994d4f065ee6513, type: 3}
-      propertyPath: m_SortingOrder
-      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
