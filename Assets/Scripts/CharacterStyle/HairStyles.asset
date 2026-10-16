@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d094c528e4dd9a4995209e0c1c01f78, type: 3}
+  m_Name: HairStyles
+  m_EditorClassIdentifier: Assembly-CSharp::AppearanceStyleSet
+  styles:
+  - displayName: Hair00
+    icon: {fileID: 21300000, guid: 5234067471e01ee47ae87e8f3c8523bd, type: 3}
+    frames:
+    - {fileID: 21300000, guid: e4a1790de1863bc47bf7da7192fecb26, type: 3}
+    - {fileID: 21300000, guid: 09cb88a4c4d181a4894e15f9db069547, type: 3}
+  - displayName: Hair01
+    icon: {fileID: 21300000, guid: f40b0a37219783243823b1ebdb644ac1, type: 3}
+    frames:
+    - {fileID: 21300000, guid: 6c9f19671bc1ab646b0452271019269c, type: 3}
+    - {fileID: 21300000, guid: 26a4c9c77e992a140a9530bbdd9f67e5, type: 3}
+  - displayName: Hair02
+    icon: {fileID: 21300000, guid: 132695887e125a54082d234602cf60ea, type: 3}
+    frames:
+    - {fileID: 21300000, guid: 8cf680eac408504428a29244602ceb65, type: 3}
+    - {fileID: 21300000, guid: 35452aa5bbe627449b339ddced37f475, type: 3}
+  - displayName: Hair03
+    icon: {fileID: 21300000, guid: 80b25d375a9eca440acd42f9c74a7cbd, type: 3}
+    frames:
+    - {fileID: 21300000, guid: c1ca6c501c136b74f9bb07d75398f677, type: 3}
+    - {fileID: 21300000, guid: 33e536512db0f1c41afb674ac3dca2de, type: 3}
+  - displayName: Hair04
+    icon: {fileID: 21300000, guid: a15cff5e3dbe59f4082ebd92c7a97958, type: 3}
+    frames:
+    - {fileID: 21300000, guid: c2e3fa69fe2e73b43970c1cf7cea703d, type: 3}
+    - {fileID: 21300000, guid: 6e59ccc919d90714fb6a9cdfa2232669, type: 3}
+  - displayName: Hair05
+    icon: {fileID: 21300000, guid: 5b8d14fb1ed28c54180f61b53a3ed8f2, type: 3}
+    frames:
+    - {fileID: 21300000, guid: b7324e756bb199141b71373b828a0ada, type: 3}
+    - {fileID: 21300000, guid: 22f306fc005a7d74f9fc5a844adf7d65, type: 3}

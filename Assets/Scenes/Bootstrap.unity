@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &173729083 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3665309367311060207, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+  m_PrefabInstance: {fileID: 1699843436819520538}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,6 +381,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &806458867 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2576081233104001924, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+  m_PrefabInstance: {fileID: 1699843436819520538}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!224 &853289584 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1555754301293652660, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
@@ -589,6 +605,7 @@ MonoBehaviour:
   fadeCanvas: {fileID: 1517293400}
   fadeDuration: 0.3
   startBlack: 1
+  fadeSortingOrder: 30000
 --- !u!114 &1222042130
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -633,6 +650,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
   playerInput: {fileID: 1222042130}
   globalMapName: Global
+  mouseMoveThreshold: 3
 --- !u!114 &1222042132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -647,9 +665,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   uiMapName: UI
   backSound: UIback
+  allowArrowKeysWhenBlocked: 1
+  hideCursorOnGamepad: 1
+  disableHoverOnGamepad: 1
   selectionHighlightColor: {r: 0.99402523, g: 1, b: 0, a: 1}
   selectionChosenColor: {r: 1, g: 0.19276059, b: 0.015686274, a: 1}
   selectionPulseSpeed: 15
+  panelShowBounce: 75
+  panelPopBounce: 0
   activeCategoryButtonStyle: 2
   activeCategoryBrighten: 0.4
   activeCategoryButtonColor: {r: 1, g: 0.66257167, b: 0, a: 1}
@@ -684,8 +707,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
   panel: {fileID: 1415817543}
+  background: {fileID: 173729083}
   uiPanel: {fileID: 1415817545}
   speakerText: {fileID: 1019006912}
+  portraitLeftBackground: {fileID: 1251588402}
+  portraitRightBackground: {fileID: 806458867}
+  portraitBackgroundDarken: 0.328
+  portraitBackgroundAlpha: 0.931
+  speakerContainer: {fileID: 1610941483}
+  speakerBackground: {fileID: 1610941486}
+  speakerBackgroundDarken: 0.25
+  speakerNameLighten: 0.4
+  speakerContainerSide: 0
+  flipSpeakerBackground: 1
   portraitLeft: {fileID: 1114368783}
   portraitRight: {fileID: 2071881344}
   flipRightPortrait: 0
@@ -694,7 +728,7 @@ MonoBehaviour:
   continueButton: {fileID: 1865370196}
   continueIndicator: {fileID: 1014202593}
   choicesParent: {fileID: 853289584}
-  choiceButtonPrefab: {fileID: 1895507300863491552, guid: eb20f8d9316d1d74fa9d8b1da9d12f93, type: 3}
+  choiceButtonPrefab: {fileID: 5446087056140021941, guid: eb001908daae07040ab876d8589912f6, type: 3}
   charactersPerSecond: 40
   defaultBlipKey: NPCblip
   blipEveryNCharacters: 2
@@ -853,6 +887,17 @@ MonoBehaviour:
     minAmount: 0.3
     maxAmount: 1
     speed: 1.5
+--- !u!114 &1251588402 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5962907931249311159, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+  m_PrefabInstance: {fileID: 1699843436819520538}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!114 &1288890913 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8711218824990568134, guid: de4144ac1441f384cab6dede01dea05c, type: 3}
@@ -1006,6 +1051,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!224 &1610941483 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 491598695574570426, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+  m_PrefabInstance: {fileID: 1699843436819520538}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1610941486 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6914135880240944866, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+  m_PrefabInstance: {fileID: 1699843436819520538}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &1629243116
 GameObject:
   m_ObjectHideFlags: 0
@@ -1135,6 +1196,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OptionsCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2751294892341421181, guid: 9f5be911f2d64bc46804fd06e7a2f7da, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6846691576583906282, guid: 9f5be911f2d64bc46804fd06e7a2f7da, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1232,6 +1297,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4534579001986900203, guid: dc073dbba0530af4f8ca2838a5b78c95, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8754211079126480580, guid: dc073dbba0530af4f8ca2838a5b78c95, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1325,6 +1394,50 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 491598695574570426, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2493832406435049637, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2493832406435049637, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2493832406435049637, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2493832406435049637, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2493832406435049637, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3928481157328879185, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3928481157328879185, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3928481157328879185, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3928481157328879185, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3928481157328879185, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4085850101375473860, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1409,6 +1522,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: DialogueCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 7205160992073178357, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7205160992073178357, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7205160992073178357, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7205160992073178357, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7205160992073178357, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7205160992073178357, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1425,6 +1562,10 @@ PrefabInstance:
     - target: {fileID: 1005630086041170271, guid: 11eece4999827e74695787e010be0101, type: 3}
       propertyPath: m_Name
       value: MinigameHUD
+      objectReference: {fileID: 0}
+    - target: {fileID: 1005630086041170271, guid: 11eece4999827e74695787e010be0101, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5368130835657605689, guid: 11eece4999827e74695787e010be0101, type: 3}
       propertyPath: introPanel
@@ -1627,6 +1768,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MiniGameInstructionsCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 7374118843516286944, guid: de4144ac1441f384cab6dede01dea05c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1724,6 +1869,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StatsCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 7705151182349969517, guid: 62e2b6983ce900d4dbb07a69a959ac88, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1740,6 +1889,10 @@ PrefabInstance:
     - target: {fileID: 4850041555714024692, guid: 5cc096a1e41828843b3856f5e0543f8c, type: 3}
       propertyPath: m_Name
       value: ConfirmationCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4850041555714024692, guid: 5cc096a1e41828843b3856f5e0543f8c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6116692422470482667, guid: 5cc096a1e41828843b3856f5e0543f8c, type: 3}
       propertyPath: m_Pivot.x

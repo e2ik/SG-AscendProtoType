@@ -40,7 +40,11 @@ public class ClickToAction : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         ActionPresser.Press(ActionPresser.Resolve(action), this);
     }
 
-    public void OnPointerEnter(PointerEventData eventData) => SetHovered(true);
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (UIManager.HoverAllowed)
+            SetHovered(true);
+    }
     public void OnPointerExit(PointerEventData eventData) => SetHovered(false);
 
     private void SetHovered(bool hovered)

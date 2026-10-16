@@ -38,7 +38,7 @@ public class UIButtonSound : MonoBehaviour, ISelectHandler, IPointerEnterHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (playOnHover)
+        if (playOnHover && UIManager.HoverAllowed)
             Play(moveSound);
     }
 

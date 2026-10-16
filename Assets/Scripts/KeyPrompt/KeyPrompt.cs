@@ -103,7 +103,7 @@ public class KeyPrompt : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!clickable) return;
+        if (!clickable || !UIManager.HoverAllowed) return;
 
         _hovered = true;
         transform.localScale = _baseScale * hoverScale;

@@ -23,6 +23,10 @@ public class InputManager : MonoBehaviour
     public InputDeviceType ActiveDevice { get; private set; } = InputDeviceType.KeyboardMouse;
     public event Action<InputDeviceType> OnDeviceChanged;
 
+    [SerializeField] [Min(0f)] private float mouseMoveThreshold = 3f;
+
+    private const float StickThreshold = 0.5f;
+
     private IDisposable _anyButtonListener;
 
     private void Awake()
@@ -68,6 +72,29 @@ public class InputManager : MonoBehaviour
         else
             return;
 
+        SetActiveDevice(type);
+    }
+
+    private void Update()
+    {
+        if (ActiveDevice == InputDeviceType.KeyboardMouse)
+        {
+            var pad = Gamepad.current;
+            if (pad != null && (pad.leftStick.ReadValue().sqrMagnitude >= StickThreshold * StickThreshold ||
+                                pad.rightStick.ReadValue().sqrMagnitude >= StickThreshold * StickThreshold))
+                SetActiveDevice(InputDeviceType.Gamepad);
+            return;
+        }
+
+        var mouse = Mouse.current;
+        if (mouse == null) return;
+
+        if (mouse.delta.ReadValue().sqrMagnitude >= mouseMoveThreshold * mouseMoveThreshold || mouse.scroll.ReadValue().sqrMagnitude > 0f)
+            SetActiveDevice(InputDeviceType.KeyboardMouse);
+    }
+
+    private void SetActiveDevice(InputDeviceType type)
+    {
         if (type == ActiveDevice) return;
 
         ActiveDevice = type;

@@ -68,6 +68,7 @@ MonoBehaviour:
   defaultSelected: {fileID: 0}
   closeOnBack: 1
   blockKeyboardNavigation: 1
+  keyboardSelectsOnNavigate: 1
 --- !u!225 &4898779043653631141
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -119,6 +120,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  useUIManagerBounce: 1
+  showBounce: 8
+  popBounce: 0.05
   slideDistance: 0
   fadeWhileSliding: 1
   popScale: 0.8
@@ -428,6 +432,13 @@ MonoBehaviour:
   placeholderText: What's your name?
   cursorBlinkInterval: 0.5
   shiftTapMaxDuration: 0.3
+  flashKeysOnType: 1
+  flashDuration: 0.1
+  flashScale: 0.92
+  gamepadStartsShifted: 1
+  gamepadShiftOffAfterTyping: 1
+  gamepadNorthTogglesShift: 1
+  gamepadWestBackspace: 1
 --- !u!114 &4014810680495863720
 MonoBehaviour:
   m_ObjectHideFlags: 0

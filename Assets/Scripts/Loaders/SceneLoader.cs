@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneLoader : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class SceneLoader : MonoBehaviour
     [SerializeField] private CanvasGroup fadeCanvas;
     [SerializeField] private float fadeDuration = 0.3f;
     [SerializeField] private bool startBlack = true;
+    [SerializeField] private int fadeSortingOrder = 30000;
 
     private readonly List<string> _loadedScenes = new List<string>();
     private readonly Dictionary<string, List<GameObject>> _hiddenRoots = new Dictionary<string, List<GameObject>>();
@@ -23,8 +25,19 @@ public class SceneLoader : MonoBehaviour
         }
         Instance = this;
 
-        if (fadeCanvas != null)
-            SetFade(startBlack ? 1f : 0f);
+        if (fadeCanvas == null) return;
+
+        var canvas = fadeCanvas.GetComponent<Canvas>();
+        if (canvas == null)
+        {
+            canvas = fadeCanvas.gameObject.AddComponent<Canvas>();
+            fadeCanvas.gameObject.AddComponent<GraphicRaycaster>();
+        }
+        if (!canvas.isRootCanvas)
+            canvas.overrideSorting = true;
+        canvas.sortingOrder = fadeSortingOrder;
+
+        SetFade(startBlack ? 1f : 0f);
     }
 
     public IEnumerator FadeOut() => Fade(1f);

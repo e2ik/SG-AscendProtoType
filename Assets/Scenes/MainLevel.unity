@@ -260,6 +260,7 @@ MonoBehaviour:
   conditionalDialogues:
   - requiredFlag: theo_reframe_done
     dialogue: {fileID: 11400000, guid: a7672ab052df515488826b4634087e9f, type: 2}
+  debugLog: 0
 --- !u!4 &120008281
 Transform:
   m_ObjectHideFlags: 0
@@ -681,6 +682,7 @@ MonoBehaviour:
   conditionalDialogues:
   - requiredFlag: wren_breath_done
     dialogue: {fileID: 11400000, guid: 449b16da00a2150419d81ceab5cf2dc1, type: 2}
+  debugLog: 0
 --- !u!4 &450013065
 Transform:
   m_ObjectHideFlags: 0
@@ -839,6 +841,7 @@ MonoBehaviour:
     dialogue: {fileID: 11400000, guid: cfb90affb0d195743bebee703fb485ce, type: 2}
   - requiredFlag: ana_memory_done
     dialogue: {fileID: 11400000, guid: 96a4a8a6170052241abdb586723ed4cb, type: 2}
+  debugLog: 0
 --- !u!4 &582507324
 Transform:
   m_ObjectHideFlags: 0
@@ -4100,6 +4103,7 @@ MonoBehaviour:
   conditionalDialogues:
   - requiredFlag: theo_run_done
     dialogue: {fileID: 11400000, guid: 11f9398234a3b284e954f9f6ba6da0dc, type: 2}
+  debugLog: 0
 --- !u!4 &1162078363
 Transform:
   m_ObjectHideFlags: 0
@@ -5145,9 +5149,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.PixelPerfectCamera
   m_ComponentVersion: 1
-  m_AssetsPPU: 32
-  m_RefResolutionX: 320
-  m_RefResolutionY: 180
+  m_AssetsPPU: 200
+  m_RefResolutionX: 900
+  m_RefResolutionY: 600
   m_CropFrame: 0
   m_GridSnapping: 0
   m_FilterMode: 0
@@ -5226,7 +5230,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2.8125
+  orthographic size: 2.7
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -5273,6 +5277,26 @@ MonoBehaviour:
   target: {fileID: 0}
   offset: {x: 0, y: 0}
   smoothTime: 0.15
+  useLookAhead: 1
+  lookAheadDistance: 2
+  lookAheadHoldTime: 0.35
+  lookAheadSmoothTime: 0.6
+  keepLookAheadWhenStopped: 0
+  useVerticalPan: 1
+  panUpDistance: 3
+  panDownDistance: 3.5
+  panHoldTime: 0.6
+  panSmoothTime: 0.4
+  panInputThreshold: 0.5
+  panOnlyWhenStanding: 1
+  focusOnDialogue: 1
+  focusNeverZoomsOut: 1
+  focusPadding: 0
+  minFocusSize: 1.5
+  maxFocusSize: 6
+  focusViewportOffsetY: 0.15
+  focusInDuration: 0.6
+  focusOutDuration: 0.5
   useBounds: 1
   bounds:
     serializedVersion: 2

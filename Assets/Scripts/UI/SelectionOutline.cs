@@ -22,6 +22,7 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
     private bool _isChosen;
     private Color? _chosenColorOverride;
     private Color _ownColor = Color.white;
+    private CanvasGroup[] _parentGroups;
 
     private void Awake()
     {
@@ -55,7 +56,36 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
         canvas.overrideSorting = true;
         canvas.sortingOrder = baseSortingOrder + sortingOrderOffset;
 
+        var ownGroup = outline.GetComponent<CanvasGroup>();
+        if (ownGroup == null)
+            ownGroup = outline.AddComponent<CanvasGroup>();
+        ownGroup.ignoreParentGroups = true;
+        ownGroup.interactable = false;
+        ownGroup.blocksRaycasts = false;
+
+        CacheParentGroups();
         outline.SetActive(false);
+    }
+
+    private void OnTransformParentChanged() => CacheParentGroups();
+
+    private void CacheParentGroups()
+    {
+        _parentGroups = GetComponentsInParent<CanvasGroup>(true);
+    }
+
+    private float ParentAlpha()
+    {
+        if (_parentGroups == null) return 1f;
+
+        float alpha = 1f;
+        foreach (var group in _parentGroups)
+        {
+            if (group == null || !group.enabled) continue;
+            alpha *= group.alpha;
+            if (group.ignoreParentGroups) break;
+        }
+        return alpha;
     }
 
     public void SetChosen(bool chosen, Color? colorOverride = null)
@@ -86,6 +116,8 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!UIManager.HoverAllowed) return;
+
         var selectable = GetComponent<Selectable>();
         bool navigable = selectable != null && selectable.navigation.mode != Navigation.Mode.None;
         if (navigable && selectable.IsInteractable() && EventSystem.current != null)
@@ -132,7 +164,7 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
         if (_isChosen && !_isSelected && !_isHovered)
         {
             var staticColor = _chosenColorOverride ?? (useOwn ? _ownColor : ui.SelectionChosenColor);
-            staticColor.a = maxAlpha;
+            staticColor.a = maxAlpha * ParentAlpha();
             _outlineGraphic.color = staticColor;
             return;
         }
@@ -140,7 +172,7 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
         float speed = useOwn ? pulseSpeed : ui.SelectionPulseSpeed;
         float pulse = (Mathf.Sin(Time.unscaledTime * speed) + 1f) * 0.5f;
         var color = useOwn ? _ownColor : ui.SelectionHighlightColor;
-        color.a = Mathf.Lerp(minAlpha, maxAlpha, pulse);
+        color.a = Mathf.Lerp(minAlpha, maxAlpha, pulse) * ParentAlpha();
         _outlineGraphic.color = color;
     }
 }

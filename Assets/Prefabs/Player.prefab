@@ -101,6 +101,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6369851405380399247}
   - component: {fileID: 7741387186089954465}
+  - component: {fileID: 688393222717804288}
   m_Layer: 0
   m_Name: Pants
   m_TagString: Untagged
@@ -182,6 +183,20 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &688393222717804288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 858548008667212543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71642bcb2977c3346aea7dd843a76888, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteStyleSwapper
+  styleSet: {fileID: 11400000, guid: ab270349853d2ff489bb9df127c0be9e, type: 2}
+  styleIndex: 0
 --- !u!1 &2568129479950878735
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,6 +335,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8692567469655673780}
   - component: {fileID: 4944228737760716487}
+  - component: {fileID: 1981883716915496330}
   m_Layer: 0
   m_Name: Shirt
   m_TagString: Untagged
@@ -401,6 +417,20 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1981883716915496330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5993233767261006266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71642bcb2977c3346aea7dd843a76888, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteStyleSwapper
+  styleSet: {fileID: 11400000, guid: 95551f4460a234446a6dc4ec213cab27, type: 2}
+  styleIndex: 0
 --- !u!1 &6944855037104412399
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,6 +441,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1361150702698239803}
   - component: {fileID: 5779564248584360023}
+  - component: {fileID: 8629224091130410743}
   m_Layer: 0
   m_Name: Hair
   m_TagString: Untagged
@@ -492,6 +523,20 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &8629224091130410743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6944855037104412399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71642bcb2977c3346aea7dd843a76888, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteStyleSwapper
+  styleSet: {fileID: 11400000, guid: 560bd1c8b68ca3e49974c41fea591075, type: 2}
+  styleIndex: 0
 --- !u!1 &7763348698569055108
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,6 +865,10 @@ MonoBehaviour:
   promptPrefab: {fileID: 5159133663071662340, guid: a86755de6a5825d488baca3720615ec7, type: 3}
   offset: {x: 0, y: 0.5}
   showInteractionText: 1
+  hover: 1
+  hoverHeight: 0.08
+  hoverSpeed: 1.5
+  hoverPixelsPerUnit: 0
   player: {fileID: 0}
   interactor: {fileID: 0}
   playerCollider: {fileID: 0}

@@ -68,6 +68,8 @@ public class SliderHighlight : MonoBehaviour, ISelectHandler, IDeselectHandler, 
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!UIManager.HoverAllowed) return;
+
         _isHovered = true;
         Refresh();
     }

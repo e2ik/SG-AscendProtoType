@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ColourSwatchPicker : MonoBehaviour
@@ -24,24 +25,53 @@ public class ColourSwatchPicker : MonoBehaviour
     private int _columns;
     private int _rows;
     private Button _chosenButton;
+    private readonly List<(Button button, Color colour)> _swatches = new List<(Button, Color)>();
+
+    private const float ColourTolerance = 0.01f;
 
     private void Awake()
     {
         panel.SetActive(false);
 
+        if (uiPanel == null)
+            uiPanel = panel.GetComponent<UIPanel>();
+
         if (uiPanel != null)
             uiPanel.OnBack += () => OnClosed?.Invoke();
     }
 
-    public void Open(Action<Color> onSelected)
+    public void Open(Action<Color> onSelected, Color? current = null)
     {
         _onSelected = onSelected;
-        SetChosenButton(null);
 
         if (!_built)
             BuildSwatches();
 
+        var match = current.HasValue ? FindSwatch(current.Value) : null;
+        SetChosenButton(match);
+
         UIPanelAnimator.SetVisible(panel, true);
+
+        if (match != null && EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(match.gameObject);
+    }
+
+    private Button FindSwatch(Color colour)
+    {
+        foreach (var (button, swatch) in _swatches)
+        {
+            if (Mathf.Abs(swatch.r - colour.r) < ColourTolerance &&
+                Mathf.Abs(swatch.g - colour.g) < ColourTolerance &&
+                Mathf.Abs(swatch.b - colour.b) < ColourTolerance)
+                return button;
+        }
+        return null;
+    }
+
+    public void Hide()
+    {
+        if (IsOpen)
+            UIPanelAnimator.SetVisible(panel, false);
     }
 
     public void Close()
@@ -61,6 +91,7 @@ public class ColourSwatchPicker : MonoBehaviour
             var button = Instantiate(swatchButtonPrefab, contentParent);
             button.image.color = color;
             button.onClick.AddListener(() => Select(color, button));
+            _swatches.Add((button, color));
         }
 
         _built = true;

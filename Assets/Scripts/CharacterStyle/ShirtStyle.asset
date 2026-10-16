@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d094c528e4dd9a4995209e0c1c01f78, type: 3}
+  m_Name: ShirtStyle
+  m_EditorClassIdentifier: Assembly-CSharp::AppearanceStyleSet
+  styles:
+  - displayName: Shirt00
+    icon: {fileID: 21300000, guid: fd9e2d6a630504441a512146ae7c848f, type: 3}
+    frames:
+    - {fileID: 21300000, guid: cb74a075e504c1848b99d51515e3c11f, type: 3}
+    - {fileID: 21300000, guid: feecfec71961e5047ad25a502745de23, type: 3}
+  - displayName: Shirt01
+    icon: {fileID: 21300000, guid: 03cdd21af91990c48b55b0b26055c114, type: 3}
+    frames:
+    - {fileID: 21300000, guid: 25112bded71385844a988134977077fe, type: 3}
+    - {fileID: 21300000, guid: b1fb7fb269feba94e87d7dadf840fb4f, type: 3}
+  - displayName: Shirt02
+    icon: {fileID: 21300000, guid: c44434ab4f495fb4caef5061008478d6, type: 3}
+    frames:
+    - {fileID: 21300000, guid: 5542076fb70e9de43939adcf2fb31a31, type: 3}
+    - {fileID: 21300000, guid: 03a9d7289d260274ab6b85ed7975a7c3, type: 3}
+  - displayName: Shirt03
+    icon: {fileID: 21300000, guid: cee221cff3afc0042b0b64d68db90742, type: 3}
+    frames:
+    - {fileID: 21300000, guid: 7dc3e4ec36f474b46ab2edfb3e48773f, type: 3}
+    - {fileID: 21300000, guid: d41f966cfb8498746bc8c4a4ca261981, type: 3}
+  - displayName: Shirt04
+    icon: {fileID: 21300000, guid: bdc0a19a51477244f92545efbf0e0c68, type: 3}
+    frames:
+    - {fileID: 21300000, guid: 9b20297aec1aefb489373d003c96fc13, type: 3}
+    - {fileID: 21300000, guid: 6352efffa563cc041ae6f61f4195745f, type: 3}
+  - displayName: Shirt05
+    icon: {fileID: 21300000, guid: 439cbd632c8009d4b87d02bef6dfa97b, type: 3}
+    frames:
+    - {fileID: 21300000, guid: fdfd96da2477334499aca727e433e568, type: 3}
+    - {fileID: 21300000, guid: 1907b7b7febf9a044b94d24415e15790, type: 3}

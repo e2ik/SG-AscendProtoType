@@ -14,6 +14,9 @@ public class CharacterData
     public Color clothesTopColor;
     public Color clothesBottomColor;
     public Color shoesColor;
+    public int hairStyle;
+    public int clothesTopStyle;
+    public int clothesBottomStyle;
 }
 
 [Serializable]

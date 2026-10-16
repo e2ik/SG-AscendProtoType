@@ -19,6 +19,13 @@ public class UIPanelAnimator : MonoBehaviour
     [SerializeField] private UIPanelEffect hideEffect = UIPanelEffect.Fade;
     [SerializeField] [Min(0f)] private float duration = 0.2f;
     [SerializeField] private AnimationCurve curve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+    [Header("Bounce")]
+    [SerializeField] private bool useUIManagerBounce = true;
+    [SerializeField] [Min(0f)] private float showBounce = 8f;
+    [SerializeField] [Range(0f, 0.3f)] private float popBounce = 0.05f;
+
+    private float ShowBounce => useUIManagerBounce && UIManager.Instance != null ? UIManager.Instance.PanelShowBounce : showBounce;
+    private float PopBounce => useUIManagerBounce && UIManager.Instance != null ? UIManager.Instance.PanelPopBounce : popBounce;
 
     [Header("Slide")]
     [SerializeField] [Min(0f)] private float slideDistance;
@@ -158,12 +165,13 @@ public class UIPanelAnimator : MonoBehaviour
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
-            float progress = curve.Evaluate(Mathf.Clamp01(elapsed / duration));
-            Apply(effect, show ? 1f - progress : progress);
+            float t = Mathf.Clamp01(elapsed / duration);
+            float progress = curve.Evaluate(t);
+            Apply(effect, show ? 1f - progress : progress, show ? Bump(t) : 0f);
             yield return null;
         }
 
-        Apply(effect, show ? 0f : 1f);
+        Apply(effect, show ? 0f : 1f, 0f);
         _routine = null;
 
         if (!show)
@@ -173,7 +181,7 @@ public class UIPanelAnimator : MonoBehaviour
         }
     }
 
-    private void Apply(UIPanelEffect effect, float away)
+    private void Apply(UIPanelEffect effect, float away, float bump)
     {
         if (_rect == null) return;
 
@@ -184,21 +192,22 @@ public class UIPanelAnimator : MonoBehaviour
         switch (effect)
         {
             case UIPanelEffect.Fade:
-                _group.alpha = 1f - away;
+                _group.alpha = Mathf.Clamp01(1f - away);
                 break;
 
             case UIPanelEffect.SlideLeft:
             case UIPanelEffect.SlideRight:
             case UIPanelEffect.SlideUp:
             case UIPanelEffect.SlideDown:
-                _rect.anchoredPosition = _restPosition + SlideDirection(effect) * SlideAmount(effect) * away;
+                var direction = SlideDirection(effect);
+                _rect.anchoredPosition = _restPosition + direction * (SlideAmount(effect) * away - ShowBounce * bump);
                 if (fadeWhileSliding)
-                    _group.alpha = 1f - away;
+                    _group.alpha = Mathf.Clamp01(1f - away);
                 break;
 
             case UIPanelEffect.Pop:
-                _rect.localScale = _restScale * Mathf.Lerp(1f, popScale, away);
-                _group.alpha = 1f - away;
+                _rect.localScale = _restScale * (Mathf.Lerp(1f, popScale, away) + PopBounce * bump);
+                _group.alpha = Mathf.Clamp01(1f - away);
                 break;
         }
     }
@@ -217,6 +226,13 @@ public class UIPanelAnimator : MonoBehaviour
             _group.interactable = true;
             _group.blocksRaycasts = true;
         }
+    }
+
+    private static float Bump(float t)
+    {
+        const float start = 0.55f;
+        if (t <= start) return 0f;
+        return Mathf.Sin(Mathf.PI * (t - start) / (1f - start));
     }
 
     private static Vector2 SlideDirection(UIPanelEffect effect) => effect switch

@@ -11,6 +11,7 @@ public class CharacterColourSlot
 {
     public Image uiPreview;
     public SpriteRenderer spritePreview;
+    public SpriteStyleSwapper styleSwapper;
     public Button triggerButton;
     public Image buttonImage;
     public TMP_Text buttonLabel;
@@ -23,6 +24,9 @@ public class CharacterColourSlot
     public string DisplayName => !string.IsNullOrEmpty(displayName) ? displayName : buttonLabel != null ? buttonLabel.text : string.Empty;
 
     [NonSerialized] public Color selectedColor = Color.white;
+    [NonSerialized] public int selectedStyle;
+
+    public AppearanceStyleSet StyleSet => styleSwapper != null ? styleSwapper.StyleSet : null;
     private Color _buttonBaseColor;
     private Color _labelBaseColor;
     private Color _normalTintBase = Color.white;
@@ -36,6 +40,9 @@ public class CharacterColourSlot
 
         if (buttonImage != null)
             _buttonBaseColor = buttonImage.color;
+
+        if (styleSwapper != null)
+            selectedStyle = styleSwapper.StyleIndex;
 
         if (triggerButton != null)
             _normalTintBase = triggerButton.colors.normalColor;
@@ -54,6 +61,13 @@ public class CharacterColourSlot
             uiPreview.color = colour;
         if (spritePreview != null)
             spritePreview.color = colour;
+    }
+
+    public void ApplyStyle(int index)
+    {
+        selectedStyle = index;
+        if (styleSwapper != null)
+            styleSwapper.SetStyle(index);
     }
 
     private void SetNormalTint(Color colour)
@@ -94,6 +108,13 @@ public class CharacterColourSlot
     }
 }
 
+public enum FlavourColourMode
+{
+    MatchLabel,
+    Pastel,
+    Single
+}
+
 public class CharacterCreationController : MonoBehaviour
 {
     private const string DefaultName = "Player";
@@ -109,7 +130,10 @@ public class CharacterCreationController : MonoBehaviour
     [SerializeField] private ConfirmationStyle createConfirmationStyle = new ConfirmationStyle();
     [SerializeField] private OnScreenKeyboardController keyboard;
     [SerializeField] private ColourSwatchPicker colourPicker;
+    [SerializeField] private StylePicker stylePicker;
     [SerializeField] private CategoryInfoPanel infoPanel;
+    [SerializeField] private FlavourColourMode flavourColourMode = FlavourColourMode.MatchLabel;
+    [SerializeField] private Color singleFlavourColour = Color.white;
     [SerializeField] private GameObject defaultSelected;
 
     [SerializeField] private CharacterColourSlot hairSlot;
@@ -137,10 +161,12 @@ public class CharacterCreationController : MonoBehaviour
     private void Start()
     {
 
-        colourPicker.OnClosed += () => SetActiveSlot(null);
+        colourPicker.OnClosed += OnColourPickerClosed;
+        if (stylePicker != null)
+            stylePicker.OnClosed += OnStylePickerClosed;
 
         if (infoPanel != null)
-            infoPanel.BackPressed += colourPicker.Close;
+            infoPanel.BackPressed += CloseCategory;
 
         foreach (var slot in new[] { hairSlot, skinSlot, eyeSlot, clothesTopSlot, clothesBottomSlot, shoesSlot })
             slot.Initialize();
@@ -281,7 +307,8 @@ public class CharacterCreationController : MonoBehaviour
         var top = ui.TopLayerRoot;
         if (top == null) return false;
 
-        bool pickerOnTop = colourPicker != null && colourPicker.IsOpen && Related(top, colourPicker.PanelRoot);
+        bool pickerOnTop = (colourPicker != null && colourPicker.IsOpen && Related(top, colourPicker.PanelRoot))
+                           || (stylePicker != null && stylePicker.IsOpen && Related(top, stylePicker.PanelRoot));
         bool infoOnTop = infoPanel != null && infoPanel.IsOpen && Related(top, infoPanel.PanelRoot);
         return pickerOnTop || infoOnTop;
     }
@@ -291,8 +318,7 @@ public class CharacterCreationController : MonoBehaviour
 
     public void OnEditNamePressed()
     {
-        if (colourPicker != null)
-            colourPicker.Close();
+        CloseCategory();
 
         keyboard.Open(_nameSet ? _characterName : string.Empty, CensorName, name =>
         {
@@ -332,15 +358,60 @@ public class CharacterCreationController : MonoBehaviour
     private void OpenPicker(CharacterColourSlot slot)
     {
         SetActiveSlot(slot);
-        colourPicker.Open(slot.ApplyColour);
 
         if (infoPanel != null)
         {
             SortSlotsByScreenPosition();
-            var colour = slot.overrideLabelColour ? slot.labelColour : infoPanel.ColourForIndex(_orderedSlots.IndexOf(slot));
-            infoPanel.Show(slot.DisplayName, slot.flavourText, slot.categoryImage, colour);
+            var colour = CategoryColourFor(slot);
+            infoPanel.Show(slot.DisplayName, slot.flavourText, slot.categoryImage, colour, flavourColourMode, singleFlavourColour);
+        }
+
+        bool styled = stylePicker != null && slot.StyleSet != null && slot.StyleSet.Count > 1;
+
+        if (styled)
+        {
+            colourPicker.Hide();
+            stylePicker.Open(slot.StyleSet, slot.selectedStyle, index => OnStyleChosen(slot, index));
+        }
+        else
+        {
+            if (stylePicker != null)
+                stylePicker.Hide();
+            colourPicker.Open(slot.ApplyColour, slot.selectedColor);
         }
     }
+
+    private void OnStyleChosen(CharacterColourSlot slot, int index)
+    {
+        slot.ApplyStyle(index);
+        colourPicker.Open(slot.ApplyColour, slot.selectedColor);
+    }
+
+    private void OnColourPickerClosed()
+    {
+        if (stylePicker != null && stylePicker.IsOpen)
+            return;
+
+        SetActiveSlot(null);
+    }
+
+    private void OnStylePickerClosed()
+    {
+        colourPicker.Hide();
+        SetActiveSlot(null);
+    }
+
+    private void CloseCategory()
+    {
+        if (colourPicker != null)
+            colourPicker.Hide();
+        if (stylePicker != null)
+            stylePicker.Hide();
+        SetActiveSlot(null);
+    }
+
+    private Color CategoryColourFor(CharacterColourSlot slot) =>
+        slot.overrideLabelColour ? slot.labelColour : infoPanel.ColourForIndex(_orderedSlots.IndexOf(slot));
 
     private void SetActiveSlot(CharacterColourSlot slot)
     {
@@ -374,7 +445,10 @@ public class CharacterCreationController : MonoBehaviour
             eyeColor = eyeSlot.selectedColor,
             clothesTopColor = clothesTopSlot.selectedColor,
             clothesBottomColor = clothesBottomSlot.selectedColor,
-            shoesColor = shoesSlot.selectedColor
+            shoesColor = shoesSlot.selectedColor,
+            hairStyle = hairSlot.selectedStyle,
+            clothesTopStyle = clothesTopSlot.selectedStyle,
+            clothesBottomStyle = clothesBottomSlot.selectedStyle
         };
 
         GameManager.Instance.CompleteCharacterCreation(character);

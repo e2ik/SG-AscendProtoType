@@ -59,17 +59,31 @@ public class UIManager : MonoBehaviour
         public GameObject LastSelected;
         public GameObject PreviousSelection;
         public bool BlockKeyboardNavigation;
+        public bool KeyboardSelectsOnNavigate;
     }
 
     private const float MoveDeadzone = 0.6f;
 
     [SerializeField] private string uiMapName = "UI";
     [SerializeField] private string backSound = "UIback";
+    [SerializeField] private bool allowArrowKeysWhenBlocked = true;
+
+    [Header("Gamepad Pointer")]
+    [SerializeField] private bool hideCursorOnGamepad = true;
+    [SerializeField] private bool disableHoverOnGamepad = true;
+
+    public static bool HoverAllowed =>
+        Instance == null || !Instance.disableHoverOnGamepad ||
+        InputManager.Instance == null || InputManager.Instance.ActiveDevice != InputDeviceType.Gamepad;
 
     [Header("Selection Outline Defaults")]
     [SerializeField] private Color selectionHighlightColor = Color.white;
     [SerializeField] private Color selectionChosenColor = Color.yellow;
     [SerializeField] private float selectionPulseSpeed = 4f;
+
+    [Header("Panel Animation")]
+    [SerializeField] [Min(0f)] private float panelShowBounce = 8f;
+    [SerializeField] [Range(0f, 0.3f)] private float panelPopBounce = 0.05f;
 
     [Header("Category Buttons")]
     [SerializeField] private ActiveButtonStyle activeCategoryButtonStyle = ActiveButtonStyle.Brighten;
@@ -84,6 +98,8 @@ public class UIManager : MonoBehaviour
     public Color SelectionChosenColor => selectionChosenColor;
     public Color SelectionActiveCategoryColor => selectionActiveCategoryColor;
     public float SelectionPulseSpeed => selectionPulseSpeed;
+    public float PanelShowBounce => panelShowBounce;
+    public float PanelPopBounce => panelPopBounce;
     public ActiveCategoryStyle ActiveCategoryStyle
     {
         get
@@ -142,8 +158,37 @@ public class UIManager : MonoBehaviour
 
     private void OnDeviceChanged(InputDeviceType device)
     {
-        if (device == InputDeviceType.Gamepad)
+        bool gamepad = device == InputDeviceType.Gamepad;
+
+        if (gamepad)
             _restoreRequested = true;
+
+        if (hideCursorOnGamepad)
+            Cursor.visible = !gamepad;
+
+        if (gamepad && disableHoverOnGamepad)
+            ClearPointerHover();
+    }
+
+    private void ClearPointerHover()
+    {
+        var eventSystem = EventSystem.current;
+        var mouse = Mouse.current;
+        if (eventSystem == null || mouse == null) return;
+
+        var data = new PointerEventData(eventSystem) { position = mouse.position.ReadValue() };
+        var results = new List<RaycastResult>();
+        eventSystem.RaycastAll(data, results);
+
+        var cleared = new HashSet<GameObject>();
+        foreach (var result in results)
+        {
+            for (var t = result.gameObject != null ? result.gameObject.transform : null; t != null; t = t.parent)
+            {
+                if (cleared.Add(t.gameObject))
+                    ExecuteEvents.Execute(t.gameObject, data, ExecuteEvents.pointerExitHandler);
+            }
+        }
     }
 
     private void OnDestroy()
@@ -197,7 +242,15 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        var target = FindInDirection(layer, ReadMoveInput());
+        var move = ReadMoveInput();
+        if (WaitsForKeyboardNavigation(layer) && move == Vector2.zero)
+        {
+            if (current != null)
+                eventSystem.SetSelectedGameObject(null);
+            return;
+        }
+
+        var target = FindInDirection(layer, move);
         if (target == null)
             target = FindFallbackSelection(layer);
 
@@ -249,7 +302,11 @@ public class UIManager : MonoBehaviour
         return null;
     }
 
-    public void PushBackHandler(Action onBack, Transform root, GameObject defaultSelected = null, bool blockKeyboardNavigation = false)
+    private static bool UsingKeyboard => InputManager.Instance == null || InputManager.Instance.ActiveDevice == InputDeviceType.KeyboardMouse;
+
+    private static bool WaitsForKeyboardNavigation(UILayer layer) => layer.KeyboardSelectsOnNavigate && UsingKeyboard;
+
+    public void PushBackHandler(Action onBack, Transform root, GameObject defaultSelected = null, bool blockKeyboardNavigation = false, bool keyboardSelectsOnNavigate = false)
     {
         if (_layers.Count == 0)
         {
@@ -265,11 +322,19 @@ public class UIManager : MonoBehaviour
             Root = root,
             DefaultSelected = defaultSelected,
             PreviousSelection = eventSystem != null ? eventSystem.currentSelectedGameObject : null,
-            BlockKeyboardNavigation = blockKeyboardNavigation
+            BlockKeyboardNavigation = blockKeyboardNavigation,
+            KeyboardSelectsOnNavigate = keyboardSelectsOnNavigate
         };
 
         _layers.Push(layer);
         RefreshKeyboardNavigation();
+
+        if (WaitsForKeyboardNavigation(layer))
+        {
+            if (eventSystem != null)
+                eventSystem.SetSelectedGameObject(null);
+            return;
+        }
 
         var initial = FindFallbackSelection(layer);
         if (eventSystem != null && initial != null)
@@ -443,7 +508,10 @@ public class UIManager : MonoBehaviour
             if (binding.isComposite || string.IsNullOrEmpty(binding.path)) continue;
 
             if (binding.path.StartsWith("<Keyboard>"))
+            {
+                if (allowArrowKeysWhenBlocked && binding.path.Contains("Arrow")) continue;
                 action.ApplyBindingOverride(i, string.Empty);
+            }
             else if (binding.path.StartsWith("*/"))
                 action.ApplyBindingOverride(i, "<Gamepad>/" + binding.path.Substring(2));
             else

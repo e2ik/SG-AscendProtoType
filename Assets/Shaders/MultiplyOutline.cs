@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteAlways]
+[DefaultExecutionOrder(1000)]
 public class MultiplyOutline : MonoBehaviour
 {
     public enum PixelScale { Quarter, Third, Half, Full, Double, Triple, Quadruple }

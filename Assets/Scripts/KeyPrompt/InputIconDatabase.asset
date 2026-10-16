@@ -25,9 +25,17 @@ MonoBehaviour:
     overrideKeyboardColour: 1
     keyboardColour: {r: 0.8742138, g: 0.56356543, b: 0.56356543, a: 1}
     keyboardLabelColour: {r: 0.59748423, g: 0.17097808, b: 0.17097808, a: 1}
-    overrideKeyboardSprite: 0
-    keyboardSprite: {fileID: 0}
+    overrideKeyboardSprite: 1
+    keyboardSprite: {fileID: 21300000, guid: 0f625c6df0e9c9a469e8e68f74b0ea3f, type: 3}
     gamepadSprite: {fileID: 21300000, guid: 61103ec5142c7f14c97392c882621403, type: 3}
+  - action: {fileID: 392368643174621059, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    compositePart: 
+    overrideKeyboardColour: 0
+    keyboardColour: {r: 0.8742138, g: 0.56356543, b: 0.56356543, a: 1}
+    keyboardLabelColour: {r: 0.59748423, g: 0.17097808, b: 0.17097808, a: 1}
+    overrideKeyboardSprite: 1
+    keyboardSprite: {fileID: 21300000, guid: 9f28088067c01b8479d9302e1a9e71fb, type: 3}
+    gamepadSprite: {fileID: 21300000, guid: 16cfe369f2870a54fa33a99014255a1d, type: 3}
   keyboardMouse:
   - controlPath: 
     sprite: {fileID: 0}

@@ -19,6 +19,16 @@ public class PlayerAppearance : MonoBehaviour
         SetColour(clothesTop, data.clothesTopColor);
         SetColour(clothesBottom, data.clothesBottomColor);
         SetColour(shoes, data.shoesColor);
+
+        SetStyle(hair, data.hairStyle);
+        SetStyle(clothesTop, data.clothesTopStyle);
+        SetStyle(clothesBottom, data.clothesBottomStyle);
+    }
+
+    private static void SetStyle(SpriteRenderer part, int style)
+    {
+        if (part != null && part.TryGetComponent<SpriteStyleSwapper>(out var swapper))
+            swapper.SetStyle(style);
     }
 
     private static void SetColour(SpriteRenderer part, Color colour)

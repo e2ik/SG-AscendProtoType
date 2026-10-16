@@ -96,6 +96,7 @@ MonoBehaviour:
   defaultSelected: {fileID: 0}
   closeOnBack: 1
   blockKeyboardNavigation: 0
+  keyboardSelectsOnNavigate: 0
 --- !u!225 &6262229530574888793
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -147,6 +148,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  useUIManagerBounce: 1
+  showBounce: 8
+  popBounce: 0.05
   slideDistance: 0
   fadeWhileSliding: 1
   popScale: 0.8
@@ -477,7 +481,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 2
-  m_Spacing: 60
+  m_Spacing: 35
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1

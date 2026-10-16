@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -35,8 +36,15 @@ public class CategoryInfoPanel : MonoBehaviour
     [SerializeField] private bool perLetterWave = true;
     [SerializeField] [Min(0f)] private float letterDelay = 0.12f;
 
+    [Header("Category Change")]
+    [SerializeField] private RectTransform wobbleTarget;
+    [SerializeField] [Min(0f)] private float wobbleDuration = 0.5f;
+    [SerializeField] private float wobbleAngle = 8f;
+    [SerializeField] [Min(1)] private int wobbleSwings = 3;
+    [SerializeField] private bool fadeOnChange = true;
+    [SerializeField] [Min(0f)] private float changeFadeDuration = 0.12f;
+
     [Header("Flavour Text Style")]
-    [SerializeField] private bool colourEachWord = true;
     [SerializeField] private List<Color> flavourColours = new List<Color>
     {
         new Color32(0xFF, 0x8F, 0x9A, 0xFF),
@@ -62,13 +70,24 @@ public class CategoryInfoPanel : MonoBehaviour
     private Vector2 _savedPosition;
     private RectTransform _labelRect;
     private Color _imageBaseColour = Color.white;
+    private CanvasGroup _panelGroup;
+    private UIPanelAnimator _panelAnimator;
+    private Quaternion _wobbleBaseRotation = Quaternion.identity;
+    private Coroutine _swapRoutine;
+    private Coroutine _wobbleRoutine;
 
     private void Awake()
     {
         if (categoryImage != null)
             _imageBaseColour = categoryImage.color;
 
+        if (wobbleTarget != null)
+            _wobbleBaseRotation = wobbleTarget.localRotation;
+
         if (panel == null) return;
+
+        _panelGroup = panel.GetComponent<CanvasGroup>();
+        _panelAnimator = panel.GetComponent<UIPanelAnimator>();
 
         panel.SetActive(false);
 
@@ -83,7 +102,99 @@ public class CategoryInfoPanel : MonoBehaviour
         return labelColours[index % labelColours.Count];
     }
 
-    public void Show(string label, string flavour, Sprite image, Color labelColour)
+    public void Show(string label, string flavour, Sprite image, Color labelColour, FlavourColourMode flavourMode = FlavourColourMode.MatchLabel, Color singleFlavourColour = default)
+    {
+        bool switching = IsOpen && (_panelAnimator == null || !_panelAnimator.IsHiding);
+        void Apply() => ApplyContent(label, flavour, image, labelColour, flavourMode, singleFlavourColour);
+
+        if (!switching)
+        {
+            StopSwap();
+            Apply();
+            UIPanelAnimator.SetVisible(panel, true);
+            return;
+        }
+
+        StartWobble();
+
+        if (!fadeOnChange || _panelGroup == null || changeFadeDuration <= 0f)
+        {
+            Apply();
+            return;
+        }
+
+        StopSwap();
+        _swapRoutine = StartCoroutine(SwapRoutine(Apply));
+    }
+
+    private IEnumerator SwapRoutine(Action apply)
+    {
+        float start = _panelGroup.alpha;
+        for (float t = 0f; t < changeFadeDuration; t += Time.unscaledDeltaTime)
+        {
+            _panelGroup.alpha = Mathf.Lerp(start, 0f, t / changeFadeDuration);
+            yield return null;
+        }
+
+        _panelGroup.alpha = 0f;
+        apply();
+
+        for (float t = 0f; t < changeFadeDuration; t += Time.unscaledDeltaTime)
+        {
+            _panelGroup.alpha = Mathf.Lerp(0f, 1f, t / changeFadeDuration);
+            yield return null;
+        }
+
+        _panelGroup.alpha = 1f;
+        _swapRoutine = null;
+    }
+
+    private void StopSwap()
+    {
+        if (_swapRoutine == null) return;
+
+        StopCoroutine(_swapRoutine);
+        _swapRoutine = null;
+        if (_panelGroup != null)
+            _panelGroup.alpha = 1f;
+    }
+
+    private void StartWobble()
+    {
+        if (wobbleTarget == null || wobbleDuration <= 0f) return;
+
+        if (_wobbleRoutine != null)
+            StopCoroutine(_wobbleRoutine);
+        _wobbleRoutine = StartCoroutine(WobbleRoutine());
+    }
+
+    private IEnumerator WobbleRoutine()
+    {
+        for (float t = 0f; t < wobbleDuration; t += Time.unscaledDeltaTime)
+        {
+            float progress = t / wobbleDuration;
+            float angle = Mathf.Sin(progress * wobbleSwings * Mathf.PI * 2f) * wobbleAngle * (1f - progress);
+            wobbleTarget.localRotation = _wobbleBaseRotation * Quaternion.Euler(0f, 0f, angle);
+            yield return null;
+        }
+
+        wobbleTarget.localRotation = _wobbleBaseRotation;
+        _wobbleRoutine = null;
+    }
+
+    private void StopWobble()
+    {
+        if (_wobbleRoutine != null)
+        {
+            StopCoroutine(_wobbleRoutine);
+            _wobbleRoutine = null;
+        }
+
+        if (wobbleTarget != null)
+            wobbleTarget.localRotation = _wobbleBaseRotation;
+    }
+
+    private void ApplyContent(string label, string flavour, Sprite image, Color labelColour, FlavourColourMode flavourMode, Color singleFlavourColour)
     {
         if (categoryLabel != null)
         {
@@ -105,7 +216,23 @@ public class CategoryInfoPanel : MonoBehaviour
         }
 
         if (flavourText != null)
-            flavourText.text = colourEachWord ? ColourWords(flavour) : flavour;
+        {
+            switch (flavourMode)
+            {
+                case FlavourColourMode.Pastel:
+                    flavourText.text = ColourWords(flavour);
+                    flavourText.color = Color.white;
+                    break;
+                case FlavourColourMode.Single:
+                    flavourText.text = flavour;
+                    flavourText.color = singleFlavourColour;
+                    break;
+                default:
+                    flavourText.text = flavour;
+                    flavourText.color = labelColour;
+                    break;
+            }
+        }
 
         if (categoryImage != null)
         {
@@ -113,8 +240,6 @@ public class CategoryInfoPanel : MonoBehaviour
             categoryImage.enabled = image != null || !hideImageWhenEmpty;
             categoryImage.color = tintImageWithLabelColour ? labelColour : _imageBaseColour;
         }
-
-        UIPanelAnimator.SetVisible(panel, true);
     }
 
     private void LateUpdate()
@@ -194,6 +319,8 @@ public class CategoryInfoPanel : MonoBehaviour
 
     public void Hide()
     {
+        StopSwap();
+        StopWobble();
         RestoreLabel();
         UIPanelAnimator.SetVisible(panel, false);
     }

@@ -20,6 +20,10 @@ public static class NameFilter
         "rapist", "molest", "pedo", "paedo", "incest", "bestiality",
         "nigger", "nigga", "faggot", "retard", "tranny", "dyke", "chink", "kike", "gook",
         "wetback", "beaner", "raghead", "towelhead", "spastic", "spaz",
+        "negro", "nigg", "niglet", "nignog", "jigaboo", "porchmonkey", "junglebunny", "sambo", "golliwog", "darkie", "darky",
+        "uncletom", "boong", "abbo", "coolie", "halfbreed", "zipperhead", "slanteye", "chingchong", "chinaman",
+        "cameljockey", "sandmonkey", "kyke", "hymie", "redskin", "squaw", "injun", "gyppo", "pikey", "whitetrash", "honky",
+        "faggy", "fagg", "trannie", "shemale", "lesbo", "poofter", "battyboy", "mongoloid", "spacker", "retart",
         "hitler", "heil", "kkk", "swastika", "jihad", "terrorist",
         "killyourself", "suicide", "selfharm", "cutmyself",
         "cocaine", "heroin", "stoner", "druggie",
@@ -29,7 +33,9 @@ public static class NameFilter
     public static readonly string[] WholeWords =
     {
         "ass", "arse", "hoe", "hoes", "sus", "coon", "cum", "paki", "dick", "dicks", "cock", "cocks",
-        "spic", "nazi", "nazis", "rape", "tit", "fag", "fags", "anal", "anus", "gay", "homo", "niga",
+        "spic", "spick", "coons", "abo", "lubra", "wop", "dago", "kraut", "jap", "japs", "nip", "yid", "gyp",
+        "poof", "mong", "tard", "spook",
+        "nazi", "nazis", "rape", "tit", "fag", "fags", "anal", "anus", "gay", "homo", "niga",
         "poo", "poop", "fart", "butt", "bum", "balls", "nuts", "nut", "pee", "wee",
         "knob", "nob", "dong", "wiener", "weiner", "pecker", "boobs", "jugs", "vag", "puss", "thicc",
         "slag", "skank", "prick", "simp", "damn", "hell", "crap",

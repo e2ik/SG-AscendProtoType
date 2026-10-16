@@ -7,8 +7,15 @@ public class UIPanel : MonoBehaviour
     [SerializeField] private Selectable defaultSelected;
     [SerializeField] private bool closeOnBack = true;
     [SerializeField] private bool blockKeyboardNavigation;
+    [SerializeField] private bool keyboardSelectsOnNavigate;
 
     public event Action OnBack;
+
+    public bool KeyboardSelectsOnNavigate
+    {
+        get => keyboardSelectsOnNavigate;
+        set => keyboardSelectsOnNavigate = value;
+    }
 
     private bool _registered;
 
@@ -21,7 +28,7 @@ public class UIPanel : MonoBehaviour
 
         _registered = true;
         var selected = defaultSelected != null ? defaultSelected.gameObject : null;
-        UIManager.Instance.PushBackHandler(HandleBack, transform, selected, blockKeyboardNavigation);
+        UIManager.Instance.PushBackHandler(HandleBack, transform, selected, blockKeyboardNavigation, keyboardSelectsOnNavigate);
     }
 
     public void Unregister()

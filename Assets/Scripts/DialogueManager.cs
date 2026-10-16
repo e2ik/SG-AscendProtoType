@@ -18,8 +18,23 @@ public class DialogueManager : MonoBehaviour
     public static DialogueManager Instance { get; private set; }
 
     [SerializeField] private GameObject panel;
+    [SerializeField] private GameObject background;
     [SerializeField] private UIPanel uiPanel;
     [SerializeField] private TMP_Text speakerText;
+
+    [Header("Portrait Backgrounds")]
+    [SerializeField] private Image portraitLeftBackground;
+    [SerializeField] private Image portraitRightBackground;
+    [SerializeField] [Range(0f, 1f)] private float portraitBackgroundDarken = 0.6f;
+    [SerializeField] [Range(0f, 1f)] private float portraitBackgroundAlpha = 0.7f;
+
+    [Header("Speaker Name Box")]
+    [SerializeField] private RectTransform speakerContainer;
+    [SerializeField] private Image speakerBackground;
+    [SerializeField] [Range(0f, 1f)] private float speakerBackgroundDarken = 0.7f;
+    [SerializeField] [Range(0f, 1f)] private float speakerNameLighten = 0.4f;
+    [SerializeField] private DialogueSide speakerContainerSide = DialogueSide.Left;
+    [SerializeField] private bool flipSpeakerBackground = true;
     [FormerlySerializedAs("portraitImage")]
     [SerializeField] private Image portraitLeft;
     [SerializeField] private Image portraitRight;
@@ -39,6 +54,16 @@ public class DialogueManager : MonoBehaviour
     public bool IsActive => _dialogue != null;
     public event Action<DialogueData> DialogueStarted;
     public event Action<DialogueData> DialogueEnded;
+    public event Action<bool> TypingChanged;
+    public event Action<string> ExpressionChanged;
+    public event Action<bool> ChoosingChanged;
+
+    public bool IsTyping { get; private set; }
+    public bool IsChoosing { get; private set; }
+    public bool IsWritingLine => IsActive && _typing != null;
+    public DialogueSide SpeakerSide => _defaultSide;
+    public bool WaitingForContinue => IsActive && _typing == null && _choiceButtons.Count == 0;
+    public string CurrentExpression { get; private set; }
 
     private readonly List<Button> _choiceButtons = new List<Button>();
     private readonly List<DialogueAction> _pendingActions = new List<DialogueAction>();
@@ -57,6 +82,12 @@ public class DialogueManager : MonoBehaviour
     private Action _onComplete;
     private Coroutine _typing;
     private int _openedFrame = -1;
+    private Vector2 _speakerAnchorMin;
+    private Vector2 _speakerAnchorMax;
+    private Vector2 _speakerPivot;
+    private Vector2 _speakerPosition;
+    private Vector3 _speakerScale;
+    private float _speakerBackgroundAlpha = 1f;
 
     private bool IsLastLine => _sequence != null && _lineIndex >= _sequence.Count - 1;
     private bool ChoicesDueAfterSequence => _respondingTo == null && _dialogue.HasChoices;
@@ -70,7 +101,27 @@ public class DialogueManager : MonoBehaviour
         }
         Instance = this;
 
+        if (speakerContainer != null)
+        {
+            _speakerAnchorMin = speakerContainer.anchorMin;
+            _speakerAnchorMax = speakerContainer.anchorMax;
+            _speakerPivot = speakerContainer.pivot;
+            _speakerPosition = speakerContainer.anchoredPosition;
+            _speakerScale = speakerContainer.localScale;
+        }
+
+        if (speakerBackground == null && speakerContainer != null)
+            speakerBackground = speakerContainer.GetComponent<Image>();
+        if (speakerBackground != null)
+            _speakerBackgroundAlpha = speakerBackground.color.a;
+
         panel.SetActive(false);
+        if (background != null)
+            background.SetActive(false);
+        if (portraitLeftBackground != null)
+            portraitLeftBackground.gameObject.SetActive(false);
+        if (portraitRightBackground != null)
+            portraitRightBackground.gameObject.SetActive(false);
         continueButton.onClick.AddListener(Advance);
 
         if (portraitRight != null)
@@ -103,6 +154,7 @@ public class DialogueManager : MonoBehaviour
 
         textEffects.SetText(string.Empty);
         ShowSpeaker(defaultSpeaker);
+        UIPanelAnimator.SetVisible(background, true);
         UIPanelAnimator.SetVisible(panel, true);
 
         DialogueStarted?.Invoke(dialogue);
@@ -142,6 +194,7 @@ public class DialogueManager : MonoBehaviour
 
         if (_typing != null)
             StopCoroutine(_typing);
+        SetTyping(true);
         _typing = StartCoroutine(TypeLine(line.text));
     }
 
@@ -151,18 +204,81 @@ public class DialogueManager : MonoBehaviour
         _lineSide = speaker == null || speaker == _defaultSpeaker ? _defaultSide : Opposite(_defaultSide);
 
         bool hasName = speaker != null && !string.IsNullOrEmpty(speaker.displayName);
-        speakerText.gameObject.SetActive(hasName);
+        var nameRoot = speakerContainer != null ? speakerContainer.gameObject : speakerText.gameObject;
+        nameRoot.SetActive(hasName);
+
         if (hasName)
         {
             speakerText.text = speaker.displayName;
-            speakerText.color = speaker.nameColor;
+            speakerText.color = Lighten(speaker.nameColor);
+
+            if (speakerBackground != null)
+                speakerBackground.color = Darken(speaker.nameColor);
+
+            ApplySpeakerSide(_lineSide);
         }
 
         SetPortrait(null);
     }
 
+    private Color Lighten(Color colour)
+    {
+        var light = Color.Lerp(colour, Color.white, speakerNameLighten);
+        light.a = colour.a;
+        return light;
+    }
+
+    private Color Darken(Color colour)
+    {
+        Color.RGBToHSV(colour, out float h, out float s, out float v);
+        var dark = Color.HSVToRGB(h, s, v * (1f - speakerBackgroundDarken));
+        dark.a = _speakerBackgroundAlpha;
+        return dark;
+    }
+
+    private void ApplySpeakerSide(DialogueSide side)
+    {
+        if (speakerContainer == null) return;
+
+        bool mirrored = side != speakerContainerSide;
+
+        var anchorMin = _speakerAnchorMin;
+        var anchorMax = _speakerAnchorMax;
+        var pivot = _speakerPivot;
+        var position = _speakerPosition;
+        var scale = _speakerScale;
+
+        if (mirrored)
+        {
+            anchorMin.x = 1f - _speakerAnchorMax.x;
+            anchorMax.x = 1f - _speakerAnchorMin.x;
+            position.x = -_speakerPosition.x;
+
+            if (flipSpeakerBackground)
+                scale.x = -Mathf.Abs(_speakerScale.x);
+            else
+                pivot.x = 1f - _speakerPivot.x;
+        }
+
+        speakerContainer.anchorMin = anchorMin;
+        speakerContainer.anchorMax = anchorMax;
+        speakerContainer.pivot = pivot;
+        speakerContainer.anchoredPosition = position;
+        speakerContainer.localScale = scale;
+
+        float childSign = Mathf.Sign(scale.x);
+        foreach (Transform child in speakerContainer)
+        {
+            var childScale = child.localScale;
+            childScale.x = Mathf.Abs(childScale.x) * childSign;
+            child.localScale = childScale;
+        }
+    }
+
     private void SetPortrait(string expression)
     {
+        SetExpression(expression);
+
         var sprite = _lineSpeaker != null ? _lineSpeaker.GetPortrait(expression) : null;
         var active = _lineSide == DialogueSide.Left ? portraitLeft : portraitRight;
         var inactive = _lineSide == DialogueSide.Left ? portraitRight : portraitLeft;
@@ -175,6 +291,37 @@ public class DialogueManager : MonoBehaviour
             active.sprite = sprite;
             active.gameObject.SetActive(sprite != null);
         }
+
+        UpdatePortraitBackgrounds(sprite != null);
+    }
+
+    private void UpdatePortraitBackgrounds(bool hasPortrait)
+    {
+        var activeBackground = _lineSide == DialogueSide.Left ? portraitLeftBackground : portraitRightBackground;
+        var inactiveBackground = _lineSide == DialogueSide.Left ? portraitRightBackground : portraitLeftBackground;
+
+        if (inactiveBackground != null)
+            UIPanelAnimator.SetVisible(inactiveBackground.gameObject, false);
+
+        if (activeBackground == null) return;
+
+        if (hasPortrait && _lineSpeaker != null)
+        {
+            Color.RGBToHSV(_lineSpeaker.nameColor, out float h, out float sat, out float v);
+            var colour = Color.HSVToRGB(h, sat, v * (1f - portraitBackgroundDarken));
+            colour.a = portraitBackgroundAlpha;
+            activeBackground.color = colour;
+        }
+
+        UIPanelAnimator.SetVisible(activeBackground.gameObject, hasPortrait);
+    }
+
+    private void HidePortraitBackgrounds()
+    {
+        if (portraitLeftBackground != null)
+            UIPanelAnimator.SetVisible(portraitLeftBackground.gameObject, false);
+        if (portraitRightBackground != null)
+            UIPanelAnimator.SetVisible(portraitRightBackground.gameObject, false);
     }
 
     private static DialogueSide Opposite(DialogueSide side) =>
@@ -269,12 +416,15 @@ public class DialogueManager : MonoBehaviour
                     float wait = pauses[nextPause].Duration;
                     nextPause++;
                     budget = 0f;
+                    SetTyping(false);
 
                     while (wait > 0f)
                     {
                         wait -= Time.unscaledDeltaTime;
                         yield return null;
                     }
+
+                    SetTyping(true);
                     continue;
                 }
 
@@ -312,6 +462,7 @@ public class DialogueManager : MonoBehaviour
 
         bodyText.maxVisibleCharacters = int.MaxValue;
         ApplyExpressionsUpTo(int.MaxValue);
+        SetTyping(false);
 
         if (IsLastLine && ChoicesDueAfterSequence)
         {
@@ -345,7 +496,8 @@ public class DialogueManager : MonoBehaviour
         foreach (var choice in choices)
         {
             var button = Instantiate(choiceButtonPrefab, choicesParent);
-            var label = button.GetComponentInChildren<TMP_Text>();
+            var reveal = button.GetComponent<ChoiceReveal>();
+            var label = reveal != null && reveal.Label != null ? reveal.Label : button.GetComponentInChildren<TMP_Text>();
             if (label != null)
                 label.text = choice.text;
 
@@ -354,16 +506,19 @@ public class DialogueManager : MonoBehaviour
             _choiceButtons.Add(button);
         }
 
+        if (choicesParent is RectTransform choicesRect)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(choicesRect);
+
         if (_choiceButtons.Count > 0)
+        {
             Select(_choiceButtons[0].gameObject);
+            SetChoosing(true);
+        }
     }
 
     private void Choose(DialogueChoice choice)
     {
         if (!IsActive) return;
-
-        TelemetryManager.Log("dialogue_choice", _dialogue != null ? _dialogue.name : null,
-        _dialogue != null ? _dialogue.choices.IndexOf(choice) : -1, choice.text);
 
         if (choice.action != null && choice.action.type != DialogueActionType.None)
             _pendingActions.Add(choice.action);
@@ -390,6 +545,7 @@ public class DialogueManager : MonoBehaviour
             Destroy(button.gameObject);
         }
         _choiceButtons.Clear();
+        SetChoosing(false);
 
         continueButton.gameObject.SetActive(true);
     }
@@ -419,13 +575,41 @@ public class DialogueManager : MonoBehaviour
         _lineSpeaker = null;
         _pendingActions.Clear();
 
+        SetTyping(false);
+        SetExpression(null);
         UIPanelAnimator.SetVisible(panel, false);
+        UIPanelAnimator.SetVisible(background, false);
+        HidePortraitBackgrounds();
 
         onComplete?.Invoke();
         DialogueEnded?.Invoke(started);
 
         foreach (var action in actions)
             action.Execute();
+    }
+
+    private void SetExpression(string expression)
+    {
+        if (CurrentExpression == expression) return;
+
+        CurrentExpression = expression;
+        ExpressionChanged?.Invoke(expression);
+    }
+
+    private void SetChoosing(bool choosing)
+    {
+        if (IsChoosing == choosing) return;
+
+        IsChoosing = choosing;
+        ChoosingChanged?.Invoke(choosing);
+    }
+
+    private void SetTyping(bool typing)
+    {
+        if (IsTyping == typing) return;
+
+        IsTyping = typing;
+        TypingChanged?.Invoke(typing);
     }
 
     private void SetIndicatorVisible(bool visible)
