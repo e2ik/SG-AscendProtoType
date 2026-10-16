@@ -142,6 +142,7 @@ MonoBehaviour:
   sortingOrderOffset: 1
   ignoreUIManager: 0
   pulseSpeed: 4
+  pulseWhenChosen: 1
   activeCategoryStyle:
     buttonStyle: 0
     brighten: 0.4
@@ -267,7 +268,7 @@ RectTransform:
   m_GameObject: {fileID: 8666612452348524739}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.8}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4872128434942604915}
@@ -314,4 +315,4 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 8
+  m_PixelsPerUnitMultiplier: 5

@@ -5281,7 +5281,7 @@ MonoBehaviour:
   lookAheadDistance: 2
   lookAheadHoldTime: 0.35
   lookAheadSmoothTime: 0.6
-  keepLookAheadWhenStopped: 0
+  keepLookAheadWhenStopped: 1
   useVerticalPan: 1
   panUpDistance: 3
   panDownDistance: 3.5

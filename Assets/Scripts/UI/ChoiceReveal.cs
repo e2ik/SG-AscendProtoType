@@ -27,7 +27,14 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [Header("Background Colour")]
     [SerializeField] private bool changeBackgroundColour = true;
     [SerializeField] private Color collapsedBackgroundColour = Color.white;
+    [SerializeField] [Range(0f, 1f)] private float collapsedColourVariation = 0.15f;
     [SerializeField] private Color revealedBackgroundColour = Color.white;
+
+    [Header("Entrance")]
+    [SerializeField] private bool animateEntrance = true;
+    [SerializeField] [Min(0f)] private float entranceDelayPerChoice = 0.08f;
+    [SerializeField] [Min(0.01f)] private float entranceDuration = 0.18f;
+    [SerializeField] [Range(0f, 3f)] private float entranceOvershoot = 1.7f;
 
     [Header("Active Size")]
     [SerializeField] [Min(0.1f)] private float activeScale = 1.15f;
@@ -52,6 +59,23 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [SerializeField] private Vector2 backLayerShoveAmount = new Vector2(2f, 2f);
     [SerializeField] [Min(0f)] private float backLayerShoveRotation = 3f;
     [SerializeField] [Min(0f)] private float backLayerShovesPerSecond = 3f;
+
+    [Header("Inactive Back Layer")]
+    [SerializeField] private bool useInactiveBackLayer = true;
+    [SerializeField] private Color inactiveBackLayerColour = new Color(0.1f, 0.1f, 0.15f, 0.6f);
+    [SerializeField] [Min(1f)] private float inactiveBackLayerScale = 1.15f;
+    [SerializeField] [Range(0f, 1f)] private float inactiveBackLayerShove = 0.5f;
+
+    [Header("Navigation Arrow")]
+    [SerializeField] private Image navigationArrow;
+    [SerializeField] private Sprite downArrow;
+    [SerializeField] private Sprite upArrow;
+    [SerializeField] private Sprite upDownArrow;
+    [SerializeField] private float arrowGap = 4f;
+    [SerializeField] private Color arrowInactiveColour = Color.white;
+    [SerializeField] private Vector2 arrowShoveAmount = new Vector2(1f, 1f);
+    [SerializeField] [Min(0f)] private float arrowShoveRotation = 6f;
+    [SerializeField] [Min(0f)] private float arrowShovesPerSecond = 6f;
 
     [Header("Text Colour")]
     [SerializeField] private bool changeTextColour = true;
@@ -85,6 +109,18 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private float _backShoveTimer;
     private Vector2 _backShoveOffset;
     private float _frameDelta;
+    private Color _collapsedColour = Color.white;
+    private CanvasGroup _group;
+    private float _entranceScale = 1f;
+    private float _entranceTime;
+    private float _entranceDelay;
+    private bool _entering;
+    private int _choiceIndex;
+    private int _choiceCount = 1;
+    private Color _arrowActiveColour = Color.white;
+    private Vector2 _arrowShoveOffset;
+    private float _arrowShoveAngle;
+    private float _arrowShoveTimer;
     private bool _mirrored;
     private ChoicesFollowPlayer _follow;
     private float _backShoveAngle;
@@ -92,6 +128,19 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private void Awake()
     {
         _rect = (RectTransform)transform;
+        if (navigationArrow != null)
+            _arrowActiveColour = navigationArrow.color;
+        _collapsedColour = Vary(collapsedBackgroundColour, collapsedColourVariation);
+
+        if (animateEntrance)
+        {
+            _group = GetComponent<CanvasGroup>();
+            if (_group == null)
+                _group = gameObject.AddComponent<CanvasGroup>();
+            _group.alpha = 0f;
+            _entranceScale = 0f;
+            _entering = true;
+        }
         _baseScale = transform.localScale;
         _baseRotation = transform.localRotation;
 
@@ -122,7 +171,7 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             background.SetAsFirstSibling();
         }
 
-        if (useBackLayer && _backgroundImage != null)
+        if ((useBackLayer || useInactiveBackLayer) && _backgroundImage != null)
             CreateBackLayer();
 
         if (numberLabel != null)
@@ -174,13 +223,15 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     }
 
     private float BackLayerMargin => _backLayer == null ? 0f
-        : Reveal * (_rect.rect.height * (backLayerScale - 1f) * 0.5f + Mathf.Max(backLayerShoveAmount.x, backLayerShoveAmount.y) + 1f);
+        : (useInactiveBackLayer ? 1f : Reveal) * (_rect.rect.height * (Mathf.Max(backLayerScale, inactiveBackLayerScale) - 1f) * 0.5f + Mathf.Max(backLayerShoveAmount.x, backLayerShoveAmount.y) + 1f);
+
+    private float BackLayerPresence => useInactiveBackLayer ? (useBackLayer ? 1f : 1f - Reveal) : (useBackLayer ? Reveal : 0f);
 
     private void UpdateBackLayer(float dt, float width)
     {
         if (_backLayer == null) return;
 
-        if (Reveal <= 0.001f)
+        if (BackLayerPresence <= 0.001f)
         {
             _backLayerImage.enabled = false;
             _backShoveTimer = 0f;
@@ -204,18 +255,41 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
 
         float height = _rect.rect.height;
-        float grow = height * (backLayerScale - 1f) * Reveal;
+        float scale = useInactiveBackLayer ? Mathf.Lerp(inactiveBackLayerScale, backLayerScale, Reveal) : backLayerScale;
+        float grow = height * (scale - 1f) * (useInactiveBackLayer ? 1f : Reveal);
+        float shove = useInactiveBackLayer ? Mathf.Lerp(inactiveBackLayerShove, 1f, Reveal) : Reveal;
         var size = new Vector2(width + grow, height + grow);
         if (snapToPixels)
             size = new Vector2(Mathf.Round(size.x), Mathf.Round(size.y));
 
         _backLayer.sizeDelta = size;
-        _backLayer.anchoredPosition = new Vector2(_mirrored ? -width * 0.5f : width * 0.5f, 0f) + _backShoveOffset * Reveal;
-        _backLayer.localRotation = Quaternion.Euler(0f, 0f, _backShoveAngle * Reveal);
+        _backLayer.anchoredPosition = new Vector2(_mirrored ? -width * 0.5f : width * 0.5f, 0f) + _backShoveOffset * shove;
+        _backLayer.localRotation = Quaternion.Euler(0f, 0f, _backShoveAngle * shove);
 
-        var colour = backLayerColour;
-        colour.a *= Reveal;
+        Color colour;
+        if (useInactiveBackLayer && useBackLayer)
+            colour = Color.Lerp(inactiveBackLayerColour, backLayerColour, Reveal);
+        else if (useInactiveBackLayer)
+        {
+            colour = inactiveBackLayerColour;
+            colour.a *= 1f - Reveal;
+        }
+        else
+        {
+            colour = backLayerColour;
+            colour.a *= Reveal;
+        }
         _backLayerImage.color = colour;
+    }
+
+    private static Color Vary(Color colour, float amount)
+    {
+        if (amount <= 0f) return colour;
+
+        float shift = Random.Range(-amount, amount);
+        var varied = Color.Lerp(colour, shift >= 0f ? Color.white : Color.black, Mathf.Abs(shift));
+        varied.a = colour.a;
+        return varied;
     }
 
     public void SetNumber(int number)
@@ -273,8 +347,119 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         Apply(_shownProgress);
     }
 
+    private int ChoiceIndex()
+    {
+        if (transform.parent == null) return 0;
+
+        int index = 0;
+        foreach (Transform sibling in transform.parent)
+        {
+            if (sibling == transform) break;
+            if (sibling.GetComponent<ChoiceReveal>() != null)
+                index++;
+        }
+        return index;
+    }
+
+    private void UpdateEntrance(float dt)
+    {
+        if (!_entering) return;
+
+        _entranceTime += dt;
+        float p = Mathf.Clamp01((_entranceTime - _entranceDelay) / entranceDuration);
+        float q = p - 1f;
+        _entranceScale = p <= 0f ? 0f : 1f + (entranceOvershoot + 1f) * q * q * q + entranceOvershoot * q * q;
+
+        if (_group != null)
+            _group.alpha = Mathf.Clamp01(p * 2f);
+
+        if (p >= 1f)
+        {
+            _entranceScale = 1f;
+            _entering = false;
+        }
+    }
+
+    private int ChoiceCount()
+    {
+        if (transform.parent == null) return 1;
+
+        int count = 0;
+        foreach (Transform sibling in transform.parent)
+        {
+            if (sibling.gameObject.activeSelf && sibling.GetComponent<ChoiceReveal>() != null)
+                count++;
+        }
+        return Mathf.Max(1, count);
+    }
+
+    private void SetupArrow()
+    {
+        if (navigationArrow == null) return;
+
+        var layout = navigationArrow.GetComponent<LayoutElement>();
+        if (layout == null)
+            layout = navigationArrow.gameObject.AddComponent<LayoutElement>();
+        layout.ignoreLayout = true;
+        navigationArrow.raycastTarget = false;
+
+        Sprite sprite = null;
+        if (_choiceCount > 1)
+        {
+            if (_choiceIndex == 0) sprite = downArrow;
+            else if (_choiceIndex == _choiceCount - 1) sprite = upArrow;
+            else sprite = upDownArrow;
+        }
+
+        navigationArrow.sprite = sprite;
+        navigationArrow.enabled = sprite != null;
+    }
+
+    private void UpdateArrow(float width)
+    {
+        if (navigationArrow == null || !navigationArrow.enabled) return;
+
+        var rect = navigationArrow.rectTransform;
+        float edge = _mirrored ? 1f : 0f;
+        rect.anchorMin = new Vector2(edge, 0.5f);
+        rect.anchorMax = new Vector2(edge, 0.5f);
+        rect.pivot = new Vector2(edge, 0.5f);
+
+        if (arrowShovesPerSecond > 0f && Reveal > 0.001f)
+        {
+            _arrowShoveTimer += _frameDelta;
+            if (_arrowShoveTimer >= 1f / arrowShovesPerSecond)
+            {
+                _arrowShoveTimer = 0f;
+                var nudge = new Vector2(Random.Range(-arrowShoveAmount.x, arrowShoveAmount.x), Random.Range(-arrowShoveAmount.y, arrowShoveAmount.y));
+                if (snapToPixels)
+                    nudge = new Vector2(Mathf.Round(nudge.x), Mathf.Round(nudge.y));
+                _arrowShoveOffset = nudge;
+                _arrowShoveAngle = Random.Range(-arrowShoveRotation, arrowShoveRotation);
+            }
+        }
+
+        float x = width + arrowGap;
+        var offset = background != null && shoveBackgroundToo ? background.anchoredPosition : Vector2.zero;
+        rect.anchoredPosition = new Vector2(_mirrored ? -x : x, 0f) + offset + _arrowShoveOffset * Reveal;
+        rect.localRotation = Quaternion.Euler(0f, 0f, _arrowShoveAngle * Reveal);
+
+        var colour = Color.Lerp(arrowInactiveColour, _arrowActiveColour, Reveal);
+        colour.a *= Mathf.Clamp01(Reveal * 3f);
+        navigationArrow.color = colour;
+    }
+
+    private float ArrowExtent => navigationArrow != null && navigationArrow.enabled
+        ? (arrowGap + navigationArrow.rectTransform.rect.width) * Reveal
+        : 0f;
+
     private void Start()
     {
+        _choiceIndex = ChoiceIndex();
+        _choiceCount = ChoiceCount();
+        SetupArrow();
+        _entranceDelay = _choiceIndex * entranceDelayPerChoice;
+
         _follow = transform.parent != null ? transform.parent.GetComponent<ChoicesFollowPlayer>() : null;
         if (_follow != null)
             SetMirrored(!_follow.OnRight);
@@ -331,6 +516,7 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         float dt = Time.unscaledDeltaTime;
         _frameDelta = dt;
+        UpdateEntrance(dt);
 
         if (!UIManager.HoverAllowed)
             _hovered = false;
@@ -468,7 +654,7 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         float eased = progress * progress * (3f - 2f * progress);
         Reveal = eased;
 
-        transform.localScale = _baseScale * Mathf.Lerp(1f, activeScale, eased);
+        transform.localScale = _baseScale * (Mathf.Lerp(1f, activeScale, eased) * _entranceScale);
         transform.localRotation = _baseRotation * Quaternion.Euler(0f, 0f, _shoveAngle * (1f - eased));
         RequestLayout();
 
@@ -485,11 +671,12 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             background.sizeDelta = new Vector2(width, 0f);
 
         UpdateBackLayer(_frameDelta, width);
+        UpdateArrow(width);
 
         if (_mask != null)
         {
             float margin = BackLayerMargin + (shoveBackgroundToo ? Reveal * (Mathf.Max(textShoveAmount.x, textShoveAmount.y) + 1f) : 0f);
-            float hidden = Mathf.Max(-margin, fullWidth - width - margin);
+            float hidden = Mathf.Max(-margin, fullWidth - width - margin) - ArrowExtent;
             _mask.padding = _mirrored
                 ? new Vector4(hidden, -margin, -margin, -margin)
                 : new Vector4(-margin, -margin, hidden, -margin);
@@ -497,7 +684,7 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         if (changeBackgroundColour && _backgroundImage != null)
         {
-            _backgroundImage.color = Color.Lerp(collapsedBackgroundColour, revealedBackgroundColour, eased);
+            _backgroundImage.color = Color.Lerp(_collapsedColour, revealedBackgroundColour, eased);
         }
 
         if (label != null)

@@ -46,6 +46,8 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private Transform choicesParent;
     [SerializeField] private Button choiceButtonPrefab;
     [SerializeField] private float charactersPerSecond = 40f;
+    [SerializeField] private bool continueBeforeChoices = true;
+    [SerializeField] [Min(0f)] private float choicesDelay = 0.4f;
 
     [Header("Typing Blips")]
     [SerializeField] private string defaultBlipKey = "NPCblip";
@@ -62,7 +64,7 @@ public class DialogueManager : MonoBehaviour
     public bool IsChoosing { get; private set; }
     public bool IsWritingLine => IsActive && _typing != null;
     public DialogueSide SpeakerSide => _defaultSide;
-    public bool WaitingForContinue => IsActive && _typing == null && _choiceButtons.Count == 0;
+    public bool WaitingForContinue => IsActive && _typing == null && _choicesDelayRoutine == null && _choiceButtons.Count == 0;
     public string CurrentExpression { get; private set; }
 
     private readonly List<Button> _choiceButtons = new List<Button>();
@@ -81,6 +83,7 @@ public class DialogueManager : MonoBehaviour
     private int _blipCounter;
     private Action _onComplete;
     private Coroutine _typing;
+    private Coroutine _choicesDelayRoutine;
     private int _openedFrame = -1;
     private Vector2 _speakerAnchorMin;
     private Vector2 _speakerAnchorMax;
@@ -177,6 +180,7 @@ public class DialogueManager : MonoBehaviour
 
     private void ShowLine(int index)
     {
+        CancelPendingChoices();
         ClearChoices();
 
         if (_sequence == null || index >= _sequence.Count)
@@ -464,13 +468,36 @@ public class DialogueManager : MonoBehaviour
         ApplyExpressionsUpTo(int.MaxValue);
         SetTyping(false);
 
-        if (IsLastLine && ChoicesDueAfterSequence)
+        if (IsLastLine && ChoicesDueAfterSequence && !continueBeforeChoices)
         {
             QueueFinishFlag(_dialogue);
-            ShowChoices(_dialogue.choices);
+            CancelPendingChoices();
+
+            if (choicesDelay > 0f)
+                _choicesDelayRoutine = StartCoroutine(ShowChoicesAfterDelay());
+            else
+                ShowChoices(_dialogue.choices);
         }
         else
             SetIndicatorVisible(true);
+    }
+
+    private IEnumerator ShowChoicesAfterDelay()
+    {
+        float end = Time.unscaledTime + choicesDelay;
+        while (Time.unscaledTime < end)
+            yield return null;
+
+        _choicesDelayRoutine = null;
+        ShowChoices(_dialogue.choices);
+    }
+
+    private void CancelPendingChoices()
+    {
+        if (_choicesDelayRoutine == null) return;
+
+        StopCoroutine(_choicesDelayRoutine);
+        _choicesDelayRoutine = null;
     }
 
     private void Advance()
@@ -480,6 +507,13 @@ public class DialogueManager : MonoBehaviour
         if (_typing != null)
         {
             FinishTyping();
+            return;
+        }
+
+        if (_choicesDelayRoutine != null)
+        {
+            CancelPendingChoices();
+            ShowChoices(_dialogue.choices);
             return;
         }
 
@@ -553,6 +587,8 @@ public class DialogueManager : MonoBehaviour
     private void EndDialogue()
     {
         if (!IsActive) return;
+
+        CancelPendingChoices();
 
         if (_typing != null)
         {

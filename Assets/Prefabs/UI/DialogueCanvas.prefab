@@ -999,11 +999,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChoicesFollowPlayer
   player: {fileID: 0}
-  screenOffset: {x: 12, y: 0}
+  screenOffset: {x: 0, y: 0}
   playerHeightPoint: 0.6
   verticalPivot: 0.5
   sideFacingSpeaker: 1
   keepOnScreen: 1
+  screenMargin: 8
   snapToPixels: 1
 --- !u!1 &4502071303448807234
 GameObject:
@@ -1130,12 +1131,12 @@ MonoBehaviour:
   maxScale: 0
   useUnscaledTime: 1
   syncWithDialogue: 1
-  stillWhenNotTyping: 1
+  stillWhenNotTyping: 0
   idleStrength: 0.4
   idleSpeed: 0.75
   typingStrength: 1
   typingSpeed: 1
-  bobWhileChoosing: 1
+  bobWhileChoosing: 0
   bobHeight: 3
   bobsPerSecond: 0.8
   bobFramesPerSecond: 8
@@ -1628,12 +1629,12 @@ MonoBehaviour:
   maxScale: 0
   useUnscaledTime: 1
   syncWithDialogue: 1
-  stillWhenNotTyping: 1
+  stillWhenNotTyping: 0
   idleStrength: 0.4
   idleSpeed: 0.75
   typingStrength: 1
   typingSpeed: 1
-  bobWhileChoosing: 1
+  bobWhileChoosing: 0
   bobHeight: 3
   bobsPerSecond: 0.8
   bobFramesPerSecond: 8

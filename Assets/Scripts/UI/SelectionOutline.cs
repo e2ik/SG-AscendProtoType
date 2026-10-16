@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -12,6 +13,7 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
     [Header("Own Settings")]
     [SerializeField] private bool ignoreUIManager;
     [SerializeField] private float pulseSpeed = 4f;
+    [SerializeField] private bool pulseWhenChosen = true;
     [SerializeField] private ActiveCategoryStyle activeCategoryStyle = new ActiveCategoryStyle();
 
     public ActiveCategoryStyle OverrideCategoryStyle => ignoreUIManager ? activeCategoryStyle : null;
@@ -23,6 +25,8 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
     private Color? _chosenColorOverride;
     private Color _ownColor = Color.white;
     private CanvasGroup[] _parentGroups;
+    private TMP_Text _label;
+    private Color _labelBaseColour;
 
     private void Awake()
     {
@@ -64,10 +68,28 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
         ownGroup.blocksRaycasts = false;
 
         CacheParentGroups();
+        CacheLabel();
         outline.SetActive(false);
     }
 
     private void OnTransformParentChanged() => CacheParentGroups();
+
+    private void CacheLabel()
+    {
+        foreach (var text in GetComponentsInChildren<TMP_Text>(true))
+        {
+            if (outline != null && text.transform.IsChildOf(outline.transform)) continue;
+            _label = text;
+            _labelBaseColour = text.color;
+            return;
+        }
+    }
+
+    private void ApplyLabelColour(bool highlighted)
+    {
+        if (_label == null || !ignoreUIManager || activeCategoryStyle == null || !activeCategoryStyle.changeText) return;
+        _label.color = highlighted ? activeCategoryStyle.textColor : _labelBaseColour;
+    }
 
     private void CacheParentGroups()
     {
@@ -140,8 +162,10 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
 
     private void RefreshVisibility()
     {
+        bool visible = _isSelected || _isHovered || _isChosen;
         if (outline != null)
-            outline.SetActive(_isSelected || _isHovered || _isChosen);
+            outline.SetActive(visible);
+        ApplyLabelColour(visible);
     }
 
     private void LateUpdate()
@@ -161,7 +185,7 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
         var ui = UIManager.Instance;
         bool useOwn = ignoreUIManager || ui == null;
 
-        if (_isChosen && !_isSelected && !_isHovered)
+        if (_isChosen && !_isSelected && !_isHovered && !pulseWhenChosen)
         {
             var staticColor = _chosenColorOverride ?? (useOwn ? _ownColor : ui.SelectionChosenColor);
             staticColor.a = maxAlpha * ParentAlpha();
@@ -171,7 +195,9 @@ public class SelectionOutline : MonoBehaviour, ISelectHandler, IDeselectHandler,
 
         float speed = useOwn ? pulseSpeed : ui.SelectionPulseSpeed;
         float pulse = (Mathf.Sin(Time.unscaledTime * speed) + 1f) * 0.5f;
-        var color = useOwn ? _ownColor : ui.SelectionHighlightColor;
+        var color = _isChosen && !_isSelected && !_isHovered
+            ? _chosenColorOverride ?? (useOwn ? _ownColor : ui.SelectionChosenColor)
+            : useOwn ? _ownColor : ui.SelectionHighlightColor;
         color.a = Mathf.Lerp(minAlpha, maxAlpha, pulse) * ParentAlpha();
         _outlineGraphic.color = color;
     }

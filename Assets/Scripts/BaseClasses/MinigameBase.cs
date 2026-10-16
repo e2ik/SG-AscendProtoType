@@ -20,6 +20,7 @@ public abstract class MinigameBase : MonoBehaviour
 
     [Header("Countdown")]
     [SerializeField] [Min(0)] private int countdownSeconds = 3;
+    [SerializeField] [Min(0f)] private float countdownDelay = 1f;
 
     [Header("Play Area")]
     [SerializeField] private CanvasGroup playArea;
@@ -93,6 +94,10 @@ public abstract class MinigameBase : MonoBehaviour
     private IEnumerator Countdown()
     {
         var hud = MinigameHUD.Instance;
+        if (hud != null) hud.PrepareCountdown();
+
+        if (countdownDelay > 0f)
+            yield return new WaitForSeconds(countdownDelay);
 
         for (int i = countdownSeconds; i > 0; i--)
         {

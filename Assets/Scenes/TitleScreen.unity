@@ -1010,6 +1010,10 @@ MonoBehaviour:
   saveListContentParent: {fileID: 947441108}
   saveSlotPrefab: {fileID: 7908630968434510704, guid: aeb5405479ac6114b824063a89e7ee39, type: 3}
   deleteAllButton: {fileID: 0}
+  maxSaves: 3
+  saveLimitMessage: You already have {0} adventures saved! Delete one from Load Game
+    to start a new one.
+  saveLimitButtonText: Okay
 --- !u!4 &581764446
 Transform:
   m_ObjectHideFlags: 0
@@ -1543,14 +1547,15 @@ MonoBehaviour:
   sortingOrderOffset: 1
   ignoreUIManager: 1
   pulseSpeed: 4
+  pulseWhenChosen: 1
   activeCategoryStyle:
     buttonStyle: 0
     brighten: 0.4
     buttonColor: {r: 0, g: 1, b: 1, a: 1}
     changeText: 1
-    textColor: {r: 1, g: 1, b: 1, a: 1}
+    textColor: {r: 0.6981132, g: 0, b: 0, a: 1}
     changeOutline: 1
-    outlineColor: {r: 0, g: 1, b: 1, a: 1}
+    outlineColor: {r: 1, g: 0.31760997, b: 0.65224254, a: 1}
 --- !u!114 &1119817597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2306,14 +2311,15 @@ MonoBehaviour:
   sortingOrderOffset: 1
   ignoreUIManager: 1
   pulseSpeed: 4
+  pulseWhenChosen: 1
   activeCategoryStyle:
     buttonStyle: 0
     brighten: 0.4
     buttonColor: {r: 0, g: 1, b: 1, a: 1}
     changeText: 1
-    textColor: {r: 1, g: 1, b: 1, a: 1}
+    textColor: {r: 0.32704395, g: 0.15345639, b: 0.04422286, a: 1}
     changeOutline: 1
-    outlineColor: {r: 0, g: 1, b: 1, a: 1}
+    outlineColor: {r: 1, g: 0.73333335, b: 0, a: 1}
 --- !u!114 &1375478267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3416,14 +3422,15 @@ MonoBehaviour:
   sortingOrderOffset: 1
   ignoreUIManager: 1
   pulseSpeed: 4
+  pulseWhenChosen: 1
   activeCategoryStyle:
     buttonStyle: 0
     brighten: 0.4
     buttonColor: {r: 0, g: 1, b: 1, a: 1}
     changeText: 1
-    textColor: {r: 1, g: 1, b: 1, a: 1}
+    textColor: {r: 0.32941177, g: 0.15686275, b: 0.047058824, a: 1}
     changeOutline: 1
-    outlineColor: {r: 0, g: 1, b: 1, a: 1}
+    outlineColor: {r: 1, g: 0.73333216, b: 0, a: 1}
 --- !u!114 &2049399923
 MonoBehaviour:
   m_ObjectHideFlags: 0
