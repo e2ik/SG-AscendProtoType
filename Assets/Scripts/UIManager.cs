@@ -119,6 +119,7 @@ public class UIManager : MonoBehaviour
 
     public event Action OnPauseRequested;
     public bool IsAnyUIOpen => _layers.Count > 0;
+    public bool CancelHandledThisFrame => _escapeHandledFrame == Time.frameCount;
     public Transform TopLayerRoot => _layers.Count > 0 ? _layers.Peek().Root : null;
 
     private readonly Dictionary<Type, object> _registry = new Dictionary<Type, object>();
@@ -204,6 +205,12 @@ public class UIManager : MonoBehaviour
         RestoreKeyboardNavigation();
     }
 
+    private void OnApplicationFocus(bool focused)
+    {
+        if (focused)
+            _restoreRequested = true;
+    }
+
     private void OnPausePressed(InputAction.CallbackContext ctx)
     {
         if (_layers.Count > 0 || _escapeHandledFrame == Time.frameCount) return;
@@ -268,7 +275,7 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        bool wantsSelection = _restoreRequested || ReadMoveInput() != Vector2.zero || SubmitPressed();
+        bool wantsSelection = _restoreRequested || !UsingKeyboard || ReadMoveInput() != Vector2.zero || SubmitPressed();
         if (!wantsSelection) return;
 
         _restoreRequested = false;

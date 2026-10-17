@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,6 +10,7 @@ public class TitleScreenController : MonoBehaviour
     [SerializeField] private GameObject loadGamePanel;
     [SerializeField] private GameObject loadGameBackground;
     [SerializeField] private GameObject defaultSelected;
+    [SerializeField] private Button loadGameButton;
 
     [Header("Load Game List")]
     [SerializeField] private Transform saveListContentParent;
@@ -32,7 +34,43 @@ public class TitleScreenController : MonoBehaviour
         if (uiPanel != null)
             uiPanel.OnBack += HideBackground;
 
+        RefreshLoadButton();
+
         if (defaultSelected != null)
+            EventSystem.current.SetSelectedGameObject(defaultSelected);
+    }
+
+    private int SaveCount()
+    {
+        var saves = SaveManager.Instance != null ? SaveManager.Instance.GetAllSaves() : null;
+        return saves != null ? saves.Count : 0;
+    }
+
+    private void RefreshLoadButton()
+    {
+        if (loadGameButton != null)
+            loadGameButton.interactable = SaveCount() > 0;
+    }
+
+    private void AfterSavesDeleted()
+    {
+        RefreshSaveList();
+        RefreshLoadButton();
+
+        if (SaveCount() == 0)
+            StartCoroutine(CloseLoadPanelWhenEmpty());
+    }
+
+    private IEnumerator CloseLoadPanelWhenEmpty()
+    {
+        yield return null;
+
+        if (loadGamePanel.activeSelf)
+            OnBackPressed();
+
+        yield return null;
+
+        if (defaultSelected != null && EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(defaultSelected);
     }
 
@@ -54,6 +92,8 @@ public class TitleScreenController : MonoBehaviour
 
     public void OnLoadGamePressed()
     {
+        if (SaveCount() == 0) return;
+
         UIPanelAnimator.SetVisible(loadGameBackground, true);
         UIPanelAnimator.SetVisible(loadGamePanel, true);
         RefreshSaveList();
@@ -82,7 +122,7 @@ public class TitleScreenController : MonoBehaviour
             () =>
             {
                 SaveManager.Instance.DeleteAllSaves();
-                RefreshSaveList();
+                AfterSavesDeleted();
             },
             focusCancel: true);
     }
@@ -94,7 +134,7 @@ public class TitleScreenController : MonoBehaviour
             () =>
             {
                 SaveManager.Instance.DeleteSave(save.saveId);
-                RefreshSaveList();
+                AfterSavesDeleted();
             },
             focusCancel: true);
     }

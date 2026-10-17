@@ -29,10 +29,22 @@ public class WorldMovementController : MovementController, IStatCapProvider
     [SerializeField] private float jumpHeightPerStrength = 0.15f;
 
     [Header("Jump Feel")]
-    [SerializeField] [Range(0f, 1f)] private float tapJumpMultiplier = 0.2f;
     [SerializeField] private float maxFallSpeed = 20f;
     [SerializeField] private float coyoteTime = 0.15f;
     [SerializeField] private float jumpBufferTime = 0.1f;
+
+    [Header("Jump Windup")]
+    [SerializeField] [Min(0f)] private float jumpDelay = 0.15f;
+    [SerializeField] [Min(0f)] private float windupBrake = 25f;
+
+    [Header("Air Control")]
+    [SerializeField] [Range(0f, 1f)] private float airSpeedMultiplier = 0.8f;
+    [SerializeField] [Range(0f, 1f)] private float airAccelerationMultiplier = 0.6f;
+
+    [Header("Landing")]
+    [SerializeField] [Range(0f, 1f)] private float landSpeedMultiplier = 0.4f;
+    [SerializeField] [Min(0f)] private float landSlowDuration = 0.2f;
+    [SerializeField] [Min(0f)] private float minFallSpeedForLandSlow = 2f;
 
     [Header("Gravity")]
     [SerializeField] private float normGravity = 3f;
@@ -56,12 +68,16 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
     [Header("Facing")]
     [SerializeField] private Transform visualRoot;
+    [SerializeField] private bool spritesFaceRight = true;
 
     [Header("Input")]
     [SerializeField] private string moveActionPath = "Player/Move";
     [SerializeField] private string jumpActionPath = "Player/Jump";
 
+    public event System.Action JumpStarted;
+
     public override bool IsGrounded => _isGrounded;
+    public bool IsWindingUp => _windingUp;
     public bool IsFacingRight { get; private set; } = true;
     public float MoveInput => _moveInput;
     public float MoveInputY => _moveInputY;
@@ -86,10 +102,14 @@ public class WorldMovementController : MovementController, IStatCapProvider
     private readonly List<Collider2D> _standingOneWay = new List<Collider2D>();
     private readonly Dictionary<Collider2D, float> _droppingThrough = new Dictionary<Collider2D, float>();
     private readonly List<Collider2D> _restoreBuffer = new List<Collider2D>();
-    private bool _jumpReleased;
     private bool _wasMoving;
     private float _lastGroundedTime = float.NegativeInfinity;
     private float _lastJumpPressedTime = float.NegativeInfinity;
+    private bool _windingUp;
+    private float _windupEndTime;
+    private bool _wasGroundedFixed = true;
+    private float _peakFallSpeed;
+    private float _landTime = float.NegativeInfinity;
 
     private void Awake()
     {
@@ -106,6 +126,9 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
         if (stats == null)
             stats = GetComponent<PlayerStatsController>();
+
+        if (visualRoot == null)
+            Debug.LogWarning($"WorldMovementController on '{name}' has no Visual Root, so the character won't turn to face movement", this);
     }
 
     private void OnValidate()
@@ -166,6 +189,8 @@ public class WorldMovementController : MovementController, IStatCapProvider
         _moveAction = InputManager.Instance.FindAction(moveActionPath, this);
         if (canJump)
             _jumpAction = InputManager.Instance.FindAction(jumpActionPath, this);
+
+        ApplyFacing(IsFacingRight);
     }
 
     private void Update()
@@ -188,9 +213,6 @@ public class WorldMovementController : MovementController, IStatCapProvider
                 else
                     _lastJumpPressedTime = Time.time;
             }
-
-            if (_jumpAction.WasReleasedThisFrame())
-                _jumpReleased = true;
         }
 
         UpdateFacing();
@@ -202,6 +224,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
         RestoreFinishedDrops(now);
         _isGrounded = CheckGrounded();
+        TrackLanding(now);
 
         bool dropping = _dropRequested && StartDrop(now);
         _dropRequested = false;
@@ -209,9 +232,12 @@ public class WorldMovementController : MovementController, IStatCapProvider
         if (IsGrounded)
             _lastGroundedTime = now;
 
-        HandleMovement();
+        HandleMovement(now);
 
         var velocity = _body.linearVelocity;
+
+        if (_windingUp && windupBrake > 0f)
+            velocity.x = Mathf.Lerp(velocity.x, 0f, 1f - Mathf.Exp(-windupBrake * Time.fixedDeltaTime));
 
         if (dropping)
         {
@@ -222,20 +248,26 @@ public class WorldMovementController : MovementController, IStatCapProvider
         bool jumpBuffered = now - _lastJumpPressedTime <= jumpBufferTime;
         bool withinCoyote = now - _lastGroundedTime <= coyoteTime;
 
-        if (canJump && jumpBuffered && withinCoyote)
+        if (canJump && !_windingUp && jumpBuffered && withinCoyote)
         {
-            velocity.y = JumpVelocity;
             _lastJumpPressedTime = float.NegativeInfinity;
             _lastGroundedTime = float.NegativeInfinity;
-            TutorialEvents.Raise(TutorialEvents.PlayerJumped);
+
+            JumpStarted?.Invoke();
+
+            if (jumpDelay <= 0f)
+            {
+                Launch(ref velocity);
+            }
+            else
+            {
+                _windingUp = true;
+                _windupEndTime = now + jumpDelay;
+            }
         }
 
-        if (_jumpReleased)
-        {
-            if (velocity.y > 0f)
-                velocity.y *= tapJumpMultiplier;
-            _jumpReleased = false;
-        }
+        if (_windingUp && now >= _windupEndTime)
+            Launch(ref velocity);
 
         velocity.y = Mathf.Max(velocity.y, -maxFallSpeed);
         _body.linearVelocity = velocity;
@@ -243,12 +275,50 @@ public class WorldMovementController : MovementController, IStatCapProvider
         UpdateGravity(velocity.y);
     }
 
-    private void HandleMovement()
+    private void Launch(ref Vector2 velocity)
+    {
+        _windingUp = false;
+        velocity.y = JumpVelocity;
+        TutorialEvents.Raise(TutorialEvents.PlayerJumped);
+    }
+
+    private void TrackLanding(float now)
+    {
+        if (!_isGrounded)
+        {
+            _peakFallSpeed = Mathf.Max(_peakFallSpeed, -_body.linearVelocity.y);
+        }
+        else if (!_wasGroundedFixed)
+        {
+            if (_peakFallSpeed >= minFallSpeedForLandSlow)
+                _landTime = now;
+            _peakFallSpeed = 0f;
+        }
+
+        _wasGroundedFixed = _isGrounded;
+    }
+
+    private float SpeedMultiplier(float now)
+    {
+        if (_windingUp) return 0f;
+        if (!_isGrounded) return airSpeedMultiplier;
+
+        if (landSlowDuration > 0f)
+        {
+            float t = (now - _landTime) / landSlowDuration;
+            if (t < 1f)
+                return Mathf.Lerp(landSpeedMultiplier, 1f, t * t);
+        }
+
+        return 1f;
+    }
+
+    private void HandleMovement(float now)
     {
         bool hasInput = Mathf.Abs(_moveInput) > 0f;
-        float targetSpeed = _moveInput * CurrentMoveSpeed;
+        float targetSpeed = _moveInput * CurrentMoveSpeed * SpeedMultiplier(now);
         float speedDif = targetSpeed - _body.linearVelocity.x;
-        float accelRate = hasInput ? acceleration : deceleration;
+        float accelRate = (hasInput ? acceleration : deceleration) * (_isGrounded ? 1f : airAccelerationMultiplier);
         float movement = Mathf.Pow(Mathf.Abs(speedDif) * accelRate, velocityPower) * Mathf.Sign(speedDif);
 
         _body.AddForce(movement * Vector2.right);
@@ -351,7 +421,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
         _droppingThrough.Clear();
         _standingOneWay.Clear();
         _dropRequested = false;
-        _jumpReleased = false;
+        _windingUp = false;
     }
 
     private void GetGroundCast(out Vector2 origin, out Vector2 size, out float distance)
@@ -369,9 +439,16 @@ public class WorldMovementController : MovementController, IStatCapProvider
         bool faceRight = _moveInput > 0f;
         if (faceRight == IsFacingRight) return;
 
+        ApplyFacing(faceRight);
+    }
+
+    private void ApplyFacing(bool faceRight)
+    {
         IsFacingRight = faceRight;
+        if (visualRoot == null) return;
+
         var scale = visualRoot.localScale;
-        scale.x = Mathf.Abs(scale.x) * (faceRight ? 1f : -1f);
+        scale.x = Mathf.Abs(scale.x) * (faceRight == spritesFaceRight ? 1f : -1f);
         visualRoot.localScale = scale;
     }
 
@@ -379,8 +456,8 @@ public class WorldMovementController : MovementController, IStatCapProvider
     {
         _moveInput = 0f;
         _wasMoving = false;
-        _jumpReleased = false;
         _lastJumpPressedTime = float.NegativeInfinity;
+        _windingUp = false;
 
         if (_body != null)
         {

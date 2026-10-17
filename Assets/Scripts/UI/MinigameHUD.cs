@@ -151,7 +151,7 @@ public class MinigameHUD : MonoBehaviour
         RefreshBackground();
     }
 
-    private void SetBackgroundProgress(float progress, bool instant)
+    private void SetBackgroundProgress(float progress, bool instant, float duration = -1f)
     {
         if (background == null) return;
 
@@ -167,16 +167,18 @@ public class MinigameHUD : MonoBehaviour
             return;
         }
 
-        _backgroundRoutine = StartCoroutine(BackgroundRoutine(progress));
+        _backgroundRoutine = StartCoroutine(BackgroundRoutine(progress, duration > 0f ? duration : backgroundStepDuration));
     }
 
-    private IEnumerator BackgroundRoutine(float target)
+    private IEnumerator BackgroundRoutine(float target, float duration)
     {
         float start = _backgroundProgress;
-        for (float t = 0f; t < backgroundStepDuration; t += Time.unscaledDeltaTime)
+        bool linear = duration > backgroundStepDuration;
+        for (float t = 0f; t < duration; t += Time.unscaledDeltaTime)
         {
-            float p = Mathf.Clamp01(t / backgroundStepDuration);
-            ApplyBackgroundProgress(Mathf.Lerp(start, target, 1f - (1f - p) * (1f - p)));
+            float p = Mathf.Clamp01(t / duration);
+            float eased = linear ? p : 1f - (1f - p) * (1f - p);
+            ApplyBackgroundProgress(Mathf.Lerp(start, target, eased));
             yield return null;
         }
 
@@ -205,7 +207,7 @@ public class MinigameHUD : MonoBehaviour
         RefreshBackground();
     }
 
-    public void ShowCountdown(string text)
+    public void ShowCountdown(string text, float stepDuration = -1f)
     {
         if (countdownRoot == null) return;
 
@@ -226,8 +228,12 @@ public class MinigameHUD : MonoBehaviour
             SetBackgroundProgress(0f, true);
         }
 
-        float progress = isNumber ? (float)(_countdownStart - number) / _countdownStart : 1f;
-        SetBackgroundProgress(progress, false);
+        float totalSteps = _countdownStart + 1f;
+        bool synced = stepDuration > 0f;
+        float progress = isNumber
+            ? (_countdownStart - number + (synced ? 1f : 0f)) / totalSteps
+            : synced ? 1f : _countdownStart / totalSteps;
+        SetBackgroundProgress(progress, false, synced ? stepDuration : -1f);
 
         if (colourEachStep)
         {

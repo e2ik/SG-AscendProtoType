@@ -17,15 +17,30 @@ public class StatsMenuController : MonoBehaviour
     [SerializeField] private Button backButton;
     [SerializeField] private string confirmMessage = "Spend {0} point{1}?";
 
+    [Header("Open Action")]
+    [SerializeField] private string openActionPath = "Player/Stats";
+    [SerializeField] private bool actionClosesMenu = true;
+
     [Header("Effect Previews")]
     [SerializeField] private MemoryFlipBonus memoryFlipBonus;
     [SerializeField] private RhythmZoneBonus rhythmZoneBonus;
+    [SerializeField] private string jumpLabel = "Jump Height";
+    [SerializeField] private string speedLabel = "Run Speed";
+    [SerializeField] private string concentrationLabel = "Concentration";
+    [SerializeField] private string cardFlipsLabel = "Extra Card Flips";
+    [SerializeField] private string arrow = ">>";
+    [SerializeField] private Color arrowColor = new Color(1f, 0.85f, 0.2f);
 
     public bool CanOpen => PlayerStatsController.Active != null;
+    public bool IsOpen => _locked;
 
     private readonly Dictionary<StatType, int> _pending = new Dictionary<StatType, int>();
     private PlayerStatsController _stats;
     private WorldMovementController _movement;
+    private bool _locked;
+    private bool _frozeMovement;
+    private float _previousTimeScale = 1f;
+    private UnityEngine.InputSystem.InputAction _openAction;
 
     private int PendingTotal
     {
@@ -64,11 +79,111 @@ public class StatsMenuController : MonoBehaviour
         if (backButton != null) backButton.onClick.AddListener(Close);
 
         if (uiPanel != null)
-            uiPanel.OnBack += ClearPending;
+        {
+            uiPanel.OnBack += HandleBack;
+            uiPanel.InterceptBack = ClearPendingOnBack;
+        }
+    }
+
+    private void Start()
+    {
+        if (string.IsNullOrEmpty(openActionPath) || InputManager.Instance == null) return;
+
+        _openAction = InputManager.Instance.FindAction(openActionPath, this);
+        if (_openAction != null)
+            _openAction.performed += OnOpenAction;
+    }
+
+    private void OnOpenAction(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    {
+        if (_locked)
+        {
+            if (actionClosesMenu && IsTopLayer())
+                Close();
+            return;
+        }
+
+        TryOpen();
+    }
+
+    private bool IsTopLayer()
+    {
+        var ui = UIManager.Instance;
+        if (ui == null || ui.TopLayerRoot == null) return true;
+        var top = ui.TopLayerRoot;
+        return top == panel.transform || top.IsChildOf(panel.transform) || panel.transform.IsChildOf(top);
+    }
+
+    public bool TryOpen()
+    {
+        if (_locked || !CanOpen) return false;
+
+        var game = GameManager.Instance;
+        if (game == null || game.IsTransitioning || game.CurrentState != GameState.World) return false;
+
+        var ui = UIManager.Instance;
+        if (ui != null && (ui.IsAnyUIOpen || ui.CancelHandledThisFrame)) return false;
+
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsActive) return false;
+        if (PauseMenuController.Instance != null && PauseMenuController.Instance.IsPaused) return false;
+
+        Open();
+        return _locked;
+    }
+
+    private void OnDestroy()
+    {
+        if (_openAction != null)
+            _openAction.performed -= OnOpenAction;
+
+        Unlock();
+        if (Instance == this)
+            Instance = null;
+    }
+
+    private void HandleBack()
+    {
+        ClearPending();
+        Unlock();
+    }
+
+    private void Lock()
+    {
+        if (_locked) return;
+        _locked = true;
+
+        _previousTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+
+        _frozeMovement = _movement != null && _movement.InputEnabled;
+        if (_frozeMovement)
+            _movement.SetInputEnabled(false);
+    }
+
+    private void Unlock()
+    {
+        if (!_locked) return;
+        _locked = false;
+
+        Time.timeScale = _previousTimeScale;
+
+        if (_frozeMovement && _movement != null)
+            _movement.SetInputEnabled(true);
+        _frozeMovement = false;
+    }
+
+    private bool ClearPendingOnBack()
+    {
+        if (PendingTotal <= 0) return false;
+
+        ResetPending();
+        return true;
     }
 
     public void Open()
     {
+        if (_locked) return;
+
         _stats = PlayerStatsController.Active;
         if (_stats == null)
         {
@@ -76,7 +191,11 @@ public class StatsMenuController : MonoBehaviour
             return;
         }
 
+        if (PauseMenuController.Instance != null && PauseMenuController.Instance.IsPaused)
+            PauseMenuController.Instance.Resume();
+
         _movement = _stats.GetComponent<WorldMovementController>();
+        Lock();
         ClearPending();
         Refresh();
         UIPanelAnimator.SetVisible(panel, true);
@@ -85,8 +204,11 @@ public class StatsMenuController : MonoBehaviour
 
     public void Close()
     {
+        if (!_locked) return;
+
         ClearPending();
         UIPanelAnimator.SetVisible(panel, false);
+        Unlock();
     }
 
     private void Add(StatType stat)
@@ -152,6 +274,8 @@ public class StatsMenuController : MonoBehaviour
     {
         if (_stats == null) return;
 
+        var previousSelection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+
         if (pointsText != null)
             pointsText.text = $"Points: {Available}";
 
@@ -165,15 +289,14 @@ public class StatsMenuController : MonoBehaviour
 
             row.Display(current, pending, _stats.GetMaxStat(stat), Describe(stat, current, current + pending));
 
-            if (row.Plus != null) row.Plus.interactable = CanAdd(stat);
-            if (row.Minus != null) row.Minus.interactable = pending > 0;
+            row.SetButtonStates(CanAdd(stat), pending > 0);
         }
 
         bool hasPending = PendingTotal > 0;
         if (confirmButton != null) confirmButton.interactable = hasPending;
         if (resetButton != null) resetButton.interactable = hasPending;
 
-        RescueSelection();
+        RescueSelection(previousSelection);
     }
 
     private string Describe(StatType stat, int now, int next)
@@ -181,41 +304,47 @@ public class StatsMenuController : MonoBehaviour
         switch (stat)
         {
             case StatType.Agility when _movement != null:
-                return FormatChange("Speed", _movement.MoveSpeedAt(now), _movement.MoveSpeedAt(next));
+                return FormatChange(speedLabel, _movement.MoveSpeedAt(now), _movement.MoveSpeedAt(next));
             case StatType.Strength when _movement != null:
-                return FormatChange("Jump", _movement.JumpHeightAt(now), _movement.JumpHeightAt(next));
+                return FormatChange(jumpLabel, _movement.JumpHeightAt(now), _movement.JumpHeightAt(next));
             case StatType.Endurance when memoryFlipBonus != null:
-                return FormatBonus("Memory flips", memoryFlipBonus.BonusFor(now), memoryFlipBonus.BonusFor(next));
+                return FormatBonus(cardFlipsLabel, memoryFlipBonus.BonusFor(now), memoryFlipBonus.BonusFor(next));
             case StatType.Intelligence when rhythmZoneBonus != null:
-                return FormatPercentBonus("Timing zones", rhythmZoneBonus.BonusFor(now), rhythmZoneBonus.BonusFor(next));
+                return FormatPercentBonus(concentrationLabel, rhythmZoneBonus.BonusFor(now), rhythmZoneBonus.BonusFor(next));
             default:
                 return null;
         }
     }
 
-    private static string FormatPercentBonus(string label, float now, float next)
+    private string Next(string value) => $" <color=#{ColorUtility.ToHtmlStringRGBA(arrowColor)}><b>{arrow} {value}</b></color>";
+
+    private string FormatPercentBonus(string label, float now, float next)
     {
         int nowPercent = Mathf.RoundToInt(now * 100f);
         int nextPercent = Mathf.RoundToInt(next * 100f);
-        return nowPercent == nextPercent ? $"{label} +{nowPercent}%" : $"{label} +{nowPercent}% → +{nextPercent}%";
+        return nowPercent == nextPercent ? $"{label} {nowPercent}%" : $"{label} {nowPercent}%{Next($"{nextPercent}%")}";
     }
 
-    private static string FormatBonus(string label, int now, int next) =>
-        now == next ? $"{label} +{now}" : $"{label} +{now} → +{next}";
+    private string FormatBonus(string label, int now, int next) =>
+        now == next ? $"{label} {now}" : $"{label} {now}{Next(next.ToString())}";
 
-    private static string FormatChange(string label, float now, float next) =>
-        Mathf.Approximately(now, next) ? $"{label} {now:0.00}" : $"{label} {now:0.00} → {next:0.00}";
+    private string FormatChange(string label, float now, float next) =>
+        Mathf.Approximately(now, next) ? $"{label} {now:0.00}" : $"{label} {now:0.00}{Next(next.ToString("0.00"))}";
 
-    private void RescueSelection()
+    private void RescueSelection(GameObject selected)
     {
         var eventSystem = EventSystem.current;
-        if (eventSystem == null) return;
-
-        var selected = eventSystem.currentSelectedGameObject;
-        if (selected == null) return;
+        if (eventSystem == null || selected == null) return;
 
         var selectable = selected.GetComponent<Selectable>();
-        if (selectable == null || selectable.IsInteractable()) return;
+        if (selectable == null) return;
+
+        if (selectable.IsInteractable())
+        {
+            if (eventSystem.currentSelectedGameObject != selected)
+                Select(selectable);
+            return;
+        }
 
         foreach (var row in rows)
         {

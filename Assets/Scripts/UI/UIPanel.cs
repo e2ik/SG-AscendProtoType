@@ -10,6 +10,7 @@ public class UIPanel : MonoBehaviour
     [SerializeField] private bool keyboardSelectsOnNavigate;
 
     public event Action OnBack;
+    public Func<bool> InterceptBack;
 
     public bool KeyboardSelectsOnNavigate
     {
@@ -42,6 +43,8 @@ public class UIPanel : MonoBehaviour
 
     private void HandleBack()
     {
+        if (InterceptBack != null && InterceptBack()) return;
+
         OnBack?.Invoke();
 
         if (closeOnBack)

@@ -21,6 +21,7 @@ public abstract class MinigameBase : MonoBehaviour
     [Header("Countdown")]
     [SerializeField] [Min(0)] private int countdownSeconds = 3;
     [SerializeField] [Min(0f)] private float countdownDelay = 1f;
+    [SerializeField] [Min(0.1f)] private float countdownStepDuration = 1f;
 
     [Header("Play Area")]
     [SerializeField] private CanvasGroup playArea;
@@ -101,11 +102,14 @@ public abstract class MinigameBase : MonoBehaviour
 
         for (int i = countdownSeconds; i > 0; i--)
         {
-            if (hud != null) hud.ShowCountdown(i.ToString());
-            yield return new WaitForSeconds(1f);
+            if (hud != null) hud.ShowCountdown(i.ToString(), countdownStepDuration);
+            yield return new WaitForSeconds(countdownStepDuration);
         }
 
-        if (hud != null) hud.ShowCountdown("GO!");
+        if (hud != null) hud.ShowCountdown("GO!", countdownStepDuration);
+        yield return new WaitForSeconds(countdownStepDuration);
+
+        if (hud != null) hud.HideCountdown();
 
         CurrentPhase = Phase.Playing;
         SetPlayAreaInteractable(true);
@@ -113,9 +117,6 @@ public abstract class MinigameBase : MonoBehaviour
         Began?.Invoke();
         TutorialEvents.Raise(TutorialEvents.MinigameBegan, StateName);
 
-        yield return new WaitForSeconds(0.5f);
-
-        if (hud != null) hud.HideCountdown();
         _countdown = null;
     }
 

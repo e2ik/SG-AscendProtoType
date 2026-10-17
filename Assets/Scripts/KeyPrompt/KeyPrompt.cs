@@ -63,6 +63,7 @@ public class KeyPrompt : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
     private Color _appliedImageColour = Color.white;
     private Color _appliedRendererColour = Color.white;
     private bool _hovered;
+    private InputManager _subscribedTo;
 
     private void Awake()
     {
@@ -81,11 +82,43 @@ public class KeyPrompt : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
 
     private void OnEnable()
     {
+        TrySubscribe();
         var input = InputManager.Instance;
-        if (input != null)
-            input.OnDeviceChanged += Refresh;
-
         Refresh(input != null ? input.ActiveDevice : InputDeviceType.KeyboardMouse);
+    }
+
+    private void Start()
+    {
+        if (TrySubscribe())
+            Refresh();
+    }
+
+    private void Update()
+    {
+        if (_subscribedTo == InputManager.Instance) return;
+
+        if (TrySubscribe())
+            Refresh();
+    }
+
+    private bool TrySubscribe()
+    {
+        var input = InputManager.Instance;
+        if (input == _subscribedTo) return false;
+
+        Unsubscribe();
+        if (input == null) return false;
+
+        input.OnDeviceChanged += Refresh;
+        _subscribedTo = input;
+        return true;
+    }
+
+    private void Unsubscribe()
+    {
+        if (_subscribedTo != null)
+            _subscribedTo.OnDeviceChanged -= Refresh;
+        _subscribedTo = null;
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -140,8 +173,7 @@ public class KeyPrompt : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
         _hovered = false;
         transform.localScale = _baseScale;
 
-        if (InputManager.Instance != null)
-            InputManager.Instance.OnDeviceChanged -= Refresh;
+        Unsubscribe();
     }
 
     public void SetAction(InputActionReference newAction, string part = null)

@@ -8,6 +8,9 @@ public class UIButtonSound : MonoBehaviour, ISelectHandler, IPointerEnterHandler
     [SerializeField] private string moveSound = "UIclick";
     [SerializeField] private string confirmSound = "UIconfirm";
     [SerializeField] private bool playOnHover = true;
+    [SerializeField] [Min(0f)] private float minRepeatInterval = 0.08f;
+
+    private static readonly System.Collections.Generic.Dictionary<string, float> LastPlayed = new System.Collections.Generic.Dictionary<string, float>();
 
     private Selectable _selectable;
     private Button _button;
@@ -48,6 +51,10 @@ public class UIButtonSound : MonoBehaviour, ISelectHandler, IPointerEnterHandler
     {
         if (string.IsNullOrEmpty(key) || ASpawner.Instance == null) return;
         if (_selectable != null && !_selectable.IsInteractable()) return;
+
+        float now = Time.unscaledTime;
+        if (LastPlayed.TryGetValue(key, out float last) && now - last < minRepeatInterval) return;
+        LastPlayed[key] = now;
 
         ASpawner.Play(key);
     }

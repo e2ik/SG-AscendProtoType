@@ -17,23 +17,35 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 00bae0afc72fbde4a9bc7a0890104d17, type: 3}
     frames:
     - {fileID: 21300000, guid: 477abc4be6788ca4e8278679f4384dc0, type: 3}
+    - {fileID: 6629365367578311722, guid: 0fe6dd2bd24733045863d7f177318156, type: 3}
+    - {fileID: -832173722527323982, guid: 0fe6dd2bd24733045863d7f177318156, type: 3}
   - displayName: Pants01
     icon: {fileID: 21300000, guid: 10e0b6dcd60806742a6ef3e8cd742e4a, type: 3}
     frames:
     - {fileID: 21300000, guid: dd27335ba32f62640b79930eddd36559, type: 3}
+    - {fileID: -922007194477172306, guid: 13a2bc592c7601b40a6687b29eb9a6d6, type: 3}
+    - {fileID: -3829372055838080830, guid: 13a2bc592c7601b40a6687b29eb9a6d6, type: 3}
   - displayName: Pants02
     icon: {fileID: 21300000, guid: 4b1992a094b311749a2939f334172455, type: 3}
     frames:
     - {fileID: 21300000, guid: ce8a9ffd3fd7d9b4f8cc518f51b1fcec, type: 3}
+    - {fileID: 9126884281453516653, guid: e38a8833808e7c54abc69ef3c13a10b2, type: 3}
+    - {fileID: 5148145512445139304, guid: e38a8833808e7c54abc69ef3c13a10b2, type: 3}
   - displayName: Pants03
     icon: {fileID: 21300000, guid: 1eb59e834e8c8194481159eea7031e4a, type: 3}
     frames:
     - {fileID: 21300000, guid: 3e72202f151091240b11b8af95a764ac, type: 3}
+    - {fileID: -4931203905953708063, guid: f75047614d60b784d82e2b0f78864d13, type: 3}
+    - {fileID: -7153164480495995080, guid: f75047614d60b784d82e2b0f78864d13, type: 3}
   - displayName: Pants04
     icon: {fileID: 21300000, guid: 87dbab4430f318a47817d483e9b03e33, type: 3}
     frames:
     - {fileID: 21300000, guid: 83348f4203d7b924a9f3231c221bc467, type: 3}
+    - {fileID: 3196714199938773018, guid: 2437eeefa208a4d45be2125932eb2410, type: 3}
+    - {fileID: -6859710627749067061, guid: 2437eeefa208a4d45be2125932eb2410, type: 3}
   - displayName: Pants05
     icon: {fileID: 21300000, guid: 4483d7e9abacce7459d3065ec4b68717, type: 3}
     frames:
     - {fileID: 21300000, guid: 1479832d3ea51e44aa949cb2de89ea82, type: 3}
+    - {fileID: -6597727345288321737, guid: 95339eed6afd73c48b30077580f9c8e1, type: 3}
+    - {fileID: 6696926262599707774, guid: 95339eed6afd73c48b30077580f9c8e1, type: 3}

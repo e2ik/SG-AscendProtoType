@@ -150,11 +150,17 @@ public class CharacterCreationController : MonoBehaviour
     [SerializeField] private bool categoryButtonsSelectable;
     [SerializeField] private string categorySwitchSound = "UIclick";
 
+    [Header("Cancel")]
+    [SerializeField] private Selectable returnButton;
+    [SerializeField] private string cancelActionPath = "UI/Cancel";
+    [SerializeField] private string cancelToReturnSound = "UIclick";
+
     private CharacterColourSlot _activeSlot;
     private CharacterColourSlot _lastSlot;
     private readonly List<CharacterColourSlot> _orderedSlots = new List<CharacterColourSlot>();
     private InputAction _nextCategoryAction;
     private InputAction _previousCategoryAction;
+    private InputAction _cancelAction;
     private GameObject _lastNavigable;
     private string _characterName = DefaultName;
     private bool _nameSet;
@@ -227,6 +233,27 @@ public class CharacterCreationController : MonoBehaviour
             _nextCategoryAction.performed -= OnNextCategory;
         if (_previousCategoryAction != null)
             _previousCategoryAction.performed -= OnPreviousCategory;
+        if (_cancelAction != null)
+            _cancelAction.performed -= OnCancel;
+    }
+
+    private void OnCancel(InputAction.CallbackContext ctx)
+    {
+        if (returnButton == null || !returnButton.IsInteractable() || !returnButton.gameObject.activeInHierarchy) return;
+
+        var ui = UIManager.Instance;
+        if (ui != null && (ui.IsAnyUIOpen || ui.CancelHandledThisFrame)) return;
+        if (_activeSlot != null) return;
+        if (colourPicker != null && colourPicker.IsOpen) return;
+        if (stylePicker != null && stylePicker.IsOpen) return;
+
+        var eventSystem = EventSystem.current;
+        if (eventSystem == null || eventSystem.currentSelectedGameObject == returnButton.gameObject) return;
+
+        eventSystem.SetSelectedGameObject(returnButton.gameObject);
+
+        if (!string.IsNullOrEmpty(cancelToReturnSound) && ASpawner.Instance != null)
+            ASpawner.Play(cancelToReturnSound);
     }
 
     private void SetupCategoryNavigation()
@@ -260,6 +287,13 @@ public class CharacterCreationController : MonoBehaviour
             _previousCategoryAction = input.FindAction(previousCategoryActionPath, this);
             if (_previousCategoryAction != null)
                 _previousCategoryAction.performed += OnPreviousCategory;
+        }
+
+        if (!string.IsNullOrEmpty(cancelActionPath))
+        {
+            _cancelAction = input.FindAction(cancelActionPath, this);
+            if (_cancelAction != null)
+                _cancelAction.performed += OnCancel;
         }
     }
 

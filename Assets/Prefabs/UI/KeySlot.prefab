@@ -142,12 +142,13 @@ MonoBehaviour:
   sortingOrderOffset: 1
   ignoreUIManager: 1
   pulseSpeed: 8
+  pulseWhenChosen: 1
   activeCategoryStyle:
     buttonStyle: 0
     brighten: 0.4
     buttonColor: {r: 0, g: 1, b: 1, a: 1}
     changeText: 1
-    textColor: {r: 1, g: 1, b: 1, a: 1}
+    textColor: {r: 0.6431373, g: 0.27058825, b: 0.0627451, a: 1}
     changeOutline: 1
     outlineColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!114 &1043230018735194010
@@ -165,6 +166,7 @@ MonoBehaviour:
   moveSound: UIclick
   confirmSound: UIconfirm
   playOnHover: 1
+  minRepeatInterval: 0.08
 --- !u!1 &1574401385120043035
 GameObject:
   m_ObjectHideFlags: 0

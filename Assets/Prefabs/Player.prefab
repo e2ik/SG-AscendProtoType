@@ -206,6 +206,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2953442539071271340}
+  - component: {fileID: 6380727374705162631}
   m_Layer: 0
   m_Name: Appearance
   m_TagString: Untagged
@@ -234,6 +235,37 @@ Transform:
   - {fileID: 5617367884666841423}
   m_Father: {fileID: 8260413943020308475}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6380727374705162631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2568129479950878735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb8ac7a7886df234b87deaf5bbb7e283, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MultiplyOutline
+  outlineMaterial: {fileID: 2100000, guid: 51033b1dfb445ed438f632ddb2057090, type: 2}
+  sources:
+  - {fileID: 5779564248584360023}
+  - {fileID: 3904000623363956931}
+  - {fileID: 6838709850004108547}
+  - {fileID: 4944228737760716487}
+  - {fileID: 7741387186089954465}
+  - {fileID: 4615647365703764230}
+  tint: {r: 1, g: 1, b: 1, a: 1}
+  strength: 0.5
+  falloff: 0.5
+  rings: 3
+  pixelSize: 3
+  checkerContrast: 1
+  showLine: 1
+  lineColor: {r: 0, g: 0, b: 0, a: 0.44705883}
+  lineStrength: 1
+  lineDiagonals: 0
+  sortingOrderOffset: -1
 --- !u!1 &2682986345847259453
 GameObject:
   m_ObjectHideFlags: 0
@@ -638,6 +670,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8260413943020308475}
   - component: {fileID: 3467189312968825910}
+  - component: {fileID: 3707516478353011149}
   - component: {fileID: 3963817751061146528}
   - component: {fileID: 3336668019918967973}
   - component: {fileID: 4468782299611889723}
@@ -647,6 +680,7 @@ GameObject:
   - component: {fileID: 36531956207422248}
   - component: {fileID: 5095142103470013498}
   - component: {fileID: -1618232719038926270}
+  - component: {fileID: 1721188278184861565}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -697,6 +731,43 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &3707516478353011149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8497367805908112311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 498ef7fa7f6f3594b85dd7d069adc387, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationDriver
+  animator: {fileID: 1721188278184861565}
+  movement: {fileID: 3336668019918967973}
+  body: {fileID: 3467189312968825910}
+  bodyCollider: {fileID: 0}
+  jumpStateName: P_JumpUp
+  movingParameter: Moving
+  walkSpeedParameter: WalkSpeed
+  groundedParameter: Grounded
+  fallingParameter: Falling
+  descendingParameter: Descending
+  landingParameter: Landing
+  referenceSpeed: 5
+  minWalkMultiplier: 0.5
+  maxWalkMultiplier: 2.5
+  movingThreshold: 0.1
+  requireInputToWalk: 1
+  apexThreshold: 1
+  minAirTime: 0.06
+  descendingVelocity: -0.1
+  landLeadTime: 0.1
+  minLandDistance: 0.1
+  maxProbeDistance: 5
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!70 &3963817751061146528
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -758,10 +829,16 @@ MonoBehaviour:
   minJumpHeight: 1
   maxJumpHeight: 5.9
   jumpHeightPerStrength: 0.25
-  tapJumpMultiplier: 0.2
   maxFallSpeed: 20
   coyoteTime: 0.1
   jumpBufferTime: 0.1
+  jumpDelay: 0.25
+  windupBrake: 25
+  airSpeedMultiplier: 0.8
+  airAccelerationMultiplier: 0.6
+  landSpeedMultiplier: 0.4
+  landSlowDuration: 0.2
+  minFallSpeedForLandSlow: 2
   normGravity: 3
   jumpGravity: 2.5
   fallGravity: 4.5
@@ -776,7 +853,8 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  visualRoot: {fileID: 0}
+  visualRoot: {fileID: 2953442539071271340}
+  spritesFaceRight: 1
   moveActionPath: Player/Move
   jumpActionPath: Player/Jump
 --- !u!114 &4468782299611889723
@@ -792,12 +870,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStatsController
   testStats:
-    strength: 15
-    agility: 15
+    strength: 1
+    agility: 1
     intelligence: 1
     endurance: 1
     unallocatedPoints: 0
-  overrideSaveStats: 1
+  overrideSaveStats: 0
 --- !u!114 &2961700349907402783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -898,3 +976,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RhythmZoneCapProvider
   zoneBonus: {fileID: 11400000, guid: 2727634823371ae4d987901f65a44cca, type: 2}
+--- !u!95 &1721188278184861565
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8497367805908112311}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d9ad2bb83199887479b531c418a9bb3c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

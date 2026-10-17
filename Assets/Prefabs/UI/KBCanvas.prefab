@@ -432,6 +432,7 @@ MonoBehaviour:
   placeholderText: What's your name?
   cursorBlinkInterval: 0.5
   shiftTapMaxDuration: 0.3
+  keyboardSelectsOnNavigate: 1
   flashKeysOnType: 1
   flashDuration: 0.1
   flashScale: 0.92
@@ -647,6 +648,18 @@ PrefabInstance:
       propertyPath: ignoreUIManager
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.b
+      value: 0.06253698
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.g
+      value: 0.26986155
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.r
+      value: 0.6415094
+      objectReference: {fileID: 0}
     - target: {fileID: 2808523949437033441, guid: d4968b174f1b5d54998bae94670de749, type: 3}
       propertyPath: m_text
       value: Space
@@ -846,6 +859,7 @@ MonoBehaviour:
   moveSound: UIclick
   confirmSound: UIconfirm
   playOnHover: 1
+  minRepeatInterval: 0.08
 --- !u!1001 &3872165024894256357
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -913,6 +927,18 @@ PrefabInstance:
     - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
       propertyPath: ignoreUIManager
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.b
+      value: 0.06253698
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.g
+      value: 0.26986155
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.r
+      value: 0.6415094
       objectReference: {fileID: 0}
     - target: {fileID: 2808523949437033441, guid: d4968b174f1b5d54998bae94670de749, type: 3}
       propertyPath: m_text
@@ -1112,6 +1138,7 @@ MonoBehaviour:
   moveSound: UIclick
   confirmSound: UIconfirm
   playOnHover: 1
+  minRepeatInterval: 0.08
 --- !u!224 &8616878269685650231 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4767619525302998994, guid: d4968b174f1b5d54998bae94670de749, type: 3}
@@ -1184,6 +1211,18 @@ PrefabInstance:
     - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
       propertyPath: ignoreUIManager
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.b
+      value: 0.22330463
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.g
+      value: 0.47798735
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.r
+      value: 0.13077007
       objectReference: {fileID: 0}
     - target: {fileID: 2808523949437033441, guid: d4968b174f1b5d54998bae94670de749, type: 3}
       propertyPath: m_text
@@ -1366,6 +1405,7 @@ MonoBehaviour:
   moveSound: UIclick
   confirmSound: UIconfirm
   playOnHover: 1
+  minRepeatInterval: 0.08
 --- !u!114 &6102342869321027937 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1895507300863491552, guid: d4968b174f1b5d54998bae94670de749, type: 3}
@@ -1455,6 +1495,18 @@ PrefabInstance:
     - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
       propertyPath: ignoreUIManager
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.b
+      value: 0.06253698
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.g
+      value: 0.26986155
+      objectReference: {fileID: 0}
+    - target: {fileID: 1921567604841017599, guid: d4968b174f1b5d54998bae94670de749, type: 3}
+      propertyPath: activeCategoryStyle.textColor.r
+      value: 0.6415094
       objectReference: {fileID: 0}
     - target: {fileID: 2808523949437033441, guid: d4968b174f1b5d54998bae94670de749, type: 3}
       propertyPath: m_text
@@ -1632,6 +1684,7 @@ MonoBehaviour:
   moveSound: UIclick
   confirmSound: UIconfirm
   playOnHover: 1
+  minRepeatInterval: 0.08
 --- !u!224 &3884381559642076579 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4767619525302998994, guid: d4968b174f1b5d54998bae94670de749, type: 3}
