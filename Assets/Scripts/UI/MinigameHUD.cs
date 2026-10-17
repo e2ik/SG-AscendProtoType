@@ -56,6 +56,7 @@ public class MinigameHUD : MonoBehaviour
     [Header("Results")]
     [SerializeField] private GameObject resultsPanel;
     [SerializeField] private UIPanel resultsUIPanel;
+    [SerializeField] private string resultsPopSound = "ResultsPop";
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private TMP_Text bestText;
     [SerializeField] private TMP_Text rewardText;
@@ -328,6 +329,9 @@ public class MinigameHUD : MonoBehaviour
 
         SetBackgroundProgress(0f, true);
         UIPanelAnimator.SetVisible(resultsPanel, true);
+
+        if (!string.IsNullOrEmpty(resultsPopSound) && ASpawner.Instance != null)
+            ASpawner.Play(resultsPopSound);
         _resultsShown = true;
         RefreshBackground();
     }

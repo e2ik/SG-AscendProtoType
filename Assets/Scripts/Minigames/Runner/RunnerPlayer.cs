@@ -30,13 +30,20 @@ public class RunnerPlayer : MonoBehaviour
     [Header("Visuals")]
     [SerializeField] private PlayerAppearance appearance;
 
+    [Header("Effects")]
+    [SerializeField] private string jumpDustEffect = "JumpDust";
+    [SerializeField] private string crashEffect = "Crash";
+
     public event Action Crashed;
+    public event Action Jumped;
+    public event Action<ParticleSystem> GroundEffectSpawned;
 
     public float JumpHeight { get; private set; }
     public float AirTime { get; private set; }
     public float StandingHitboxCenter { get; private set; }
     public float StandingHitboxTop { get; private set; }
     public bool IsGrounded { get; private set; } = true;
+    public float VelocityY => _velocityY;
 
     private readonly Collider2D[] _hits = new Collider2D[4];
     private readonly Collider2D[] _debugHits = new Collider2D[16];
@@ -109,6 +116,9 @@ public class RunnerPlayer : MonoBehaviour
     }
 
     public float HitboxWidth => hitbox != null ? hitbox.bounds.size.x * hitboxScale : 0.5f;
+
+    public float HitboxLeft => hitbox != null ? hitbox.bounds.center.x - hitbox.bounds.extents.x * hitboxScale : transform.position.x - 0.25f;
+    public float HitboxRight => hitbox != null ? hitbox.bounds.center.x + hitbox.bounds.extents.x * hitboxScale : transform.position.x + 0.25f;
 
     public JumpArc FullArc => GetArc(float.MaxValue);
 
@@ -218,6 +228,10 @@ public class RunnerPlayer : MonoBehaviour
             _velocityY = Mathf.Sqrt(2f * RiseGravity * JumpHeight);
             IsGrounded = false;
             _lastJumpPressedTime = float.NegativeInfinity;
+            var dust = SpawnEffect(jumpDustEffect, FeetPosition);
+            if (dust != null)
+                GroundEffectSpawned?.Invoke(dust);
+            Jumped?.Invoke();
         }
 
         if (!IsGrounded)
@@ -259,10 +273,39 @@ public class RunnerPlayer : MonoBehaviour
             if (_hits[i] != hitbox)
             {
                 _controlsEnabled = false;
+                SpawnEffect(crashEffect, ImpactPoint(bounds, _hits[i].bounds));
                 Crashed?.Invoke();
                 return;
             }
         }
+    }
+
+    private Vector3 FeetPosition
+    {
+        get
+        {
+            if (hitbox == null) return transform.position;
+            var bounds = hitbox.bounds;
+            return new Vector3(bounds.center.x, bounds.min.y, transform.position.z);
+        }
+    }
+
+    private Vector3 ImpactPoint(Bounds self, Bounds other)
+    {
+        float minX = Mathf.Max(self.min.x, other.min.x);
+        float maxX = Mathf.Min(self.max.x, other.max.x);
+        float minY = Mathf.Max(self.min.y, other.min.y);
+        float maxY = Mathf.Min(self.max.y, other.max.y);
+
+        float x = minX <= maxX ? (minX + maxX) * 0.5f : (self.center.x + other.center.x) * 0.5f;
+        float y = minY <= maxY ? (minY + maxY) * 0.5f : (self.center.y + other.center.y) * 0.5f;
+        return new Vector3(x, y, transform.position.z);
+    }
+
+    private static ParticleSystem SpawnEffect(string key, Vector3 position)
+    {
+        if (string.IsNullOrEmpty(key) || PSpawner.Instance == null) return null;
+        return PSpawner.Spawn(key, position);
     }
 
     private void LogSetup()

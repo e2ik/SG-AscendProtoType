@@ -22,6 +22,7 @@ public abstract class MinigameBase : MonoBehaviour
     [SerializeField] [Min(0)] private int countdownSeconds = 3;
     [SerializeField] [Min(0f)] private float countdownDelay = 1f;
     [SerializeField] [Min(0.1f)] private float countdownStepDuration = 1f;
+    [SerializeField] [Min(0f)] private float resultsDelay = 1.5f;
 
     [Header("Play Area")]
     [SerializeField] private CanvasGroup playArea;
@@ -40,6 +41,7 @@ public abstract class MinigameBase : MonoBehaviour
     public event Action Ended;
 
     private Coroutine _countdown;
+    private Coroutine _results;
 
     protected virtual void OnEnable()
     {
@@ -63,6 +65,12 @@ public abstract class MinigameBase : MonoBehaviour
         {
             StopCoroutine(_countdown);
             _countdown = null;
+        }
+
+        if (_results != null)
+        {
+            StopCoroutine(_results);
+            _results = null;
         }
 
         Score = 0f;
@@ -151,12 +159,27 @@ public abstract class MinigameBase : MonoBehaviour
         }
 
         hud.HideCountdown();
-        hud.ShowResults(new MinigameResult
+
+        var result = new MinigameResult
         {
             Score = runText,
             Best = bestText,
             Reward = CurrentReward()
-        }, Retry, ReturnToWorld);
+        };
+
+        if (_results != null)
+            StopCoroutine(_results);
+        _results = StartCoroutine(ShowResultsAfterDelay(hud, result));
+    }
+
+    private IEnumerator ShowResultsAfterDelay(MinigameHUD hud, MinigameResult result)
+    {
+        if (resultsDelay > 0f)
+            yield return new WaitForSeconds(resultsDelay);
+
+        _results = null;
+        if (hud != null)
+            hud.ShowResults(result, Retry, ReturnToWorld);
     }
 
     public void Retry()

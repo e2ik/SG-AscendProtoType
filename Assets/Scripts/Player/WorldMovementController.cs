@@ -36,6 +36,8 @@ public class WorldMovementController : MovementController, IStatCapProvider
     [Header("Jump Windup")]
     [SerializeField] [Min(0f)] private float jumpDelay = 0.15f;
     [SerializeField] [Min(0f)] private float windupBrake = 25f;
+    [SerializeField] private string jumpSound = "RunnerJump";
+    [SerializeField] private string jumpDustEffect = "JumpDust";
 
     [Header("Air Control")]
     [SerializeField] [Range(0f, 1f)] private float airSpeedMultiplier = 0.8f;
@@ -281,6 +283,15 @@ public class WorldMovementController : MovementController, IStatCapProvider
         _windingUp = false;
         velocity.y = JumpVelocity;
         TutorialEvents.Raise(TutorialEvents.PlayerJumped);
+
+        if (!string.IsNullOrEmpty(jumpSound) && ASpawner.Instance != null)
+            ASpawner.Play(jumpSound);
+
+        if (!string.IsNullOrEmpty(jumpDustEffect) && PSpawner.Instance != null && _collider != null)
+        {
+            var bounds = _collider.bounds;
+            PSpawner.Spawn(jumpDustEffect, new Vector3(bounds.center.x, bounds.min.y, transform.position.z));
+        }
     }
 
     private void TrackLanding(float now)

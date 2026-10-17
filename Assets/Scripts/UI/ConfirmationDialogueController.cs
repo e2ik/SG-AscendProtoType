@@ -24,6 +24,7 @@ public class ConfirmationDialogueController : MonoBehaviour
     [SerializeField] private TMP_Text messageText;
     [SerializeField] private Button yesButton;
     [SerializeField] private Button noButton;
+    [SerializeField] private string popSound = "ConfirmPop";
 
     private Action _onConfirm;
     private Action _onCancel;
@@ -82,6 +83,9 @@ public class ConfirmationDialogueController : MonoBehaviour
 
         UIPanelAnimator.SetVisible(background, true);
         UIPanelAnimator.SetVisible(panel, true);
+
+        if (!string.IsNullOrEmpty(popSound) && ASpawner.Instance != null)
+            ASpawner.Play(popSound);
 
         if ((focusCancel || !allowConfirm) && EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(noButton.gameObject);

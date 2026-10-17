@@ -746,7 +746,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 868963451c4b3ee4396bb05d281c4ba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PSpawner
-  database: []
+  database:
+  - key: JumpDust
+    prefab: {fileID: 8659606402152806829, guid: 4ce5924fd9fe7ed4eabad8bc2c6ea492, type: 3}
+    initialPoolSize: 1
+  - key: Crash
+    prefab: {fileID: 8659606402152806829, guid: 0b0c74760d0fc7f428b09718152a32a8, type: 3}
+    initialPoolSize: 1
 --- !u!114 &1222042136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -832,6 +838,66 @@ MonoBehaviour:
     cooldown: 0
     priority: 128
     mixerGroup: {fileID: 6512568849920868739, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: RunnerJump
+    clips:
+    - {fileID: 8300000, guid: ec5d9be35d979ca4d9c4392c658e2e8b, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.1
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 6512568849920868739, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: RunnerClear
+    clips:
+    - {fileID: 8300000, guid: 224e23a82eb0f2c4186ee7c955d04597, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.148
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 6512568849920868739, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: ConfirmPop
+    clips:
+    - {fileID: 8300000, guid: 975c6dcf52a100a459e9008b024750bb, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: RunnerCrash
+    clips:
+    - {fileID: 8300000, guid: 26978d47b64eefe4ea21eb37e2cdccbb, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 6512568849920868739, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: ResultsPop
+    clips:
+    - {fileID: 8300000, guid: a053882ca607eff419f2c2dcec2ea9a4, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
   maxVoices: 24
   initialPoolSize: 8
   defaultMixerGroup: {fileID: 6512568849920868739, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
