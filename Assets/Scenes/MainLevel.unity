@@ -4461,7 +4461,7 @@ MonoBehaviour:
   panOnlyWhenStanding: 1
   focusOnDialogue: 1
   focusNeverZoomsOut: 1
-  focusPadding: 0
+  focusPadding: 0.85
   minFocusSize: 1.5
   maxFocusSize: 6
   focusViewportOffsetY: 0.15

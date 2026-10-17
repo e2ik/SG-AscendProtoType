@@ -151,6 +151,7 @@ MonoBehaviour:
   moveSound: UIclick
   confirmSound: UIconfirm
   playOnHover: 1
+  minRepeatInterval: 0.08
 --- !u!114 &7417002486408559711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,8 +242,8 @@ MonoBehaviour:
   backLayerShovesPerSecond: 3
   useInactiveBackLayer: 1
   inactiveBackLayerColour: {r: 0.9245283, g: 0.6957941, b: 0.4971519, a: 0.654902}
-  inactiveBackLayerScale: 1.15
-  inactiveBackLayerShove: 0.5
+  inactiveBackLayerScale: 1.25
+  inactiveBackLayerShove: 1
   navigationArrow: {fileID: 8903732112072646110}
   downArrow: {fileID: 21300000, guid: df0ffb047bc8ed04cb7867641aeccf76, type: 3}
   upArrow: {fileID: 21300000, guid: 28795dd9fa20cb0448ab2c1842becbe2, type: 3}
