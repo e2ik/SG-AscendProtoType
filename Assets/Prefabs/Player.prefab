@@ -746,14 +746,13 @@ MonoBehaviour:
   animator: {fileID: 1721188278184861565}
   movement: {fileID: 3336668019918967973}
   body: {fileID: 3467189312968825910}
-  bodyCollider: {fileID: 0}
   jumpStateName: P_JumpUp
+  landStateName: P_Land
   movingParameter: Moving
   walkSpeedParameter: WalkSpeed
   groundedParameter: Grounded
   fallingParameter: Falling
   descendingParameter: Descending
-  landingParameter: Landing
   referenceSpeed: 5
   minWalkMultiplier: 0.5
   maxWalkMultiplier: 2.5
@@ -762,12 +761,7 @@ MonoBehaviour:
   apexThreshold: 1
   minAirTime: 0.06
   descendingVelocity: -0.1
-  landLeadTime: 0.1
-  minLandDistance: 0.1
-  maxProbeDistance: 5
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  minAirTimeForLand: 0.15
 --- !u!70 &3963817751061146528
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -828,10 +822,10 @@ MonoBehaviour:
   canJump: 1
   minJumpHeight: 1
   maxJumpHeight: 5.9
-  jumpHeightPerStrength: 0.25
+  jumpHeightPerStrength: 0.35
   maxFallSpeed: 20
-  coyoteTime: 0.1
-  jumpBufferTime: 0.1
+  coyoteTime: 0.05
+  jumpBufferTime: 0.05
   jumpDelay: 0.25
   windupBrake: 25
   airSpeedMultiplier: 0.8
@@ -847,6 +841,7 @@ MonoBehaviour:
   dropDownThreshold: 0.5
   dropDuration: 0.25
   dropKickVelocity: 3
+  oneWayTolerance: 0.05
   groundCheckWidth: 0.95
   groundCheckDistance: 0.08
   minGroundNormalY: 0.7

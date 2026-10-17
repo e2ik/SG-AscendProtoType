@@ -59,6 +59,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
     [SerializeField] [Range(0.1f, 1f)] private float dropDownThreshold = 0.5f;
     [SerializeField] private float dropDuration = 0.25f;
     [SerializeField] private float dropKickVelocity = 3f;
+    [SerializeField] [Min(0f)] private float oneWayTolerance = 0.05f;
 
     [Header("Ground Check")]
     [SerializeField] [Range(0.1f, 1f)] private float groundCheckWidth = 0.95f;
@@ -352,6 +353,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
         _standingOneWay.Clear();
         bool grounded = false;
+        float feetY = _collider.bounds.min.y;
 
         for (int i = 0; i < count; i++)
         {
@@ -364,6 +366,7 @@ public class WorldMovementController : MovementController, IStatCapProvider
 
             bool oneWay = col.usedByEffector && col.TryGetComponent<PlatformEffector2D>(out _);
             if (oneWay && _body.linearVelocity.y > 0.01f) continue;
+            if (oneWay && (hit.distance <= 0f || hit.point.y > feetY + oneWayTolerance)) continue;
 
             grounded = true;
             if (oneWay)

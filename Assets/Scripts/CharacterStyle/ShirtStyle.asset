@@ -18,28 +18,70 @@ MonoBehaviour:
     frames:
     - {fileID: 21300000, guid: cb74a075e504c1848b99d51515e3c11f, type: 3}
     - {fileID: 21300000, guid: feecfec71961e5047ad25a502745de23, type: 3}
+    - {fileID: -4481211474174727929, guid: dbeec87aed3870e4d9a93a87d2d15a82, type: 3}
+    - {fileID: 5447297749477881298, guid: dbeec87aed3870e4d9a93a87d2d15a82, type: 3}
+    - {fileID: 1900487226605011161, guid: dbeec87aed3870e4d9a93a87d2d15a82, type: 3}
+    - {fileID: -4340924488159763022, guid: dbeec87aed3870e4d9a93a87d2d15a82, type: 3}
+    - {fileID: -7137766337611479738, guid: dbeec87aed3870e4d9a93a87d2d15a82, type: 3}
+    - {fileID: 5362275349873269688, guid: dbeec87aed3870e4d9a93a87d2d15a82, type: 3}
+    - {fileID: -59501407737917750, guid: dbeec87aed3870e4d9a93a87d2d15a82, type: 3}
   - displayName: Shirt01
     icon: {fileID: 21300000, guid: 03cdd21af91990c48b55b0b26055c114, type: 3}
     frames:
     - {fileID: 21300000, guid: 25112bded71385844a988134977077fe, type: 3}
     - {fileID: 21300000, guid: b1fb7fb269feba94e87d7dadf840fb4f, type: 3}
+    - {fileID: -5347039176129761811, guid: f1aca2c374c37964493362a48a043fe7, type: 3}
+    - {fileID: -4683228796056426665, guid: f1aca2c374c37964493362a48a043fe7, type: 3}
+    - {fileID: 9070894244361903743, guid: f1aca2c374c37964493362a48a043fe7, type: 3}
+    - {fileID: 6772852362066921958, guid: f1aca2c374c37964493362a48a043fe7, type: 3}
+    - {fileID: -5052114698571021492, guid: f1aca2c374c37964493362a48a043fe7, type: 3}
+    - {fileID: 8551731042614422285, guid: f1aca2c374c37964493362a48a043fe7, type: 3}
+    - {fileID: -678998844790835212, guid: f1aca2c374c37964493362a48a043fe7, type: 3}
   - displayName: Shirt02
     icon: {fileID: 21300000, guid: c44434ab4f495fb4caef5061008478d6, type: 3}
     frames:
     - {fileID: 21300000, guid: 5542076fb70e9de43939adcf2fb31a31, type: 3}
     - {fileID: 21300000, guid: 03a9d7289d260274ab6b85ed7975a7c3, type: 3}
+    - {fileID: 2673368322190575747, guid: f23158de5f764a146950a476ae275fd6, type: 3}
+    - {fileID: -6129186806990022645, guid: f23158de5f764a146950a476ae275fd6, type: 3}
+    - {fileID: 2160339528195197625, guid: f23158de5f764a146950a476ae275fd6, type: 3}
+    - {fileID: -6833713933246062559, guid: f23158de5f764a146950a476ae275fd6, type: 3}
+    - {fileID: 6466307703261291515, guid: f23158de5f764a146950a476ae275fd6, type: 3}
+    - {fileID: 784592801778351535, guid: f23158de5f764a146950a476ae275fd6, type: 3}
+    - {fileID: -7411092853971307726, guid: f23158de5f764a146950a476ae275fd6, type: 3}
   - displayName: Shirt03
     icon: {fileID: 21300000, guid: cee221cff3afc0042b0b64d68db90742, type: 3}
     frames:
     - {fileID: 21300000, guid: 7dc3e4ec36f474b46ab2edfb3e48773f, type: 3}
     - {fileID: 21300000, guid: d41f966cfb8498746bc8c4a4ca261981, type: 3}
+    - {fileID: -6263109021978493640, guid: ff62e67924139c847a2563b789bcd364, type: 3}
+    - {fileID: 1460806497239724280, guid: ff62e67924139c847a2563b789bcd364, type: 3}
+    - {fileID: -4322595279197379455, guid: ff62e67924139c847a2563b789bcd364, type: 3}
+    - {fileID: -2029668656362395439, guid: ff62e67924139c847a2563b789bcd364, type: 3}
+    - {fileID: 8939533939103622312, guid: ff62e67924139c847a2563b789bcd364, type: 3}
+    - {fileID: 4928157538320919684, guid: ff62e67924139c847a2563b789bcd364, type: 3}
+    - {fileID: 6735179933909626433, guid: ff62e67924139c847a2563b789bcd364, type: 3}
   - displayName: Shirt04
     icon: {fileID: 21300000, guid: bdc0a19a51477244f92545efbf0e0c68, type: 3}
     frames:
     - {fileID: 21300000, guid: 9b20297aec1aefb489373d003c96fc13, type: 3}
     - {fileID: 21300000, guid: 6352efffa563cc041ae6f61f4195745f, type: 3}
+    - {fileID: -3364188541545792819, guid: a3d56348d90c2fe49954cc922f545918, type: 3}
+    - {fileID: -1992443743260911158, guid: a3d56348d90c2fe49954cc922f545918, type: 3}
+    - {fileID: 538357805397676449, guid: a3d56348d90c2fe49954cc922f545918, type: 3}
+    - {fileID: 2014109578003395203, guid: a3d56348d90c2fe49954cc922f545918, type: 3}
+    - {fileID: -4203795065253482319, guid: a3d56348d90c2fe49954cc922f545918, type: 3}
+    - {fileID: 8571626775089167783, guid: a3d56348d90c2fe49954cc922f545918, type: 3}
+    - {fileID: -1107688654218079327, guid: a3d56348d90c2fe49954cc922f545918, type: 3}
   - displayName: Shirt05
     icon: {fileID: 21300000, guid: 439cbd632c8009d4b87d02bef6dfa97b, type: 3}
     frames:
     - {fileID: 21300000, guid: fdfd96da2477334499aca727e433e568, type: 3}
     - {fileID: 21300000, guid: 1907b7b7febf9a044b94d24415e15790, type: 3}
+    - {fileID: 46312363987975034, guid: e72583cc90eed2d4491b1f8384967254, type: 3}
+    - {fileID: 2496215860661871078, guid: e72583cc90eed2d4491b1f8384967254, type: 3}
+    - {fileID: -5907856175104771739, guid: e72583cc90eed2d4491b1f8384967254, type: 3}
+    - {fileID: 8085932739226762186, guid: e72583cc90eed2d4491b1f8384967254, type: 3}
+    - {fileID: 71627621284158210, guid: e72583cc90eed2d4491b1f8384967254, type: 3}
+    - {fileID: -7935212667430015256, guid: e72583cc90eed2d4491b1f8384967254, type: 3}
+    - {fileID: 301867404688927556, guid: e72583cc90eed2d4491b1f8384967254, type: 3}

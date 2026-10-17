@@ -19,33 +19,75 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 477abc4be6788ca4e8278679f4384dc0, type: 3}
     - {fileID: 6629365367578311722, guid: 0fe6dd2bd24733045863d7f177318156, type: 3}
     - {fileID: -832173722527323982, guid: 0fe6dd2bd24733045863d7f177318156, type: 3}
+    - {fileID: 5802567009252307575, guid: ed3f0ac95b4b7764e804a552aa1d8eab, type: 3}
+    - {fileID: -3965037822478798884, guid: ed3f0ac95b4b7764e804a552aa1d8eab, type: 3}
+    - {fileID: 1841617396918189946, guid: ed3f0ac95b4b7764e804a552aa1d8eab, type: 3}
+    - {fileID: -319923872829805742, guid: ed3f0ac95b4b7764e804a552aa1d8eab, type: 3}
+    - {fileID: -6761948884657260014, guid: ed3f0ac95b4b7764e804a552aa1d8eab, type: 3}
+    - {fileID: 2384551944558292341, guid: ed3f0ac95b4b7764e804a552aa1d8eab, type: 3}
+    - {fileID: -8556945686259310397, guid: ed3f0ac95b4b7764e804a552aa1d8eab, type: 3}
   - displayName: Pants01
     icon: {fileID: 21300000, guid: 10e0b6dcd60806742a6ef3e8cd742e4a, type: 3}
     frames:
     - {fileID: 21300000, guid: dd27335ba32f62640b79930eddd36559, type: 3}
     - {fileID: -922007194477172306, guid: 13a2bc592c7601b40a6687b29eb9a6d6, type: 3}
     - {fileID: -3829372055838080830, guid: 13a2bc592c7601b40a6687b29eb9a6d6, type: 3}
+    - {fileID: -4549465642334820267, guid: 43788339985b13b44aa86db688715bff, type: 3}
+    - {fileID: -905047685613249017, guid: 43788339985b13b44aa86db688715bff, type: 3}
+    - {fileID: -2609384864141643630, guid: 43788339985b13b44aa86db688715bff, type: 3}
+    - {fileID: -6563288604561139559, guid: 43788339985b13b44aa86db688715bff, type: 3}
+    - {fileID: 7671358695318001301, guid: 43788339985b13b44aa86db688715bff, type: 3}
+    - {fileID: 316375695245829680, guid: 43788339985b13b44aa86db688715bff, type: 3}
+    - {fileID: -6627399448729803780, guid: 43788339985b13b44aa86db688715bff, type: 3}
   - displayName: Pants02
     icon: {fileID: 21300000, guid: 4b1992a094b311749a2939f334172455, type: 3}
     frames:
     - {fileID: 21300000, guid: ce8a9ffd3fd7d9b4f8cc518f51b1fcec, type: 3}
     - {fileID: 9126884281453516653, guid: e38a8833808e7c54abc69ef3c13a10b2, type: 3}
     - {fileID: 5148145512445139304, guid: e38a8833808e7c54abc69ef3c13a10b2, type: 3}
+    - {fileID: 1030580517748964882, guid: cd36aa4750489f44594b6d9484debc79, type: 3}
+    - {fileID: -5674542644136844971, guid: cd36aa4750489f44594b6d9484debc79, type: 3}
+    - {fileID: -4768014805155949889, guid: cd36aa4750489f44594b6d9484debc79, type: 3}
+    - {fileID: -2385134127233803680, guid: cd36aa4750489f44594b6d9484debc79, type: 3}
+    - {fileID: 3329234841385303903, guid: cd36aa4750489f44594b6d9484debc79, type: 3}
+    - {fileID: -4718625555451489126, guid: cd36aa4750489f44594b6d9484debc79, type: 3}
+    - {fileID: -1580132818853195927, guid: cd36aa4750489f44594b6d9484debc79, type: 3}
   - displayName: Pants03
     icon: {fileID: 21300000, guid: 1eb59e834e8c8194481159eea7031e4a, type: 3}
     frames:
     - {fileID: 21300000, guid: 3e72202f151091240b11b8af95a764ac, type: 3}
     - {fileID: -4931203905953708063, guid: f75047614d60b784d82e2b0f78864d13, type: 3}
     - {fileID: -7153164480495995080, guid: f75047614d60b784d82e2b0f78864d13, type: 3}
+    - {fileID: 4413013271114623733, guid: 678cde72af9bfeb46a6acee5c66e6e6c, type: 3}
+    - {fileID: -4306080385803646937, guid: 678cde72af9bfeb46a6acee5c66e6e6c, type: 3}
+    - {fileID: -5296032333625133976, guid: 678cde72af9bfeb46a6acee5c66e6e6c, type: 3}
+    - {fileID: 604943129877436698, guid: 678cde72af9bfeb46a6acee5c66e6e6c, type: 3}
+    - {fileID: -7508175436905686874, guid: 678cde72af9bfeb46a6acee5c66e6e6c, type: 3}
+    - {fileID: 7797140038132799397, guid: 678cde72af9bfeb46a6acee5c66e6e6c, type: 3}
+    - {fileID: -4884936965243775610, guid: 678cde72af9bfeb46a6acee5c66e6e6c, type: 3}
   - displayName: Pants04
     icon: {fileID: 21300000, guid: 87dbab4430f318a47817d483e9b03e33, type: 3}
     frames:
     - {fileID: 21300000, guid: 83348f4203d7b924a9f3231c221bc467, type: 3}
     - {fileID: 3196714199938773018, guid: 2437eeefa208a4d45be2125932eb2410, type: 3}
     - {fileID: -6859710627749067061, guid: 2437eeefa208a4d45be2125932eb2410, type: 3}
+    - {fileID: 1117976351558820346, guid: 51a80928fc33f8c42a1551f57dcae18e, type: 3}
+    - {fileID: -5269671115884696143, guid: 51a80928fc33f8c42a1551f57dcae18e, type: 3}
+    - {fileID: 3777661035016922410, guid: 51a80928fc33f8c42a1551f57dcae18e, type: 3}
+    - {fileID: 3032062908615063523, guid: 51a80928fc33f8c42a1551f57dcae18e, type: 3}
+    - {fileID: -6334388670512656484, guid: 51a80928fc33f8c42a1551f57dcae18e, type: 3}
+    - {fileID: 4477734577054143672, guid: 51a80928fc33f8c42a1551f57dcae18e, type: 3}
+    - {fileID: 1121147949629415667, guid: 51a80928fc33f8c42a1551f57dcae18e, type: 3}
   - displayName: Pants05
     icon: {fileID: 21300000, guid: 4483d7e9abacce7459d3065ec4b68717, type: 3}
     frames:
     - {fileID: 21300000, guid: 1479832d3ea51e44aa949cb2de89ea82, type: 3}
     - {fileID: -6597727345288321737, guid: 95339eed6afd73c48b30077580f9c8e1, type: 3}
     - {fileID: 6696926262599707774, guid: 95339eed6afd73c48b30077580f9c8e1, type: 3}
+    - {fileID: 8793148416472238755, guid: da82ffebb2ec80d4698044528e1aab8f, type: 3}
+    - {fileID: -3030453157620743124, guid: da82ffebb2ec80d4698044528e1aab8f, type: 3}
+    - {fileID: 6873547402743118737, guid: da82ffebb2ec80d4698044528e1aab8f, type: 3}
+    - {fileID: 2424256905352832545, guid: da82ffebb2ec80d4698044528e1aab8f, type: 3}
+    - {fileID: 4452992102005543003, guid: da82ffebb2ec80d4698044528e1aab8f, type: 3}
+    - {fileID: -9203714901819566188, guid: da82ffebb2ec80d4698044528e1aab8f, type: 3}
+    - {fileID: 150776737431475755, guid: da82ffebb2ec80d4698044528e1aab8f, type: 3}

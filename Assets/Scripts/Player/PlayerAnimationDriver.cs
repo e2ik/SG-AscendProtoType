@@ -5,16 +5,17 @@ public class PlayerAnimationDriver : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private WorldMovementController movement;
     [SerializeField] private Rigidbody2D body;
-    [SerializeField] private Collider2D bodyCollider;
+
+    [Header("States")]
+    [SerializeField] private string jumpStateName = "P_JumpUp";
+    [SerializeField] private string landStateName = "P_Land";
 
     [Header("Parameters")]
-    [SerializeField] private string jumpStateName = "P_JumpUp";
     [SerializeField] private string movingParameter = "Moving";
     [SerializeField] private string walkSpeedParameter = "WalkSpeed";
     [SerializeField] private string groundedParameter = "Grounded";
     [SerializeField] private string fallingParameter = "Falling";
     [SerializeField] private string descendingParameter = "Descending";
-    [SerializeField] private string landingParameter = "Landing";
 
     [Header("Walk Speed")]
     [SerializeField] [Min(0.01f)] private float referenceSpeed = 5f;
@@ -29,31 +30,24 @@ public class PlayerAnimationDriver : MonoBehaviour
     [SerializeField] private float descendingVelocity = -0.1f;
 
     [Header("Landing")]
-    [SerializeField] [Min(0f)] private float landLeadTime = 0.1f;
-    [SerializeField] [Min(0f)] private float minLandDistance = 0.1f;
-    [SerializeField] [Min(0.1f)] private float maxProbeDistance = 5f;
-    [SerializeField] private LayerMask groundLayer = ~0;
-
-    private readonly RaycastHit2D[] _hits = new RaycastHit2D[8];
+    [SerializeField] [Min(0f)] private float minAirTimeForLand = 0.15f;
 
     private int _jumpStateHash;
+    private int _landStateHash;
     private int _movingHash;
     private int _walkSpeedHash;
     private int _groundedHash;
     private int _fallingHash;
     private int _descendingHash;
-    private int _landingHash;
 
     private bool _hasMoving;
     private bool _hasWalkSpeed;
     private bool _hasGrounded;
     private bool _hasFalling;
     private bool _hasDescending;
-    private bool _hasLanding;
     private bool _parametersCached;
 
     private float _airTime;
-    private bool _landing;
     private bool _wasAirborne;
     private bool _airFromJump;
     private bool _leftGroundSinceJump;
@@ -67,16 +61,14 @@ public class PlayerAnimationDriver : MonoBehaviour
             movement = GetComponentInParent<WorldMovementController>();
         if (body == null)
             body = movement != null ? movement.GetComponent<Rigidbody2D>() : GetComponentInParent<Rigidbody2D>();
-        if (bodyCollider == null && body != null)
-            bodyCollider = body.GetComponent<Collider2D>();
 
         _jumpStateHash = Animator.StringToHash(jumpStateName);
+        _landStateHash = Animator.StringToHash(landStateName);
         _movingHash = Animator.StringToHash(movingParameter);
         _walkSpeedHash = Animator.StringToHash(walkSpeedParameter);
         _groundedHash = Animator.StringToHash(groundedParameter);
         _fallingHash = Animator.StringToHash(fallingParameter);
         _descendingHash = Animator.StringToHash(descendingParameter);
-        _landingHash = Animator.StringToHash(landingParameter);
     }
 
     private void OnEnable()
@@ -96,13 +88,17 @@ public class PlayerAnimationDriver : MonoBehaviour
         _airFromJump = true;
         _leftGroundSinceJump = false;
         _jumpStartTime = Time.time;
+        PlayState(_jumpStateHash, jumpStateName);
+    }
 
+    private void PlayState(int hash, string stateName)
+    {
         if (animator == null || !animator.isActiveAndEnabled) return;
 
-        if (animator.HasState(0, _jumpStateHash))
-            animator.Play(_jumpStateHash, 0, 0f);
+        if (animator.HasState(0, hash))
+            animator.Play(hash, 0, 0f);
         else
-            Debug.LogWarning($"PlayerAnimationDriver can't find a '{jumpStateName}' state on the Animator", this);
+            Debug.LogWarning($"PlayerAnimationDriver can't find a '{stateName}' state on the Animator", this);
     }
 
     private void CacheParameters()
@@ -119,7 +115,6 @@ public class PlayerAnimationDriver : MonoBehaviour
             if (parameter.nameHash == _groundedHash && isBool) _hasGrounded = true;
             if (parameter.nameHash == _fallingHash && isBool) _hasFalling = true;
             if (parameter.nameHash == _descendingHash && isBool) _hasDescending = true;
-            if (parameter.nameHash == _landingHash && isBool) _hasLanding = true;
         }
     }
 
@@ -133,6 +128,7 @@ public class PlayerAnimationDriver : MonoBehaviour
         bool grounded = movement == null || movement.IsGrounded;
         bool windingUp = movement != null && movement.IsWindingUp;
 
+        float airTimeBeforeLanding = _airTime;
         _airTime = grounded ? 0f : _airTime + Time.deltaTime;
 
         bool rising = !grounded && velocity.y > apexThreshold;
@@ -142,15 +138,15 @@ public class PlayerAnimationDriver : MonoBehaviour
         if (airborne)
             _leftGroundSinceJump = true;
 
+        bool landed = !airborne && _wasAirborne && !windingUp;
         bool jumpFizzled = _airFromJump && !_leftGroundSinceJump && !windingUp && grounded && Time.time - _jumpStartTime > 0.3f;
-        if ((!airborne && _wasAirborne && !windingUp) || jumpFizzled)
+
+        if (landed || jumpFizzled)
             _airFromJump = false;
         _wasAirborne = airborne;
 
-        if (grounded)
-            _landing = false;
-        else if (falling && !_landing)
-            _landing = AboutToLand(velocity.y);
+        if (landed && airTimeBeforeLanding >= minAirTimeForLand)
+            PlayState(_landStateHash, landStateName);
 
         bool hasInput = movement == null || !Mathf.Approximately(movement.MoveInput, 0f);
         bool moving = !airborne && !windingUp && speed > movingThreshold && (!requireInputToWalk || hasInput);
@@ -159,39 +155,14 @@ public class PlayerAnimationDriver : MonoBehaviour
         if (_hasMoving) animator.SetBool(_movingHash, moving);
         if (_hasWalkSpeed) animator.SetFloat(_walkSpeedHash, moving ? multiplier : 1f);
         if (_hasGrounded) animator.SetBool(_groundedHash, !airborne && !_airFromJump);
-        if (_hasDescending) animator.SetBool(_descendingHash, airborne && velocity.y < descendingVelocity);
-        if (_hasFalling) animator.SetBool(_fallingHash, falling && !_airFromJump && !_landing);
-        if (_hasLanding) animator.SetBool(_landingHash, _landing);
+        if (_hasDescending) animator.SetBool(_descendingHash, airborne && velocity.y < descendingVelocity && JumpUpFinished());
+        if (_hasFalling) animator.SetBool(_fallingHash, falling && !_airFromJump);
     }
 
-    private bool AboutToLand(float verticalVelocity)
+    private bool JumpUpFinished()
     {
-        if (bodyCollider == null || verticalVelocity >= 0f) return false;
-
-        float leadDistance = Mathf.Max(minLandDistance, -verticalVelocity * landLeadTime);
-        return DistanceToGround() <= leadDistance;
-    }
-
-    private float DistanceToGround()
-    {
-        var bounds = bodyCollider.bounds;
-        var origin = new Vector2(bounds.center.x, bounds.min.y + 0.05f);
-        var size = new Vector2(bounds.size.x * 0.9f, 0.02f);
-
-        var filter = new ContactFilter2D { useLayerMask = true, layerMask = groundLayer, useTriggers = false };
-        int count = Physics2D.BoxCast(origin, size, 0f, Vector2.down, filter, _hits, maxProbeDistance);
-
-        float closest = float.MaxValue;
-        for (int i = 0; i < count; i++)
-        {
-            var hit = _hits[i];
-            if (hit.collider == null || hit.collider.attachedRigidbody == body) continue;
-            if (hit.normal.y < 0.7f) continue;
-            if (Physics2D.GetIgnoreCollision(bodyCollider, hit.collider)) continue;
-
-            closest = Mathf.Min(closest, hit.distance - 0.05f);
-        }
-
-        return closest;
+        var state = animator.GetCurrentAnimatorStateInfo(0);
+        if (state.shortNameHash != _jumpStateHash) return true;
+        return !animator.IsInTransition(0) && state.normalizedTime >= 1f;
     }
 }
