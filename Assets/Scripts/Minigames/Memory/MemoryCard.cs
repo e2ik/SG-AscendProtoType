@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
-public class MemoryCard : MonoBehaviour
+public class MemoryCard : MonoBehaviour, IPointerEnterHandler
 {
     public enum CardState
     {
@@ -350,6 +350,14 @@ public class MemoryCard : MonoBehaviour
         _frameInstance.SetFloat(OverlayAmountId, _overlayAmount);
         _frameInstance.SetColor(EdgeColorId, _edgeColor);
         _frameInstance.SetFloat(EdgeAmountId, _edgeAmount);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (!UIManager.HoverAllowed || Button == null || !Button.IsInteractable()) return;
+        var eventSystem = EventSystem.current;
+        if (eventSystem != null && eventSystem.currentSelectedGameObject != gameObject)
+            eventSystem.SetSelectedGameObject(gameObject);
     }
 
     private bool IsHighlighted()

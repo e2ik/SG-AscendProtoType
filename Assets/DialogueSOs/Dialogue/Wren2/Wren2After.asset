@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a1cc0faf2c6474caa547c2be9cbc42, type: 3}
+  m_Name: Wren2After
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - text: <happy>Not perfect. Just a little calmer. I can work with that.
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  - text: Want to try a longer one with me?
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  choices:
+  - text: Okay, I'll try.
+    responseLines:
+    - text: Breathe with the light. Wandering is okay.
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    next: {fileID: 0}
+    action:
+      type: 2
+      minigame: 5
+      config: {fileID: 11400000, guid: a84b884cefc1d904bb037c015ab5bbb5, type: 2}
+      flag: wren2_breath_done
+  - text: Not right now.
+    responseLines:
+    - text: That's alright. I'll be here.
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    next: {fileID: 0}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  setFlagOnFinish: 

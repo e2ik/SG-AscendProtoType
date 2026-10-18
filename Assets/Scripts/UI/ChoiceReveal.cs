@@ -35,6 +35,9 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [SerializeField] [Min(0f)] private float entranceDelayPerChoice = 0.08f;
     [SerializeField] [Min(0.01f)] private float entranceDuration = 0.18f;
     [SerializeField] [Range(0f, 3f)] private float entranceOvershoot = 1.7f;
+    [SerializeField] private Color entranceFlashColour = Color.white;
+    [SerializeField] [Range(0f, 1f)] private float entranceFlashAmount = 0.5f;
+    [SerializeField] [Min(0.01f)] private float entranceFlashDuration = 0.35f;
 
     [Header("Active Size")]
     [SerializeField] [Min(0.1f)] private float activeScale = 1.15f;
@@ -83,6 +86,7 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [SerializeField] private Color revealedTextColour = Color.black;
 
     public TMP_Text Label => label;
+    public bool IsEntering => _entering;
     public float Reveal { get; private set; }
     public Vector2 ShoveOffset => _shoveOffset * (1f - Reveal);
     public float PushDistance => Reveal * (_rect != null ? _rect.rect.height * Mathf.Max(0f, activeScale - 1f) * 0.5f + extraSpacing : extraSpacing);
@@ -124,6 +128,8 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private bool _mirrored;
     private ChoicesFollowPlayer _follow;
     private float _backShoveAngle;
+    private float _flash;
+    private bool _flashing;
 
     private void Awake()
     {
@@ -140,6 +146,7 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             _group.alpha = 0f;
             _entranceScale = 0f;
             _entering = true;
+            _flashing = entranceFlashAmount > 0f;
         }
         _baseScale = transform.localScale;
         _baseRotation = transform.localRotation;
@@ -380,6 +387,33 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         }
     }
 
+    private void UpdateFlash()
+    {
+        if (!_flashing) return;
+
+        float t = (_entranceTime - _entranceDelay) / entranceFlashDuration;
+        if (t <= 0f)
+        {
+            _flash = 0f;
+            return;
+        }
+
+        _flash = (t < 0.3f ? t / 0.3f : 1f - (t - 0.3f) / 0.7f) * entranceFlashAmount;
+        if (t >= 1f)
+        {
+            _flash = 0f;
+            _flashing = false;
+        }
+    }
+
+    private static Color Brighten(Color colour, Color flash, float amount)
+    {
+        if (amount <= 0f) return colour;
+        var result = Color.Lerp(colour, flash, amount);
+        result.a = colour.a;
+        return result;
+    }
+
     private int ChoiceCount()
     {
         if (transform.parent == null) return 1;
@@ -504,6 +538,7 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         get
         {
             var eventSystem = EventSystem.current;
+            if (_entering) return false;
             bool selected = eventSystem != null && eventSystem.currentSelectedGameObject == gameObject;
             return selected || (_hovered && UIManager.HoverAllowed);
         }
@@ -517,6 +552,9 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         float dt = Time.unscaledDeltaTime;
         _frameDelta = dt;
         UpdateEntrance(dt);
+        if (_flashing && !_entering)
+            _entranceTime += dt;
+        UpdateFlash();
 
         if (!UIManager.HoverAllowed)
             _hovered = false;
@@ -684,7 +722,7 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
         if (changeBackgroundColour && _backgroundImage != null)
         {
-            _backgroundImage.color = Color.Lerp(_collapsedColour, revealedBackgroundColour, eased);
+            _backgroundImage.color = Brighten(Color.Lerp(_collapsedColour, revealedBackgroundColour, eased), entranceFlashColour, _flash);
         }
 
         if (label != null)
@@ -692,7 +730,7 @@ public class ChoiceReveal : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             var colour = changeTextColour ? Color.Lerp(collapsedTextColour, revealedTextColour, eased) : label.color;
             if (numberLabel != null && hideLabelWhenCollapsed)
                 colour.a = (changeTextColour ? Mathf.Lerp(collapsedTextColour.a, revealedTextColour.a, eased) : 1f) * eased;
-            label.color = colour;
+            label.color = Brighten(colour, entranceFlashColour, _flash);
         }
 
         if (numberLabel != null)

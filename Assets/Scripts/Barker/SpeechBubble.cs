@@ -58,6 +58,7 @@ public class SpeechBubble : MonoBehaviour
         if (canvasGroup == null) canvasGroup = GetComponentInChildren<CanvasGroup>(true);
         _baseScale = scaleRoot.localScale;
         _prefabScale = _baseScale;
+        DisableRaycasts();
 
         if (textOnTop && text != null)
             RaiseText();
@@ -74,6 +75,24 @@ public class SpeechBubble : MonoBehaviour
         {
             _shoveBasePosition = shoveTarget.localPosition;
             _shoveBaseRotation = shoveTarget.localRotation;
+        }
+    }
+
+    private void DisableRaycasts()
+    {
+        var rootGroup = GetComponent<CanvasGroup>();
+        if (rootGroup == null) rootGroup = gameObject.AddComponent<CanvasGroup>();
+        rootGroup.blocksRaycasts = false;
+        rootGroup.interactable = false;
+
+        foreach (var graphic in GetComponentsInChildren<UnityEngine.UI.Graphic>(true))
+            graphic.raycastTarget = false;
+        foreach (var raycaster in GetComponentsInChildren<UnityEngine.UI.GraphicRaycaster>(true))
+            raycaster.enabled = false;
+        foreach (var group in GetComponentsInChildren<CanvasGroup>(true))
+        {
+            group.blocksRaycasts = false;
+            group.interactable = false;
         }
     }
 

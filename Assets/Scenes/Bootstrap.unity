@@ -900,6 +900,102 @@ MonoBehaviour:
     cooldown: 0
     priority: 128
     mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: DoorLocked
+    clips:
+    - {fileID: 8300000, guid: 6ea490bce5788d74782ee00de5bf29ed, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: DoorOpen
+    clips:
+    - {fileID: 8300000, guid: 7a3814145868ed644830faf4b42fa541, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: DoorClose
+    clips:
+    - {fileID: 8300000, guid: b9b90553c777d874cb05fdaeb504f4af, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: PlateTrigger
+    clips:
+    - {fileID: 8300000, guid: 2a77e72ca492d0f4f8c6a59fda804603, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: PlateTick
+    clips:
+    - {fileID: 8300000, guid: ce91034a51298514f98446eb4383382f, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.092
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: DoorThud
+    clips:
+    - {fileID: 8300000, guid: f0512bde25a44494192b803188df6805, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.092
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: Correct
+    clips:
+    - {fileID: 8300000, guid: 22f0507862a87604eb9df0fee876416f, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.092
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  - key: Flip
+    clips:
+    - {fileID: 8300000, guid: f69e9703649754e46a1657cab06a0b61, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariation: 0.075
+    loop: 0
+    maxInstances: 4
+    stealOldest: 1
+    cooldown: 0
+    priority: 128
+    mixerGroup: {fileID: 435425647201152005, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
   maxVoices: 24
   initialPoolSize: 8
   defaultMixerGroup: {fileID: 6512568849920868739, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
@@ -1030,6 +1126,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 37c7eb2cdb678be4e8ed0525a1fbcb56, type: 3}
     volume: 1
     resumePosition: 0
+  silenceWhenPaused: 1
+  pauseFadeDuration: 0.4
 --- !u!114 &1251588402 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5962907931249311159, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}
@@ -1241,7 +1339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
   m_SendPointerHoverToParent: 1
-  m_MoveRepeatDelay: 0.2
+  m_MoveRepeatDelay: 0.15
   m_MoveRepeatRate: 0.1
   m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,6 +17,33 @@ public class StatsMenuController : MonoBehaviour
     [SerializeField] private Button resetButton;
     [SerializeField] private Button backButton;
     [SerializeField] private string confirmMessage = "Spend {0} point{1}?";
+    [SerializeField] private bool closeOnConfirm = true;
+
+    [System.Serializable]
+    private class StatBarkLines
+    {
+        public StatType stat;
+        [TextArea(1, 2)] public List<string> lines = new List<string>();
+    }
+
+    [Header("Upgrade Barks")]
+    [SerializeField] private bool barkOnUpgrade = true;
+    [SerializeField] [Min(0f)] private float upgradeBarkDelay = 0.35f;
+    [SerializeField] [Min(0f)] private float upgradeBarkDuration = 1.4f;
+    [SerializeField] [Min(0.01f)] private float upgradeBarkScale = 1f;
+    [SerializeField] private List<StatBarkLines> upgradeLines = new List<StatBarkLines>
+    {
+        new StatBarkLines { stat = StatType.Strength, lines = new List<string> { "I feel stronger!", "My arms feel solid.", "Bring on those gates." } },
+        new StatBarkLines { stat = StatType.Agility, lines = new List<string> { "I feel lighter on my feet!", "Feeling quick!", "I could outrun anything." } },
+        new StatBarkLines { stat = StatType.Intelligence, lines = new List<string> { "My head feels clearer.", "Easier to focus now.", "Sharper already." } },
+        new StatBarkLines { stat = StatType.Endurance, lines = new List<string> { "I could keep going all day.", "Feeling steady.", "I won't give up so easily." } }
+    };
+    [SerializeField] [TextArea(1, 2)] private List<string> mixedUpgradeLines = new List<string>
+    {
+        "I feel so much better!",
+        "Everything feels a bit easier.",
+        "Okay. I can do this."
+    };
 
     [Header("Open Action")]
     [SerializeField] private string openActionPath = "Player/Stats";
@@ -257,17 +285,67 @@ public class StatsMenuController : MonoBehaviour
         if (_stats == null) return;
 
         bool spent = false;
+        var raised = new List<StatType>();
         foreach (var pair in new List<KeyValuePair<StatType, int>>(_pending))
         {
             if (pair.Value > 0 && _stats.TryAllocate(pair.Key, pair.Value))
+            {
                 spent = true;
+                raised.Add(pair.Key);
+            }
         }
+
+        if (spent && barkOnUpgrade)
+            QueueUpgradeBark(raised);
 
         ClearPending();
         Refresh();
 
         if (spent)
             TutorialEvents.Raise(TutorialEvents.StatPointsSpent);
+
+        if (spent && closeOnConfirm)
+            Close();
+    }
+
+    private void QueueUpgradeBark(List<StatType> raised)
+    {
+        var barker = _stats != null ? _stats.GetComponentInChildren<Barker>() : null;
+        if (barker == null || raised.Count == 0) return;
+
+        List<string> lines = null;
+        if (raised.Count > 1)
+        {
+            lines = mixedUpgradeLines;
+        }
+        else
+        {
+            foreach (var entry in upgradeLines)
+            {
+                if (entry.stat == raised[0])
+                {
+                    lines = entry.lines;
+                    break;
+                }
+            }
+        }
+
+        if (lines == null || lines.Count == 0) return;
+        string line = lines[Random.Range(0, lines.Count)];
+        barker.StartCoroutine(UpgradeBarkRoutine(barker, line));
+    }
+
+    private IEnumerator UpgradeBarkRoutine(Barker barker, string line)
+    {
+        yield return null;
+        while (barker != null && (Time.timeScale <= 0f || (UIManager.Instance != null && UIManager.Instance.IsAnyUIOpen)))
+            yield return null;
+
+        if (upgradeBarkDelay > 0f)
+            yield return new WaitForSeconds(upgradeBarkDelay);
+
+        if (barker != null)
+            barker.Say(line, upgradeBarkDuration, upgradeBarkScale);
     }
 
     private void Refresh()

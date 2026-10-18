@@ -681,6 +681,7 @@ GameObject:
   - component: {fileID: 5095142103470013498}
   - component: {fileID: -1618232719038926270}
   - component: {fileID: 1721188278184861565}
+  - component: {fileID: 2706739921972665085}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -828,8 +829,10 @@ MonoBehaviour:
   jumpBufferTime: 0.05
   jumpDelay: 0.25
   windupBrake: 25
-  airSpeedMultiplier: 0.8
-  airAccelerationMultiplier: 0.6
+  jumpSound: RunnerJump
+  jumpDustEffect: JumpDust
+  airSpeedMultiplier: 1
+  airAccelerationMultiplier: 0.8
   landSpeedMultiplier: 0.4
   landSlowDuration: 0.2
   minFallSpeedForLandSlow: 2
@@ -923,6 +926,7 @@ MonoBehaviour:
   clothesTop: {fileID: 4944228737760716487}
   clothesBottom: {fileID: 7741387186089954465}
   shoes: {fileID: 4615647365703764230}
+  applySaveOnStart: 0
 --- !u!114 &36531956207422248
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -993,3 +997,30 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2706739921972665085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8497367805908112311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bddb994bda3246c4e8a9469eecfba97c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Barker
+  bubblePrefab: {fileID: 1668212211566381578, guid: 663efc43c61c82d42aebf65953f13a50, type: 3}
+  offsetY: 1.5
+  bubbleScale: 1
+  autoBark: 0
+  lines: []
+  intervalRange: {x: 6, y: 12}
+  barkChance: 0.7
+  avoidRepeats: 1
+  fallbackPlayerName: friend
+  maxDistanceToPlayer: 0
+  onlyWhenOnScreen: 1
+  skipDuringDialogue: 1
+  skipWhenUIOpen: 1
+  skipWhenHighlighted: 1
+  closeWhenHighlighted: 1

@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a1cc0faf2c6474caa547c2be9cbc42, type: 3}
+  m_Name: Wren2Thought
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - text: 'I lost focus halfway through. My mind just wandered off.'
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  - text: 'If I can''t do it properly, what''s the point?'
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  choices:
+  - text: 'Then stop doing it.'
+    responseLines:
+    - text: '...Then I''d have nothing to hold onto.'
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    next: {fileID: 11400000}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  - text: 'Just try harder!'
+    responseLines:
+    - text: 'Trying harder makes it worse, honestly.'
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    next: {fileID: 11400000}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  - text: 'Did any of it help?'
+    responseLines:
+    - text: '...The first part did. I felt a bit calmer.'
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    - text: 'Even with my mind wandering.'
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    - text: '<happy>Maybe it doesn''t have to be perfect to count.'
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    next: {fileID: 0}
+    action:
+      type: 1
+      minigame: 0
+      config: {fileID: 0}
+      flag: wren2_reframe_done
+  setFlagOnFinish: 

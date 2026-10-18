@@ -245,7 +245,7 @@ MonoBehaviour:
   goodColor: {r: 1, g: 0.98507464, b: 0, a: 1}
   okayColor: {r: 1, g: 0.6325705, b: 0, a: 1}
   badColor: {r: 1, g: 0.42452818, b: 0.42452818, a: 1}
-  pressActionPath: Rhythm/Press
+  jumpActionPath: Player/Jump
   zoneBonus: {fileID: 11400000, guid: 2727634823371ae4d987901f65a44cca, type: 2}
   intelligenceOverride: 0
   testConfig: {fileID: 11400000, guid: 3554ecafaf802da42b0605b381ba945f, type: 2}
@@ -493,6 +493,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 358268856}
   m_CullTransparentMesh: 1
+--- !u!114 &399286129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2091795161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65c6daeb6fb6c944b93a9b5fa40e98bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAppearance
+  hair: {fileID: 2091795166}
+  skin: {fileID: 2091795164}
+  eyes: {fileID: 2091795165}
+  clothesTop: {fileID: 2091795163}
+  clothesBottom: {fileID: 2091795162}
+  shoes: {fileID: 2091795160}
+  applySaveOnStart: 1
 --- !u!1 &522786351
 GameObject:
   m_ObjectHideFlags: 0
@@ -2166,7 +2185,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1199881275080019193, guid: bf3a6787969ef364fbf28f6fa12f6d57, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 399286129}
   m_SourcePrefab: {fileID: 100100000, guid: bf3a6787969ef364fbf28f6fa12f6d57, type: 3}
 --- !u!114 &2091795159 stripped
 MonoBehaviour:
@@ -2179,6 +2201,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bddb994bda3246c4e8a9469eecfba97c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Barker
+--- !u!212 &2091795160 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3838000769424187411, guid: bf3a6787969ef364fbf28f6fa12f6d57, type: 3}
+  m_PrefabInstance: {fileID: 2091795158}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2091795161 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1199881275080019193, guid: bf3a6787969ef364fbf28f6fa12f6d57, type: 3}
+  m_PrefabInstance: {fileID: 2091795158}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2091795162 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 6634790897371648792, guid: bf3a6787969ef364fbf28f6fa12f6d57, type: 3}
+  m_PrefabInstance: {fileID: 2091795158}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2091795163 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4348086188733186834, guid: bf3a6787969ef364fbf28f6fa12f6d57, type: 3}
+  m_PrefabInstance: {fileID: 2091795158}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2091795164 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3743229759792223594, guid: bf3a6787969ef364fbf28f6fa12f6d57, type: 3}
+  m_PrefabInstance: {fileID: 2091795158}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2091795165 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8345009783921074780, guid: bf3a6787969ef364fbf28f6fa12f6d57, type: 3}
+  m_PrefabInstance: {fileID: 2091795158}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2091795166 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3070872317464293667, guid: bf3a6787969ef364fbf28f6fa12f6d57, type: 3}
+  m_PrefabInstance: {fileID: 2091795158}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2099484172
 GameObject:
   m_ObjectHideFlags: 0

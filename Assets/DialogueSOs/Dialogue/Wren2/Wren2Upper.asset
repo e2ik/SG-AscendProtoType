@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a1cc0faf2c6474caa547c2be9cbc42, type: 3}
+  m_Name: Wren2Upper
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  lines:
+  - text: '<happy>Oh. Hi. You made it up here too.'
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  - text: 'It''s quieter up here. I came to practise.'
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  - text: '...It didn''t really go well, though.'
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  choices:
+  - text: 'What happened?'
+    responseLines: []
+    next: {fileID: 11400000, guid: c41aca3bbbee44e9ba8994a48aa57ba1, type: 2}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  - text: 'See you later.'
+    responseLines:
+    - text: 'Okay. Take care.'
+      speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+    next: {fileID: 0}
+    action:
+      type: 0
+      minigame: 0
+      config: {fileID: 0}
+      flag: 
+  setFlagOnFinish: 

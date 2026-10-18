@@ -14,6 +14,7 @@ public class DialogueNpc : MonoBehaviour, IInteractable
     [SerializeField] private CharacterProfile profile;
     [SerializeField] private DialogueData defaultDialogue;
     [SerializeField] private List<ConditionalDialogue> conditionalDialogues = new List<ConditionalDialogue>();
+    [SerializeField] private string disableWhenFlag;
     [SerializeField] private bool debugLog;
 
     public CharacterProfile Profile => profile;
@@ -21,10 +22,18 @@ public class DialogueNpc : MonoBehaviour, IInteractable
     public string InteractionPrompt => $"Talk to {DisplayName}";
 
     public bool CanInteract =>
-        DialogueManager.Instance != null && !DialogueManager.Instance.IsActive && ChooseDialogue() != null;
+        DialogueManager.Instance != null && !DialogueManager.Instance.IsActive && !Disabled() && ChooseDialogue() != null;
+
+    private bool Disabled()
+    {
+        if (string.IsNullOrEmpty(disableWhenFlag)) return false;
+        var save = SaveManager.Instance != null ? SaveManager.Instance.CurrentSave : null;
+        return save != null && save.GetFlag(disableWhenFlag);
+    }
 
     public void Interact(PlayerController interactor)
     {
+        if (Disabled()) return;
         var dialogue = ChooseDialogue(debugLog);
         if (dialogue == null) return;
 

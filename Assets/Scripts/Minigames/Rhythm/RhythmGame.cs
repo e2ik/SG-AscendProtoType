@@ -124,7 +124,7 @@ public class RhythmGame : MinigameBase
     [SerializeField] private Color badColor = new Color(0.9f, 0.3f, 0.3f);
 
     [Header("Input")]
-    [SerializeField] private string pressActionPath = "Player/Jump";
+    [SerializeField] private string jumpActionPath = "Player/Jump";
 
     [Header("Intelligence Bonus")]
     [SerializeField] private RhythmZoneBonus zoneBonus;
@@ -215,7 +215,7 @@ public class RhythmGame : MinigameBase
     protected override void Start()
     {
         if (InputManager.Instance != null)
-            _pressAction = InputManager.Instance.FindAction(pressActionPath, this);
+            _pressAction = InputManager.Instance.FindAction(jumpActionPath, this);
 
         base.Start();
     }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 
@@ -56,6 +57,11 @@ public class MemoryGame : MinigameBase
 
     [Header("Sounds")]
     [SerializeField] private string flipSound;
+    [SerializeField] [Range(0f, 2f)] private float flipVolume = 1.4f;
+    [SerializeField] private bool muteCardUISounds = true;
+
+    [Header("Input")]
+    [SerializeField] private string flipActionPath = "Player/Jump";
     [SerializeField] private string matchSound;
     [SerializeField] private string mismatchSound;
 
@@ -82,6 +88,8 @@ public class MemoryGame : MinigameBase
     private MemoryCard _first;
     private MemoryCard _second;
     private MemoryCard _lastFocused;
+    private InputAction _flipAction;
+    private bool _enabledFlipAction;
     private bool _resolving;
     private int _matchedPairs;
     private float _elapsed;
@@ -139,12 +147,53 @@ public class MemoryGame : MinigameBase
         _resolving = false;
     }
 
+    protected override void Start()
+    {
+        if (InputManager.Instance != null && !string.IsNullOrEmpty(flipActionPath))
+            _flipAction = InputManager.Instance.FindAction(flipActionPath, this);
+
+        base.Start();
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        if (_enabledFlipAction && _flipAction != null)
+        {
+            var map = _flipAction.actionMap;
+            if (map == null || InputManager.Instance == null || InputManager.Instance.CurrentMap != map.name)
+                _flipAction.Disable();
+            _enabledFlipAction = false;
+        }
+    }
+
     private void Update()
     {
         if (CurrentPhase != Phase.Playing) return;
 
         _elapsed += Time.deltaTime;
         KeepFocusOnCards();
+
+        if (Time.timeScale <= 0f || _flipAction == null) return;
+
+        if (!_flipAction.enabled)
+        {
+            _flipAction.Enable();
+            _enabledFlipAction = true;
+            return;
+        }
+
+        if (_flipAction.WasPressedThisFrame())
+            FlipSelected();
+    }
+
+    private void FlipSelected()
+    {
+        var eventSystem = EventSystem.current;
+        var selected = eventSystem != null ? eventSystem.currentSelectedGameObject : null;
+        if (selected == null || !selected.TryGetComponent<MemoryCard>(out var card)) return;
+        if (!card.Button.IsInteractable()) return;
+        OnCardClicked(card);
     }
 
     private int EnduranceBonus()
@@ -208,6 +257,7 @@ public class MemoryGame : MinigameBase
             GetFace(id, out var sprite, out var tint);
             card.Setup(id, sprite, tint);
             card.Clicked += OnCardClicked;
+            if (muteCardUISounds) MuteUISounds(card);
             _cards.Add(card);
         }
     }
@@ -288,7 +338,7 @@ public class MemoryGame : MinigameBase
         if (CurrentPhase != Phase.Playing || _resolving || card.State != MemoryCard.CardState.Hidden) return;
 
         card.Reveal();
-        PlaySound(flipSound);
+        PlayBoosted(flipSound, flipVolume);
 
         if (_first == null)
         {
@@ -446,6 +496,20 @@ public class MemoryGame : MinigameBase
     {
         if (card != null && EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(card.gameObject);
+    }
+
+    private static void MuteUISounds(MemoryCard card)
+    {
+        foreach (var sound in card.GetComponentsInChildren<UIButtonSound>(true))
+            sound.enabled = false;
+    }
+
+    private static void PlayBoosted(string key, float volume)
+    {
+        if (string.IsNullOrEmpty(key) || ASpawner.Instance == null) return;
+        ASpawner.Play(key, Mathf.Min(volume, 1f));
+        if (volume > 1f)
+            ASpawner.Play(key, volume - 1f);
     }
 
     private static void PlaySound(string key)

@@ -382,6 +382,8 @@ MonoBehaviour:
   popOutDuration: 0.1
   popOvershoot: 1.15
   textOnTop: 1
+  sortAboveSource: 1
+  sortingOffset: 10
   shoveTarget: {fileID: 1537576296246851628}
   shovesPerSecond: 8
   shoveAmount: {x: 1, y: 1}

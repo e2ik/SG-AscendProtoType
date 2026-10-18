@@ -86,6 +86,8 @@ public class DialogueManager : MonoBehaviour
     private Action _onComplete;
     private Coroutine _typing;
     private Coroutine _choicesDelayRoutine;
+    private Coroutine _choicesReadyRoutine;
+    private bool _choicesReady;
     private int _openedFrame = -1;
     private Vector2 _speakerAnchorMin;
     private Vector2 _speakerAnchorMax;
@@ -572,14 +574,53 @@ public class DialogueManager : MonoBehaviour
 
         if (_choiceButtons.Count > 0)
         {
-            Select(_choiceButtons[0].gameObject);
+            _choicesReady = false;
             SetChoosing(true);
+            if (_choicesReadyRoutine != null)
+                StopCoroutine(_choicesReadyRoutine);
+            _choicesReadyRoutine = StartCoroutine(WaitForChoicesRevealed());
         }
+    }
+
+    private IEnumerator WaitForChoicesRevealed()
+    {
+        yield return null;
+
+        float timeout = Time.unscaledTime + 3f;
+        while (Time.unscaledTime < timeout && AnyChoiceEntering())
+            yield return null;
+
+        _choicesReadyRoutine = null;
+        _choicesReady = true;
+
+        var current = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+        bool keep = false;
+        foreach (var button in _choiceButtons)
+        {
+            if (button != null && current == button.gameObject)
+            {
+                keep = true;
+                break;
+            }
+        }
+
+        if (!keep && _choiceButtons.Count > 0 && _choiceButtons[0] != null)
+            Select(_choiceButtons[0].gameObject);
+    }
+
+    private bool AnyChoiceEntering()
+    {
+        foreach (var button in _choiceButtons)
+        {
+            if (button != null && button.TryGetComponent<ChoiceReveal>(out var reveal) && reveal.IsEntering)
+                return true;
+        }
+        return false;
     }
 
     private void Choose(DialogueChoice choice)
     {
-        if (!IsActive) return;
+        if (!IsActive || !_choicesReady) return;
 
         if (choice.action != null && choice.action.type != DialogueActionType.None)
             _pendingActions.Add(choice.action);
@@ -600,6 +641,13 @@ public class DialogueManager : MonoBehaviour
 
     private void ClearChoices()
     {
+        if (_choicesReadyRoutine != null)
+        {
+            StopCoroutine(_choicesReadyRoutine);
+            _choicesReadyRoutine = null;
+        }
+        _choicesReady = false;
+
         foreach (var button in _choiceButtons)
         {
             button.gameObject.SetActive(false);

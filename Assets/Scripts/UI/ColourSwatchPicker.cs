@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public enum SwatchPalette
@@ -35,6 +36,8 @@ public class ColourSwatchPicker : MonoBehaviour
     private int _rows;
     private Button _chosenButton;
     private readonly List<(Button button, Color colour)> _swatches = new List<(Button, Color)>();
+
+    private Vector2 _lastPointer;
 
     private const float ColourTolerance = 0.01f;
 
@@ -104,6 +107,36 @@ public class ColourSwatchPicker : MonoBehaviour
             uiPanel.OnBack += () => OnClosed?.Invoke();
     }
 
+    private void Update()
+    {
+        if (!IsOpen || Mouse.current == null || !UIManager.HoverAllowed) return;
+
+        Vector2 pointer = Mouse.current.position.ReadValue();
+        if ((pointer - _lastPointer).sqrMagnitude < 0.01f) return;
+        _lastPointer = pointer;
+
+        var hovered = SwatchUnder(pointer);
+        var eventSystem = EventSystem.current;
+        if (hovered == null || eventSystem == null || eventSystem.currentSelectedGameObject == hovered.gameObject) return;
+        eventSystem.SetSelectedGameObject(hovered.gameObject);
+    }
+
+    private Button SwatchUnder(Vector2 screenPoint)
+    {
+        var canvas = contentParent != null ? contentParent.GetComponentInParent<Canvas>() : null;
+        Camera eventCamera = null;
+        if (canvas != null && canvas.rootCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            eventCamera = canvas.rootCanvas.worldCamera;
+
+        foreach (var (button, _) in _swatches)
+        {
+            if (button == null || !button.gameObject.activeInHierarchy || !button.IsInteractable()) continue;
+            if (RectTransformUtility.RectangleContainsScreenPoint((RectTransform)button.transform, screenPoint, eventCamera))
+                return button;
+        }
+        return null;
+    }
+
     public void Open(Action<Color> onSelected, Color? current = null, SwatchPalette palette = SwatchPalette.Generated)
     {
         _onSelected = onSelected;
@@ -115,6 +148,7 @@ public class ColourSwatchPicker : MonoBehaviour
         SetChosenButton(match);
 
         UIPanelAnimator.SetVisible(panel, true);
+        if (Mouse.current != null) _lastPointer = Mouse.current.position.ReadValue();
 
         if (match != null && EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(match.gameObject);
@@ -167,10 +201,38 @@ public class ColourSwatchPicker : MonoBehaviour
             var button = Instantiate(swatchButtonPrefab, contentParent);
             button.image.color = color;
             button.onClick.AddListener(() => Select(color, button));
+            if (button.TryGetComponent<SelectionOutline>(out var selectionOutline))
+                selectionOutline.UseOverlay(OutlineOverlay());
             _swatches.Add((button, color));
         }
 
         _built = true;
+    }
+
+    private RectTransform _outlineOverlay;
+
+    private RectTransform OutlineOverlay()
+    {
+        if (_outlineOverlay != null) return _outlineOverlay;
+
+        var parent = contentParent.parent as RectTransform;
+        var go = new GameObject("SwatchOutlineOverlay", typeof(RectTransform), typeof(LayoutElement));
+        go.layer = contentParent.gameObject.layer;
+        go.GetComponent<LayoutElement>().ignoreLayout = true;
+
+        _outlineOverlay = (RectTransform)go.transform;
+        _outlineOverlay.SetParent(parent != null ? parent : contentParent, false);
+        if (parent != null)
+            _outlineOverlay.SetSiblingIndex(contentParent.GetSiblingIndex() + 1);
+
+        _outlineOverlay.anchorMin = contentParent.anchorMin;
+        _outlineOverlay.anchorMax = contentParent.anchorMax;
+        _outlineOverlay.pivot = contentParent.pivot;
+        _outlineOverlay.anchoredPosition = contentParent.anchoredPosition;
+        _outlineOverlay.sizeDelta = contentParent.sizeDelta;
+        _outlineOverlay.localScale = contentParent.localScale;
+        _outlineOverlay.localRotation = contentParent.localRotation;
+        return _outlineOverlay;
     }
 
     private List<Color> FillRows(List<Color> colours)
@@ -233,6 +295,10 @@ public class ColourSwatchPicker : MonoBehaviour
     {
         SetChosenButton(sourceButton);
         _onSelected?.Invoke(color);
+
+        var eventSystem = EventSystem.current;
+        if (eventSystem != null && IsOpen && sourceButton != null && eventSystem.currentSelectedGameObject != sourceButton.gameObject)
+            eventSystem.SetSelectedGameObject(sourceButton.gameObject);
     }
 
     private void SetChosenButton(Button button)

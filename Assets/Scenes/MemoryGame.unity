@@ -653,8 +653,8 @@ MonoBehaviour:
   previewFaceUp: 1
   previewColumns: 4
   previewRows: 3
-  flipSound: 
-  matchSound: 
+  flipSound: Flip
+  matchSound: Correct
   mismatchSound: 
 --- !u!4 &912334004
 Transform:
