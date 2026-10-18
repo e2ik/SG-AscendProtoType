@@ -124,7 +124,7 @@ public class RhythmGame : MinigameBase
     [SerializeField] private Color badColor = new Color(0.9f, 0.3f, 0.3f);
 
     [Header("Input")]
-    [SerializeField] private string pressActionPath = "Rhythm/Press";
+    [SerializeField] private string pressActionPath = "Player/Jump";
 
     [Header("Intelligence Bonus")]
     [SerializeField] private RhythmZoneBonus zoneBonus;
@@ -171,6 +171,7 @@ public class RhythmGame : MinigameBase
     private float _holdLoopPitch = 1f;
 
     private InputAction _pressAction;
+    private bool _enabledPressAction;
     private int _attempts;
     private float _baseSpeed;
     private float _speedIncrease;
@@ -205,6 +206,7 @@ public class RhythmGame : MinigameBase
     public event System.Action<float> RunFinished;
 
     public int AttemptIndex => _attemptIndex;
+    public bool IsHolding => _holding;
     public int Attempts => _attempts;
 
     protected override MinigameConfig Config =>
@@ -221,6 +223,13 @@ public class RhythmGame : MinigameBase
     protected override void OnDisable()
     {
         base.OnDisable();
+        if (_enabledPressAction && _pressAction != null)
+        {
+            var map = _pressAction.actionMap;
+            if (map == null || InputManager.Instance == null || InputManager.Instance.CurrentMap != map.name)
+                _pressAction.Disable();
+            _enabledPressAction = false;
+        }
         StopHoldLoop();
         _holdBlend = 0f;
         if (_visualsCaptured)
@@ -412,6 +421,12 @@ public class RhythmGame : MinigameBase
     private void Update()
     {
         if (CurrentPhase != Phase.Playing || Time.timeScale <= 0f) return;
+
+        if (_pressAction != null && !_pressAction.enabled)
+        {
+            _pressAction.Enable();
+            _enabledPressAction = true;
+        }
 
         AdvanceMarker(Time.deltaTime);
         PlaceMarker(_markerPosition);

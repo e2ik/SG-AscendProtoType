@@ -15,10 +15,7 @@ MonoBehaviour:
   lines:
   - text: Oh, hey. You new down here? Or does the fog just make everyone look new?
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
-  - text: 'I''m Theo. When it gets this thick I feel like I''m wading through wet
-      sand.
-
-'
+  - text: 'I''m Theo. When it gets this thick I feel like I''m wading through wet sand.'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
   - text: Weird thing is, moving helps. <pause=0.3>Even a little. It doesn't fix
       it... it just makes it lighter for a while.

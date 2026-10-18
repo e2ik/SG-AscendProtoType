@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: AnaAfter
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: '"The fog makes it harder" feels a lot more true than "I''m not smart enough."
-
-      Want
-      to match some tiles?'
+  - text: '"The fog makes it harder" feels a lot more true than "I''m not smart enough."'
+    speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
+  - text: 'Want to match some tiles?'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
   choices:
   - text: Sure.

@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: TheoWest
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: 'You made it up too! <happy>Okay, that''s actually great.
-
-      ...I should''ve
-      been up here ages ago, though.'
+  - text: 'You made it up too! <happy>Okay, that''s actually great.'
+    speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+  - text: '...I should''ve been up here ages ago, though.'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
   choices:
   - text: What do you mean?

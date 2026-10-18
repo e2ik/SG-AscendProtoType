@@ -56,6 +56,17 @@ public abstract class MinigameBase : MonoBehaviour
     {
         if (Current == this)
             Current = null;
+
+        _countdown = null;
+        _results = null;
+
+        var hud = MinigameHUD.Instance;
+        if (hud != null && CurrentPhase != Phase.Idle)
+        {
+            hud.HideCountdown();
+            hud.HideIntro();
+            hud.HideResults();
+        }
     }
 
     protected virtual void Start()

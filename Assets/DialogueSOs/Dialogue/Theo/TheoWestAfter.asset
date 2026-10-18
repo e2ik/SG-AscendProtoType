@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: TheoWestAfter
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: '<happy>Thanks for that. I''m gonna try to remember it next time I slip.
-
-      There''s
-      a good running route up here too. Want to do a lap?'
+  - text: '<happy>Thanks for that. I''m gonna try to remember it next time I slip.'
+    speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+  - text: 'There''s a good running route up here too. Want to do a lap?'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
   choices:
   - text: Sure, let's go.

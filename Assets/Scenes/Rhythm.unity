@@ -150,8 +150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RhythmGame
   displayName: Rhythm Game
-  instructions: Hit you button at the precise zone! More precise button presses rewards
-    you with more points!
+  instructions: Deep breaths calms the mind, useful for making your way to the top.
+    Hold your breath in the bright zone then let it go at the right timing.
   showIntro: 1
   countdownSeconds: 3
   countdownDelay: 1

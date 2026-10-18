@@ -18,10 +18,9 @@ MonoBehaviour:
   - text: I'm Ana. When the fog gets thick, everything blurs together and I can't
       think straight.
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
-  - text: 'So I pick one small thing and focus on just that. Like these old tiles.
-      One pair at a time.
-
-      Want a go?'
+  - text: 'So I pick one small thing and focus on just that. Like these old tiles. One pair at a time.'
+    speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
+  - text: 'Want a go?'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
   choices:
   - text: Sure.

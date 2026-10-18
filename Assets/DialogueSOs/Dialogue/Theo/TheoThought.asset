@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: TheoThought
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: 'I slipped off that ledge like ten times. Everyone probably saw.
-
-      I
-      always mess things up.'
+  - text: 'I slipped off that ledge like ten times. Everyone probably saw.'
+    speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+  - text: 'I always mess things up.'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
   choices:
   - text: Ten times is a lot.
@@ -31,7 +30,7 @@ MonoBehaviour:
       minigame: 0
       config: {fileID: 0}
       flag: 
-  - text: Just don't think about it!
+  - text: Don't think about it!
     responseLines:
     - text: I wish it worked like that. It kind of just... sits there.
       speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
@@ -41,7 +40,7 @@ MonoBehaviour:
       minigame: 0
       config: {fileID: 0}
       flag: 
-  - text: Always? You're standing up here right now.
+  - text: Always? You're up here.
     responseLines:
     - text: ...Huh.
       speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}

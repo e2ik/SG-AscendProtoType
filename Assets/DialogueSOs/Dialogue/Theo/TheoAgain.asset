@@ -13,10 +13,9 @@ MonoBehaviour:
   m_Name: TheoAgain
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: '<happy>Hey! Feeling a bit lighter? I always do, even on the bad days.
-
-      Another
-      lap?'
+  - text: '<happy>Hey! Feeling a bit lighter? I always do, even on the bad days.'
+    speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
+  - text: 'Another lap?'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
   choices:
   - text: Sure, let's go.

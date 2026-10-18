@@ -15,10 +15,9 @@ MonoBehaviour:
   lines:
   - text: <happy>You came back.
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
-  - text: 'I don''t think it makes the fog go away. It just makes it easier to stand
-      in.
-
-      Another round?'
+  - text: 'I don''t think it makes the fog go away. It just makes it easier to stand in.'
+    speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
+  - text: 'Another round?'
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
   choices:
   - text: Okay, I'll try.

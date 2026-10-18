@@ -33,6 +33,8 @@ public class KeyPrompt : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
     [SerializeField] private UnityEvent onClicked;
 
     public InputDeviceType Device { get; private set; }
+    public InputActionReference Action => action;
+    public string CompositePart => compositePart;
 
     private static readonly Dictionary<string, string> ShortNames = new Dictionary<string, string>
     {
