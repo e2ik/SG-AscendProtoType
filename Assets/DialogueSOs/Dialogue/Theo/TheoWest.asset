@@ -15,7 +15,7 @@ MonoBehaviour:
   lines:
   - text: 'You made it up too! <happy>Okay, that''s actually great.'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
-  - text: '...I should''ve been up here ages ago, though.'
+  - text: '<heavy>...I should''ve been up here <speed=0.6>ages</speed> ago, though.'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
   choices:
   - text: What do you mean?

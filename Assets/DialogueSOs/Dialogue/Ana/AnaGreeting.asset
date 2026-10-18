@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: AnaGreeting
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: <happy>You were good at that!
+  - text: '<happy>You were <pulse>good</pulse> at that!'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
-  - text: ...I wasn't, last time. I kept losing track of the pairs.
+  - text: '<heavy>...<pause=0.3>I wasn''t, last time. I kept losing track of the pairs.'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
   choices:
   - text: What happened?

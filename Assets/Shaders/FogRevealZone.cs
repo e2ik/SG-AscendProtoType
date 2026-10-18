@@ -90,6 +90,17 @@ public class FogRevealZone : MonoBehaviour
 
     private void OnDisable()
     {
+        if (Application.isPlaying && _revealing)
+        {
+            _revealing = false;
+            _reveal = 1f;
+            _glow = 0f;
+        }
+        else if (Application.isPlaying && _reveal >= 1f)
+        {
+            _glow = 0f;
+        }
+
         Zones.Remove(this);
         if (Application.isPlaying)
             SaveData.FlagChanged -= HandleFlagChanged;

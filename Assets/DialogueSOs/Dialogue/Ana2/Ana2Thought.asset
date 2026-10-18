@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Ana2Thought
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: 'They look way harder than the ones below.'
+  - text: '<heavy>They look <shake>way</shake> harder than the ones below.'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
-  - text: 'I just know I''ll freeze up and forget everything.'
+  - text: '<heavy>I just know I''ll <shake>freeze up</shake> and forget everything.'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
   choices:
   - text: 'Maybe skip them, then.'
     responseLines:
-    - text: '...Yeah. Maybe.'
+    - text: '<heavy>...Yeah. <pause=0.3>Maybe.'
       speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
     - text: 'But then I''d never know, would I?'
       speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
@@ -32,7 +32,7 @@ MonoBehaviour:
       flag: 
   - text: 'Don''t worry about it!'
     responseLines:
-    - text: 'Easy to say. The worry doesn''t just switch off.'
+    - text: '<heavy>Easy to say. The worry doesn''t just switch off.'
       speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
     next: {fileID: 11400000}
     action:
@@ -42,11 +42,11 @@ MonoBehaviour:
       flag: 
   - text: 'Like last time?'
     responseLines:
-    - text: '...Last time I was sure I''d fail too.'
+    - text: '...<pause=0.3>Last time I was sure I''d fail too.'
       speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
     - text: 'And I matched more than I expected.'
       speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
-    - text: '<happy>I guess I can''t really know until I try.'
+    - text: '<happy>I guess I can''t really know <pulse>until I try</pulse>.'
       speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
     next: {fileID: 0}
     action:

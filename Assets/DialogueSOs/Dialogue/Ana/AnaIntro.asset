@@ -13,19 +13,18 @@ MonoBehaviour:
   m_Name: AnaIntro
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: Oh! Nobody comes out this far.
+  - text: 'Oh! <pause=0.2>Nobody comes out this far.'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
-  - text: I'm Ana. When the fog gets thick, everything blurs together and I can't
-      think straight.
+  - text: '<heavy>I''m Ana. When the fog gets thick, everything <flicker>blurs together</flicker> and I can''t think straight.'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
-  - text: 'So I pick one small thing and focus on just that. Like these old tiles. One pair at a time.'
+  - text: 'So I pick one small thing and focus on just that.<pause=0.3> Like these old tiles. <speed=0.6>One pair at a time.</speed>'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
-  - text: 'Want a go?'
+  - text: '<happy>Want a go?'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
   choices:
   - text: Sure.
     responseLines:
-    - text: One pair at a time. That's all.
+    - text: '<happy>One pair at a time. That''s all.'
       speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
     next: {fileID: 0}
     action:

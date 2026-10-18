@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: TheoIntro
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: Oh, hey. You new down here? Or does the fog just make everyone look new?
+  - text: 'Oh, hey. You new down here? <pause=0.2>Or does the fog just make everyone look new?'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
-  - text: 'I''m Theo. When it gets this thick I feel like I''m wading through wet sand.'
+  - text: '<heavy>I''m Theo. When it gets this thick I feel like I''m wading through <speed=0.5>wet sand</speed>.'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
-  - text: Weird thing is, moving helps. <pause=0.3>Even a little. It doesn't fix
-      it... it just makes it lighter for a while.
+  - text: 'Weird thing is, moving helps. <pause=0.3>Even a little. It doesn''t fix it...<pause=0.3> it just makes it <wave>lighter</wave> for a while.'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
   - text: I do laps along the old aqueduct. Wanna come?
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}

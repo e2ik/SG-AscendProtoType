@@ -17,7 +17,7 @@ MonoBehaviour:
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
   - text: 'It''s quieter up here. I came to practise.'
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
-  - text: '...It didn''t really go well, though.'
+  - text: '<heavy>...It didn''t really go well, though.'
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
   choices:
   - text: 'What happened?'

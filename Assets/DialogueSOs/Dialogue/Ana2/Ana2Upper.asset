@@ -17,7 +17,7 @@ MonoBehaviour:
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
   - text: 'I''ve been staring at these new tiles for ages.'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
-  - text: '...I haven''t actually touched them yet, though.'
+  - text: '<heavy>...I haven''t actually touched them yet, though.'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
   choices:
   - text: 'Why not?'

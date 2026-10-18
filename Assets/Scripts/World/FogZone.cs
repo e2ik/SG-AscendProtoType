@@ -87,6 +87,12 @@ public class FogZone : MonoBehaviour
     private void OnDisable()
     {
         SaveData.FlagChanged -= HandleFlagChanged;
+
+        if (_revealing)
+        {
+            _revealing = false;
+            ClearInstantly();
+        }
     }
 
     private void Update()
@@ -116,6 +122,12 @@ public class FogZone : MonoBehaviour
 
     private void BeginReveal()
     {
+        if (!isActiveAndEnabled)
+        {
+            ClearInstantly();
+            return;
+        }
+
         _cleared = true;
         _revealing = true;
         _revealCenter = ResolveCentre();

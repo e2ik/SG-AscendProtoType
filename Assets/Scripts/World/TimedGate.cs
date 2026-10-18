@@ -94,6 +94,7 @@ public class TimedGate : MonoBehaviour
     private bool _cycling;
     private bool _passed;
     private bool _playerOnPlate;
+    private int _plateContacts;
     private float _nextTriggerTime;
     private float _nextLockedTime;
     private PlayerController _player;
@@ -139,6 +140,13 @@ public class TimedGate : MonoBehaviour
             door.position = _closedPosition;
         }
 
+        if (_passed && door != null)
+        {
+            door.position = _closedPosition + (Vector3)openOffset;
+            if (doorCollider != null) doorCollider.enabled = false;
+        }
+
+        _plateContacts = 0;
         _playerOnPlate = false;
         SetPlate(_passed);
     }
@@ -182,8 +190,9 @@ public class TimedGate : MonoBehaviour
         if (player == null) return;
 
         CachePlayer(player, other);
+        _plateContacts++;
+        if (!_playerOnPlate) Log("Player stepped onto the plate");
         _playerOnPlate = true;
-        Log("Player stepped onto the plate");
     }
 
     private bool PlayerOnCentre()
@@ -198,6 +207,8 @@ public class TimedGate : MonoBehaviour
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.GetComponentInParent<PlayerController>() == null) return;
+        _plateContacts = Mathf.Max(0, _plateContacts - 1);
+        if (_plateContacts > 0) return;
         _playerOnPlate = false;
         if (!_cycling && !_passed) SetPlate(false);
     }
@@ -421,9 +432,21 @@ public class TimedGate : MonoBehaviour
 
     private void HandleFlagChanged(string key, bool value)
     {
-        if (key != passedFlag) return;
-        if (value && !_passed) Log($"'{passedFlag}' was set elsewhere - gate now counts as passed");
-        _passed = value;
+        if (key != passedFlag || value == _passed) return;
+
+        if (!value)
+        {
+            _passed = false;
+            return;
+        }
+
+        Log($"'{passedFlag}' was set elsewhere - opening the gate");
+        StopAllCoroutines();
+        _passed = true;
+        _cycling = false;
+        if (doorCollider != null) doorCollider.enabled = false;
+        if (door != null) door.position = _closedPosition + (Vector3)openOffset;
+        SetPlate(true);
     }
 
     private Vector3 PlateCentre()

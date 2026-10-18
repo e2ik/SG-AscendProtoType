@@ -130,7 +130,22 @@ public class SaveManager : MonoBehaviour
     private void WriteToDisk(SaveData save)
     {
         string json = JsonUtility.ToJson(save, prettyPrint: true);
-        File.WriteAllText(PathFor(save.saveId), json);
+        string path = PathFor(save.saveId);
+        string temp = path + ".tmp";
+        try
+        {
+            File.WriteAllText(temp, json);
+            if (File.Exists(path))
+                File.Replace(temp, path, null);
+            else
+                File.Move(temp, path);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Safe save failed ({e.Message}), writing directly");
+            File.WriteAllText(path, json);
+            if (File.Exists(temp)) File.Delete(temp);
+        }
     }
 
     public void DeleteSave(string saveId)

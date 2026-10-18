@@ -13,24 +13,24 @@ MonoBehaviour:
   m_Name: Wren2After
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: <happy>Not perfect. Just a little calmer. I can work with that.
+  - text: '<happy>Not perfect. Just a little calmer. I can work with that.'
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
-  - text: Want to try a longer one with me?
+  - text: 'Want to try a longer one with me?'
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
   choices:
-  - text: Okay, I'll try.
+  - text: 'Okay, I''ll try.'
     responseLines:
-    - text: Breathe with the light. Wandering is okay.
+    - text: '<wave>Breathe with the light.</wave> Wandering is okay.'
       speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
     next: {fileID: 0}
     action:
       type: 2
       minigame: 5
-      config: {fileID: 11400000, guid: a84b884cefc1d904bb037c015ab5bbb5, type: 2}
+      config: {fileID: 0}
       flag: wren2_breath_done
-  - text: Not right now.
+  - text: 'Not right now.'
     responseLines:
-    - text: That's alright. I'll be here.
+    - text: 'That''s alright. I''ll be here.'
       speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
     next: {fileID: 0}
     action:

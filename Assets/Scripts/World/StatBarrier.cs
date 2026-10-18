@@ -88,14 +88,61 @@ public class StatBarrier : MonoBehaviour, IInteractable
     private Collider2D _collider;
     private Vector3 _closedPosition;
     private bool _wobbling;
+    private Vector3 _visualOrigin;
+    private SpriteRenderer[] _fadeRenderers;
+    private float[] _fadeAlphas;
 
     private void Awake()
     {
         _collider = GetComponent<Collider2D>();
         _closedPosition = transform.position;
         if (visual == null) visual = transform;
+        _visualOrigin = visual.localPosition;
         if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        _fadeRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        _fadeAlphas = new float[_fadeRenderers.Length];
+        for (int i = 0; i < _fadeRenderers.Length; i++)
+            _fadeAlphas[i] = _fadeRenderers[i].color.a;
         SetSprite(false);
+    }
+
+    private void OnDisable()
+    {
+        if (_wobbling)
+        {
+            visual.localPosition = _visualOrigin;
+            _wobbling = false;
+        }
+
+        if (!IsOpen) return;
+
+        transform.position = _closedPosition + (Vector3)openOffset;
+        RestoreAlphas();
+        if (fadeOutWhenOpen)
+            SetRenderersVisible(false);
+    }
+
+    private void RestoreAlphas()
+    {
+        for (int i = 0; i < _fadeRenderers.Length; i++)
+        {
+            if (_fadeRenderers[i] == null) continue;
+            var colour = _fadeRenderers[i].color;
+            colour.a = _fadeAlphas[i];
+            _fadeRenderers[i].color = colour;
+        }
+    }
+
+    private static Collider2D BodyCollider(PlayerController player)
+    {
+        Collider2D fallback = null;
+        foreach (var candidate in player.GetComponentsInChildren<Collider2D>())
+        {
+            if (!candidate.enabled) continue;
+            if (!candidate.isTrigger) return candidate;
+            if (fallback == null) fallback = candidate;
+        }
+        return fallback;
     }
 
     private void Update()
@@ -105,7 +152,7 @@ public class StatBarrier : MonoBehaviour, IInteractable
         if (_playerCollider == null)
         {
             _player = FindFirstObjectByType<PlayerController>();
-            _playerCollider = _player != null ? _player.GetComponentInChildren<Collider2D>() : null;
+            _playerCollider = _player != null ? BodyCollider(_player) : null;
             if (_playerCollider == null) return;
         }
 
@@ -235,30 +282,21 @@ public class StatBarrier : MonoBehaviour, IInteractable
         PlaySound(fadeSound);
         PlayEffect(fadeEffect);
 
-        var renderers = GetComponentsInChildren<SpriteRenderer>();
-        var alphas = new float[renderers.Length];
-        for (int i = 0; i < renderers.Length; i++)
-            alphas[i] = renderers[i].color.a;
-
         for (float t = 0f; t < fadeDuration; t += Time.deltaTime)
         {
             float k = 1f - t / fadeDuration;
-            for (int i = 0; i < renderers.Length; i++)
+            for (int i = 0; i < _fadeRenderers.Length; i++)
             {
-                var colour = renderers[i].color;
-                colour.a = alphas[i] * k;
-                renderers[i].color = colour;
+                if (_fadeRenderers[i] == null) continue;
+                var colour = _fadeRenderers[i].color;
+                colour.a = _fadeAlphas[i] * k;
+                _fadeRenderers[i].color = colour;
             }
             yield return null;
         }
 
         SetRenderersVisible(false);
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            var colour = renderers[i].color;
-            colour.a = alphas[i];
-            renderers[i].color = colour;
-        }
+        RestoreAlphas();
     }
 
     private void SetRenderersVisible(bool visible)
@@ -270,7 +308,7 @@ public class StatBarrier : MonoBehaviour, IInteractable
     private IEnumerator Wobble()
     {
         _wobbling = true;
-        Vector3 origin = visual.localPosition;
+        Vector3 origin = _visualOrigin;
 
         for (float t = 0f; t < wobbleDuration; t += Time.deltaTime)
         {

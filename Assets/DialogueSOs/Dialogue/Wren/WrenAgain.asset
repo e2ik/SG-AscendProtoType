@@ -22,7 +22,7 @@ MonoBehaviour:
   choices:
   - text: Okay, I'll try.
     responseLines:
-    - text: Just follow the light. There's no rush.
+    - text: '<happy>Just follow the light. <speed=0.7>There''s no rush.</speed>'
       speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
     next: {fileID: 0}
     action:

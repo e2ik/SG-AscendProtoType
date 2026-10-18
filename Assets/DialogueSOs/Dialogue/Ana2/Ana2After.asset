@@ -13,24 +13,24 @@ MonoBehaviour:
   m_Name: Ana2After
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: <happy>Okay. No predicting. Just one pair at a time.
+  - text: '<happy>Okay. No predicting.<pause=0.3> Just one pair at a time.'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
-  - text: Want to try the harder tiles with me?
+  - text: 'Want to try the harder tiles with me?'
     speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
   choices:
-  - text: Sure.
+  - text: 'Sure.'
     responseLines:
-    - text: Let's see what actually happens.
+    - text: 'Let''s see what actually happens.'
       speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
     next: {fileID: 0}
     action:
       type: 2
       minigame: 4
-      config: {fileID: 11400000, guid: 22018deedf9677649b3ab8cd717ee484, type: 2}
+      config: {fileID: 0}
       flag: ana2_memory_done
-  - text: Not now.
+  - text: 'Not now.'
     responseLines:
-    - text: That's okay. They'll still be here.
+    - text: 'That''s okay. They''ll still be here.'
       speaker: {fileID: 11400000, guid: 88c3d8357deafdb46ab20e3ca95e30a5, type: 2}
     next: {fileID: 0}
     action:

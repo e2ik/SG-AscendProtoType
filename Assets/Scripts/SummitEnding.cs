@@ -74,15 +74,27 @@ public class SummitEnding : MonoBehaviour
 
         ResolvePlayer();
         if (freezePlayer && _player != null)
+        {
             _player.FreezeMovement();
+            var interactor = _player.GetComponentInChildren<PlayerInteractor>();
+            if (interactor != null) interactor.enabled = false;
+        }
 
         PlaySound(startSound);
 
         if (startDelay > 0f)
             yield return new WaitForSeconds(startDelay);
 
+        float speakingTimeout = Time.time + 4f;
+        while (_barker != null && _barker.IsSpeaking && Time.time < speakingTimeout)
+            yield return null;
+
         foreach (var line in endingLines)
+        {
+            if (freezePlayer && _player != null)
+                _player.FreezeMovement();
             yield return SayAndWait(line);
+        }
 
         var save = SaveManager.Instance != null ? SaveManager.Instance.CurrentSave : null;
         if (save != null && !string.IsNullOrEmpty(completeFlag))
@@ -96,10 +108,10 @@ public class SummitEnding : MonoBehaviour
         if (holdBeforeFade > 0f)
             yield return new WaitForSeconds(holdBeforeFade);
 
-        PlaySound(fadeSound);
-
-        while (GameManager.Instance != null && GameManager.Instance.IsTransitioning)
+        while (Blocked() || Time.timeScale <= 0f || (GameManager.Instance != null && GameManager.Instance.IsTransitioning))
             yield return null;
+
+        PlaySound(fadeSound);
 
         if (GameManager.Instance != null)
             GameManager.Instance.ReturnToTitle();

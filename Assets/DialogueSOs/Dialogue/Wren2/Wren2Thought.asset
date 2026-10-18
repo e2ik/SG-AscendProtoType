@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Wren2Thought
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: 'I lost focus halfway through. My mind just wandered off.'
+  - text: '<heavy>I lost focus halfway through. My mind just <flicker>wandered off</flicker>.'
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
-  - text: 'If I can''t do it properly, what''s the point?'
+  - text: '<heavy>If I can''t do it properly,<pause=0.3> what''s the point?'
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
   choices:
   - text: 'Then stop doing it.'
     responseLines:
-    - text: '...Then I''d have nothing to hold onto.'
+    - text: '<heavy>...<pause=0.3>Then I''d have nothing to hold onto.'
       speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
     next: {fileID: 11400000}
     action:
@@ -30,7 +30,7 @@ MonoBehaviour:
       flag: 
   - text: 'Just try harder!'
     responseLines:
-    - text: 'Trying harder makes it worse, honestly.'
+    - text: '<heavy>Trying <shake>harder</shake> makes it worse, honestly.'
       speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
     next: {fileID: 11400000}
     action:
@@ -40,7 +40,7 @@ MonoBehaviour:
       flag: 
   - text: 'Did any of it help?'
     responseLines:
-    - text: '...The first part did. I felt a bit calmer.'
+    - text: '...The first part did.<pause=0.3> I felt a bit <wave>calmer</wave>.'
       speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
     - text: 'Even with my mind wandering.'
       speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}

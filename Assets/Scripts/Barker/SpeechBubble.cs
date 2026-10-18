@@ -96,6 +96,12 @@ public class SpeechBubble : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        if (this != null && gameObject.scene.isLoaded)
+            Destroy(gameObject);
+    }
+
     private void SortAbove(Transform source)
     {
         var bubbleCanvas = GetComponentInChildren<Canvas>(true);

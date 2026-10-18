@@ -13,11 +13,9 @@ MonoBehaviour:
   m_Name: WrenIntro
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: Hi. <pause=0.4>Sorry, I'm a bit slow today. The fog makes everything feel
-      far away.
+  - text: '<heavy>Hi. <pause=0.4>Sorry, I''m a bit slow today. The fog makes everything feel <speed=0.6>far away</speed>.'
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
-  - text: When it gets loud in my head, I breathe. In while the light rises... out
-      while it falls.
+  - text: 'When it gets <shake>loud</shake> in my head, I breathe.<pause=0.3> <wave>In while the light rises...</wave><pause=0.3> <wave>out while it falls.</wave>'
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
   - text: It sounds too simple. But it gives me somewhere to put my attention.
     speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
@@ -26,7 +24,7 @@ MonoBehaviour:
   choices:
   - text: Okay, I'll try.
     responseLines:
-    - text: Just follow the light. There's no rush.
+    - text: '<happy>Just follow the light. <speed=0.7>There''s no rush.</speed>'
       speaker: {fileID: 11400000, guid: 63aad5cc31ee9464fb00d3c4a6c4b784, type: 2}
     next: {fileID: 0}
     action:

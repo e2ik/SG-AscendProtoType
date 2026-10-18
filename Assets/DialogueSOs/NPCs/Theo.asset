@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterProfile
   displayName: Theo
   nameColor: {r: 0.9056604, g: 0.5432466, b: 0.18369527, a: 1}
-  defaultPortrait: {fileID: 21300000, guid: 64568be678353c545a08a858f6eb8f28, type: 3}
+  defaultPortrait: {fileID: 21300000, guid: 9dcc8328a47d66d49ac13d6eff2c5dbf, type: 3}
   expressions:
   - name: Happy
-    portrait: {fileID: 21300000, guid: 5194f39cbd5f09942a16f8c678f788a2, type: 3}
+    portrait: {fileID: 21300000, guid: 68e6d0d38952ffc4589ca334f69298f2, type: 3}
+  - name: Angry
+    portrait: {fileID: 21300000, guid: 9e99f24be7e64914f82d811286a6fda7, type: 3}
+  - name: heavy
+    portrait: {fileID: 21300000, guid: 3cfb91fae5ef07a41aeb4fecfefa5e74, type: 3}
   blipKey: 
-  blipPitch: 1.15
+  blipPitch: 0.8

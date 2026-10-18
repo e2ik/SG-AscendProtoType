@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterProfile
   displayName: Ana
   nameColor: {r: 0.8805031, g: 0.35718513, b: 0.7631766, a: 1}
-  defaultPortrait: {fileID: 21300000, guid: 64568be678353c545a08a858f6eb8f28, type: 3}
+  defaultPortrait: {fileID: 21300000, guid: ccbc5aafa5783c24ba912cfa58dd62bf, type: 3}
   expressions:
   - name: Happy
-    portrait: {fileID: 21300000, guid: 5194f39cbd5f09942a16f8c678f788a2, type: 3}
+    portrait: {fileID: 21300000, guid: be92209a8ace5f54491869c454b82fa7, type: 3}
+  - name: Angry
+    portrait: {fileID: 21300000, guid: d74c249d307149d4396f134b518a6bdf, type: 3}
+  - name: heavy
+    portrait: {fileID: 21300000, guid: 5f561b29eb733764aa27a75e459e4db3, type: 3}
   blipKey: 
   blipPitch: 1

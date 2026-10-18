@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: TheoThought
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - text: 'I slipped off that ledge like ten times. Everyone probably saw.'
+  - text: '<heavy>I slipped off that ledge like <shake>ten times</shake>. Everyone probably saw.'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
-  - text: 'I always mess things up.'
+  - text: '<heavy><speed=0.6>I always mess things up.</speed>'
     speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
   choices:
   - text: Ten times is a lot.
     responseLines:
-    - text: ...Yeah. <pause=0.4>It is.
+    - text: '<heavy>...Yeah. <pause=0.4>It is.'
       speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
     - text: But that doesn't feel like the whole story, does it?
       speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
@@ -32,7 +32,7 @@ MonoBehaviour:
       flag: 
   - text: Don't think about it!
     responseLines:
-    - text: I wish it worked like that. It kind of just... sits there.
+    - text: '<heavy>I wish it worked like that. It kind of just...<pause=0.3> sits there.'
       speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
     next: {fileID: 11400000}
     action:
@@ -42,11 +42,11 @@ MonoBehaviour:
       flag: 
   - text: Always? You're up here.
     responseLines:
-    - text: ...Huh.
+    - text: '...<pause=0.3>Huh.'
       speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
     - text: I did keep trying. <pause=0.3>Ten times, and then I got it.
       speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
-    - text: <happy>Maybe "I slipped a lot" and "I made it" are both true.
+    - text: '<happy>Maybe "I slipped a lot" and "I made it" are <pulse>both</pulse> true.'
       speaker: {fileID: 11400000, guid: f53cc1da3f52d73469dea623f8416332, type: 2}
     next: {fileID: 0}
     action:

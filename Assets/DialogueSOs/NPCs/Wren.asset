@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CharacterProfile
   displayName: Wren
   nameColor: {r: 0.4285333, g: 0.75492233, b: 0.8490566, a: 1}
-  defaultPortrait: {fileID: 21300000, guid: 64568be678353c545a08a858f6eb8f28, type: 3}
+  defaultPortrait: {fileID: 21300000, guid: 0ddb3e3239f28d14dae76d000e22d860, type: 3}
   expressions:
   - name: Happy
-    portrait: {fileID: 21300000, guid: 5194f39cbd5f09942a16f8c678f788a2, type: 3}
+    portrait: {fileID: 21300000, guid: c5098b91ca4d01c498a44f290beaa5f3, type: 3}
+  - name: Angry
+    portrait: {fileID: 21300000, guid: ae287fb56cab0ac4aa7af73dffcaa97f, type: 3}
+  - name: heavy
+    portrait: {fileID: 21300000, guid: aea8f0585f35f0e43ba796665acab088, type: 3}
   blipKey: 
   blipPitch: 0.85

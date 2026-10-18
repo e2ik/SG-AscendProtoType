@@ -109,7 +109,9 @@ public static class TextEffectParser
 
         if (!TryGetType(name, out var type))
         {
-            if (expressions == null || isExpression == null || !isExpression(name)) return false;
+            if (expressions == null || isExpression == null) return false;
+            if (!isExpression(name))
+                return value == null && !RichTextTags.Contains(name) && IsBareWord(name);
 
             expressions.Add(new TextExpressionChange { Index = index, Expression = closing ? string.Empty : name });
             return true;
@@ -136,6 +138,24 @@ public static class TextEffectParser
     {
         if (string.IsNullOrEmpty(value)) return fallback;
         return float.TryParse(value.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float parsed) ? parsed : fallback;
+    }
+
+    private static readonly HashSet<string> RichTextTags = new HashSet<string>
+    {
+        "b", "i", "u", "s", "br", "nobr", "noparse", "sup", "sub", "mark", "color", "alpha", "size", "font",
+        "material", "sprite", "link", "align", "cspace", "mspace", "indent", "line-height", "line-indent",
+        "lowercase", "uppercase", "smallcaps", "allcaps", "margin", "margin-left", "margin-right", "pos",
+        "rotate", "style", "voffset", "width", "page", "gradient", "space", "strikethrough", "underline", "font-weight"
+    };
+
+    private static bool IsBareWord(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return false;
+        foreach (char c in name)
+        {
+            if (!char.IsLetter(c) && c != '_') return false;
+        }
+        return true;
     }
 
     private static bool TryGetType(string name, out TextEffectType type)
