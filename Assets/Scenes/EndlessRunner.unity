@@ -595,6 +595,119 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1001 &1065377756
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3900137137926294685, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.09
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4174121810853284041, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6111347509329846698, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: m_Name
+      value: Theo
+      objectReference: {fileID: 0}
+    - target: {fileID: 8919177384928622364, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      propertyPath: bubblePrefab
+      value: 
+      objectReference: {fileID: 1668212211566381578, guid: 663efc43c61c82d42aebf65953f13a50, type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6111347509329846698, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1065377759}
+  m_SourcePrefab: {fileID: 100100000, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+--- !u!1 &1065377757 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6111347509329846698, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+  m_PrefabInstance: {fileID: 1065377756}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1065377758 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8919177384928622364, guid: 262b477c03954e746970d1cddd3a1f4f, type: 3}
+  m_PrefabInstance: {fileID: 1065377756}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065377757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bddb994bda3246c4e8a9469eecfba97c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Barker
+--- !u!114 &1065377759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065377757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 765c5140e613dcb4bab5c73db8ad491d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RunnerCheerleader
+  game: {fileID: 1806826846}
+  barker: {fileID: 1065377758}
+  scrollFactor: 1
+  startCheers:
+  - GO GO GO!
+  - You got this, {name}!
+  - Run, {name}, run!
+  - Show 'em how it's done!
+  followUpCheers:
+  - Keep going!
+  - Woo! Nice!
+  - Don't stop now!
+  - Looking good!
+  - Faster! Faster!
+  followUpInterval: {x: 0.9, y: 1.4}
+  cheerDuration: 0.9
+  offScreenMargin: 1
 --- !u!1 &1645469359
 GameObject:
   m_ObjectHideFlags: 0
@@ -903,6 +1016,7 @@ MonoBehaviour:
   countdownDelay: 1
   countdownStepDuration: 1
   resultsDelay: 1.5
+  minimumReward: 1
   playArea: {fileID: 0}
   player: {fileID: 8497367806424557070}
   spawner: {fileID: 1732893857}
@@ -945,8 +1059,8 @@ MonoBehaviour:
   milestonePulseScale: 1.4
   milestonePulseDuration: 0.45
   milestoneFlashes: 2
-  metresPerPoint: 200
-  maxReward: 3
+  metresPerPoint: 50
+  maxReward: 5
 --- !u!4 &1806826847
 Transform:
   m_ObjectHideFlags: 0
@@ -2551,3 +2665,4 @@ SceneRoots:
   - {fileID: 1982896363}
   - {fileID: 1822681999}
   - {fileID: 2131819715}
+  - {fileID: 1065377756}

@@ -334,7 +334,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4582936695991629255}
   - {fileID: 2289846908139837552}
   - {fileID: 2645400881267525503}
   - {fileID: 5519028966012573493}
@@ -413,6 +412,17 @@ MonoBehaviour:
   minAlpha: 0.4
   maxAlpha: 1
   sortingOrderOffset: 1
+  ignoreUIManager: 0
+  pulseSpeed: 4
+  pulseWhenChosen: 1
+  activeCategoryStyle:
+    buttonStyle: 0
+    brighten: 0.4
+    buttonColor: {r: 0, g: 1, b: 1, a: 1}
+    changeText: 1
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    changeOutline: 1
+    outlineColor: {r: 0, g: 1, b: 1, a: 1}
 --- !u!114 &8670203467711696784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -428,6 +438,7 @@ MonoBehaviour:
   moveSound: UIclick
   confirmSound: UIconfirm
   playOnHover: 1
+  minRepeatInterval: 0.08
 --- !u!114 &4076503215498020582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,78 +456,35 @@ MonoBehaviour:
   faceImage: {fileID: 1754295293708666730}
   matchedOverlay: {fileID: 7520191062854430078}
   flipDuration: 0.15
---- !u!1 &7765099093916271323
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4582936695991629255}
-  - component: {fileID: 3637924857223351660}
-  - component: {fileID: 7156518324575587871}
-  m_Layer: 5
-  m_Name: Outline
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &4582936695991629255
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7765099093916271323}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1.1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1068049022215363027}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &3637924857223351660
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7765099093916271323}
-  m_CullTransparentMesh: 1
---- !u!114 &7156518324575587871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7765099093916271323}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.40566027, b: 0.40566027, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 0
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  highlightScale: 1.5
+  highlightDuration: 0.12
+  revealedScale: 1.25
+  matchedCardsStayScaled: 1
+  raiseWhenSelected: 1
+  selectedSortingOffset: 2
+  raiseWhenRevealed: 1
+  revealedSortingOffset: 1
+  shovesPerSecond: 8
+  cardShoveAmount: {x: 1, y: 1}
+  cardShoveRotation: 1.5
+  flashMaterial: {fileID: 2100000, guid: 06625ef3e1a153847b33ca4bcf89df45, type: 2}
+  tintFadeDuration: 0.1
+  selectOverlayColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  selectOverlayAmount: 0.35
+  selectEdgeColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  revealOverlayColor: {r: 0.5, g: 0.85, b: 1, a: 1}
+  revealOverlayAmount: 0.25
+  revealEdgeColor: {r: 0.4, g: 0.8, b: 1, a: 1}
+  matchedOverlayColor: {r: 0.55, g: 1, b: 0.55, a: 1}
+  matchedOverlayAmount: 0.2
+  matchedEdgeColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashDuration: 0.18
+  flashSteps: 3
+  flashOnMatch: 1
+  matchFlashColor: {r: 0.6, g: 1, b: 0.6, a: 1}
+  wrongFlashColor: {r: 1, g: 0.25, b: 0.25, a: 1}
+  wrongFlashCount: 3
+  wrongFlashOnTime: 0.08
+  wrongFlashOffTime: 0.06
+  wrongFlashChecker: 1

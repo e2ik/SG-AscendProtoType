@@ -12,12 +12,16 @@ public class MemoryGame : MinigameBase
     [SerializeField] [Min(1)] private int rows = 3;
     [SerializeField] private RectTransform gridParent;
     [SerializeField] private MemoryCard cardPrefab;
-    [SerializeField] private Vector2 spacing = new Vector2(12f, 12f);
+    [SerializeField] private Vector2 spacing = Vector2.zero;
     [SerializeField] [Min(0.1f)] private float cardAspect = 0.72f;
+    [SerializeField] private bool usePrefabSize;
+    [SerializeField] [Min(0f)] private float maxCardWidth;
 
     [Header("Card Faces")]
     [SerializeField] private List<Sprite> faceSprites = new List<Sprite>();
     [SerializeField] [Range(0f, 1f)] private float reuseTintSaturation = 0.6f;
+    [SerializeField] private List<Color> faceColors = new List<Color>();
+    [SerializeField] private bool tintEveryPair;
 
     [Header("Flips (only lost on a mismatch)")]
     [SerializeField] [Min(0f)] private float missesPerPair = 0.6f;
@@ -39,6 +43,9 @@ public class MemoryGame : MinigameBase
 
     [Header("Testing")]
     [SerializeField] private MemoryGameConfig testConfig;
+    [SerializeField] private bool previewFaceUp = true;
+    [SerializeField] [Min(0)] private int previewColumns;
+    [SerializeField] [Min(0)] private int previewRows;
 
     [Header("Sounds")]
     [SerializeField] private string flipSound;
@@ -152,6 +159,17 @@ public class MemoryGame : MinigameBase
         }
         _cards.Clear();
 
+        if (gridParent != null)
+        {
+            for (int i = gridParent.childCount - 1; i >= 0; i--)
+            {
+                var child = gridParent.GetChild(i);
+                if (child.GetComponent<MemoryCard>() == null) continue;
+                child.gameObject.SetActive(false);
+                Destroy(child.gameObject);
+            }
+        }
+
         int cells = _columns * _rows;
         if (cells % 2 != 0)
             Debug.LogWarning($"{_columns}x{_rows} has an odd number of cells - the last cell will be left empty", this);
@@ -184,23 +202,37 @@ public class MemoryGame : MinigameBase
         grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         grid.constraintCount = _columns;
         grid.startAxis = GridLayoutGroup.Axis.Horizontal;
+        grid.startCorner = GridLayoutGroup.Corner.UpperLeft;
+        grid.childAlignment = TextAnchor.MiddleCenter;
         grid.spacing = spacing;
+
+        if (usePrefabSize && cardPrefab != null)
+        {
+            grid.cellSize = ((RectTransform)cardPrefab.transform).rect.size;
+            return;
+        }
 
         var rect = gridParent.rect;
         float availableWidth = rect.width - grid.padding.horizontal - spacing.x * (_columns - 1);
         float availableHeight = rect.height - grid.padding.vertical - spacing.y * (_rows - 1);
 
         float cellWidth = Mathf.Min(availableWidth / _columns, availableHeight / _rows * cardAspect);
+        if (maxCardWidth > 0f)
+            cellWidth = Mathf.Min(cellWidth, maxCardWidth);
         cellWidth = Mathf.Max(1f, cellWidth);
         grid.cellSize = new Vector2(cellWidth, cellWidth / cardAspect);
     }
 
     private void GetFace(int pairId, out Sprite sprite, out Color tint)
     {
+        bool hasColours = faceColors != null && faceColors.Count > 0;
+
         if (_faces.Count == 0)
         {
             sprite = null;
-            tint = Color.HSVToRGB((float)pairId / Mathf.Max(1, Pairs), reuseTintSaturation, 1f);
+            tint = hasColours
+                ? faceColors[pairId % faceColors.Count]
+                : Color.HSVToRGB((float)pairId / Mathf.Max(1, Pairs), reuseTintSaturation, 1f);
             return;
         }
 
@@ -208,8 +240,20 @@ public class MemoryGame : MinigameBase
         int reuse = pairId / _faces.Count;
         int reuseRounds = Mathf.CeilToInt((float)Pairs / _faces.Count);
 
-        tint = reuse == 0 && reuseRounds <= 1
-            ? Color.white
+        if (tintEveryPair && hasColours)
+        {
+            tint = faceColors[pairId % faceColors.Count];
+            return;
+        }
+
+        if (reuse == 0)
+        {
+            tint = Color.white;
+            return;
+        }
+
+        tint = hasColours
+            ? faceColors[(reuse - 1) % faceColors.Count]
             : Color.HSVToRGB((float)reuse / Mathf.Max(1, reuseRounds), reuseTintSaturation, 1f);
     }
 
@@ -270,6 +314,10 @@ public class MemoryGame : MinigameBase
         FlipsLeft--;
         UpdateFlipsText();
         PlaySound(mismatchSound);
+        while (a.IsFlipping || b.IsFlipping)
+            yield return null;
+        a.FlashWrong();
+        b.FlashWrong();
         yield return new WaitForSeconds(mismatchRevealTime);
 
         a.Conceal();
@@ -316,6 +364,51 @@ public class MemoryGame : MinigameBase
         if (!string.IsNullOrEmpty(key) && ASpawner.Instance != null)
             ASpawner.Play(key);
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("Preview Grid")]
+    private void PreviewGrid()
+    {
+        if (Application.isPlaying || gridParent == null || cardPrefab == null) return;
+
+        ClearPreview();
+        ApplyConfig();
+
+        if (previewColumns > 0) _columns = previewColumns;
+        if (previewRows > 0) _rows = previewRows;
+
+        Pairs = _columns * _rows / 2;
+        ConfigureLayout();
+
+        for (int i = 0; i < Pairs * 2; i++)
+        {
+            int id = i / 2;
+            var card = Instantiate(cardPrefab, gridParent);
+            card.gameObject.name = $"PreviewCard {i}";
+            card.gameObject.hideFlags = HideFlags.DontSave;
+            GetFace(id, out var sprite, out var tint);
+            card.Setup(id, sprite, tint);
+            card.ShowFaceInstant(previewFaceUp);
+        }
+
+        UnityEditor.SceneView.RepaintAll();
+    }
+
+    [ContextMenu("Clear Preview")]
+    private void ClearPreview()
+    {
+        if (Application.isPlaying || gridParent == null) return;
+
+        for (int i = gridParent.childCount - 1; i >= 0; i--)
+        {
+            var child = gridParent.GetChild(i);
+            if ((child.gameObject.hideFlags & HideFlags.DontSave) != 0 && child.GetComponent<MemoryCard>() != null)
+                DestroyImmediate(child.gameObject);
+        }
+
+        UnityEditor.SceneView.RepaintAll();
+    }
+#endif
 
     protected override int CalculateReward(float bestTime)
     {

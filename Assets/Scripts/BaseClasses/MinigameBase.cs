@@ -22,7 +22,9 @@ public abstract class MinigameBase : MonoBehaviour
     [SerializeField] [Min(0)] private int countdownSeconds = 3;
     [SerializeField] [Min(0f)] private float countdownDelay = 1f;
     [SerializeField] [Min(0.1f)] private float countdownStepDuration = 1f;
+    [SerializeField] [Min(0f)] private float goHoldDuration;
     [SerializeField] [Min(0f)] private float resultsDelay = 1.5f;
+    [SerializeField] [Min(0)] private int minimumReward = 1;
 
     [Header("Play Area")]
     [SerializeField] private CanvasGroup playArea;
@@ -37,11 +39,13 @@ public abstract class MinigameBase : MonoBehaviour
     protected virtual bool HigherIsBetter => true;
     protected virtual bool FailedRunsCount => true;
 
+    public event Action GoShown;
     public event Action Began;
     public event Action Ended;
 
     private Coroutine _countdown;
     private Coroutine _results;
+    private bool _completedRun;
 
     protected virtual void OnEnable()
     {
@@ -114,8 +118,10 @@ public abstract class MinigameBase : MonoBehaviour
             yield return new WaitForSeconds(countdownStepDuration);
         }
 
-        if (hud != null) hud.ShowCountdown("GO!", countdownStepDuration);
-        yield return new WaitForSeconds(countdownStepDuration);
+        float goHold = goHoldDuration > 0f ? goHoldDuration : countdownStepDuration;
+        if (hud != null) hud.ShowCountdown("GO!", goHold);
+        GoShown?.Invoke();
+        yield return new WaitForSeconds(goHold);
 
         if (hud != null) hud.HideCountdown();
 
@@ -133,6 +139,7 @@ public abstract class MinigameBase : MonoBehaviour
         if (CurrentPhase != Phase.Playing) return;
 
         CurrentPhase = Phase.Ended;
+        _completedRun = true;
         SetPlayAreaInteractable(false);
 
         bool counts = success || FailedRunsCount;
@@ -216,7 +223,12 @@ public abstract class MinigameBase : MonoBehaviour
             Debug.Log($"{name} finished with reward {reward}. No GameManager - playing this scene on its own?");
     }
 
-    private int CurrentReward() => HasBest ? CalculateReward(BestScore) : 0;
+    private int CurrentReward()
+    {
+        if (!_completedRun) return 0;
+        int earned = HasBest ? CalculateReward(BestScore) : 0;
+        return Mathf.Max(minimumReward, earned);
+    }
 
     private static string StateName => GameManager.Instance != null ? GameManager.Instance.CurrentState.ToString() : null;
 

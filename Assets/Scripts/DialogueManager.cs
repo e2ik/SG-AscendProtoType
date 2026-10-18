@@ -67,6 +67,8 @@ public class DialogueManager : MonoBehaviour
     public bool WaitingForContinue => IsActive && _typing == null && _choicesDelayRoutine == null && _choiceButtons.Count == 0;
     public string CurrentExpression { get; private set; }
 
+    [SerializeField] private bool wrapChoiceNavigation = true;
+
     private readonly List<Button> _choiceButtons = new List<Button>();
     private readonly List<DialogueAction> _pendingActions = new List<DialogueAction>();
 
@@ -522,6 +524,29 @@ public class DialogueManager : MonoBehaviour
         ShowLine(_lineIndex + 1);
     }
 
+    private void LinkChoiceNavigation()
+    {
+        int count = _choiceButtons.Count;
+        for (int i = 0; i < count; i++)
+        {
+            int up = i - 1;
+            int down = i + 1;
+            if (wrapChoiceNavigation)
+            {
+                up = (up + count) % count;
+                down %= count;
+            }
+
+            var navigation = new Navigation
+            {
+                mode = Navigation.Mode.Explicit,
+                selectOnUp = up >= 0 && up < count && up != i ? _choiceButtons[up] : null,
+                selectOnDown = down >= 0 && down < count && down != i ? _choiceButtons[down] : null
+            };
+            _choiceButtons[i].navigation = navigation;
+        }
+    }
+
     private void ShowChoices(List<DialogueChoice> choices)
     {
         SetIndicatorVisible(false);
@@ -539,6 +564,8 @@ public class DialogueManager : MonoBehaviour
             button.onClick.AddListener(() => Choose(captured));
             _choiceButtons.Add(button);
         }
+
+        LinkChoiceNavigation();
 
         if (choicesParent is RectTransform choicesRect)
             LayoutRebuilder.ForceRebuildLayoutImmediate(choicesRect);

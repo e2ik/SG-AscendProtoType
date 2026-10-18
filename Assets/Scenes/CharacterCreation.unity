@@ -1811,6 +1811,25 @@ MonoBehaviour:
   previousCategoryActionPath: UI/PrevFilter
   categoryButtonsSelectable: 0
   categorySwitchSound: UIclick
+  previewBarker: {fileID: 909268559903073186}
+  barkChance: 1
+  barkCooldown: 2.5
+  colourBarks:
+  - Ooh, I like that one!
+  - That colour suits me.
+  - Bold choice. I'm into it.
+  - Hmm... yeah, that works!
+  - Feeling fresh!
+  - Is it too bright? Nah.
+  - Now that's my colour.
+  styleBarks:
+  - New look, who dis?
+  - Ooh, very stylish.
+  - I could get used to this.
+  - Looking good!
+  - This feels like me.
+  - Ready for an adventure!
+  - Is this... the one?
   returnButton: {fileID: 2125765244}
   cancelActionPath: UI/Cancel
   cancelToReturnSound: UIclick
@@ -2751,6 +2770,7 @@ GameObject:
   - component: {fileID: 851192117679273939}
   - component: {fileID: 909268559903073184}
   - component: {fileID: 909268559903073185}
+  - component: {fileID: 909268559903073186}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2811,6 +2831,31 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &909268559903073186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909268559903073183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bddb994bda3246c4e8a9469eecfba97c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Barker
+  bubblePrefab: {fileID: 1668212211566381578, guid: 663efc43c61c82d42aebf65953f13a50, type: 3}
+  offsetY: 3
+  autoBark: 0
+  lines: []
+  intervalRange: {x: 6, y: 12}
+  barkChance: 0.35
+  avoidRepeats: 1
+  maxDistanceToPlayer: 0
+  onlyWhenOnScreen: 1
+  skipDuringDialogue: 1
+  skipWhenUIOpen: 1
+  skipWhenHighlighted: 1
+  closeWhenHighlighted: 1
 --- !u!212 &1304925340135423113
 SpriteRenderer:
   serializedVersion: 2

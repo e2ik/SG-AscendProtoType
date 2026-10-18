@@ -150,6 +150,31 @@ public class CharacterCreationController : MonoBehaviour
     [SerializeField] private bool categoryButtonsSelectable;
     [SerializeField] private string categorySwitchSound = "UIclick";
 
+    [Header("Preview Barks")]
+    [SerializeField] private Barker previewBarker;
+    [SerializeField] [Range(0f, 1f)] private float barkChance = 0.35f;
+    [SerializeField] [Min(0f)] private float barkCooldown = 2.5f;
+    [SerializeField] [TextArea(1, 2)] private List<string> colourBarks = new List<string>
+    {
+        "Ooh, I like that one!",
+        "That colour suits me.",
+        "Bold choice. I'm into it.",
+        "Hmm... yeah, that works!",
+        "Feeling fresh!",
+        "Is it too bright? Nah.",
+        "Now that's my colour."
+    };
+    [SerializeField] [TextArea(1, 2)] private List<string> styleBarks = new List<string>
+    {
+        "New look, who dis?",
+        "Ooh, very stylish.",
+        "I could get used to this.",
+        "Looking good!",
+        "This feels like me.",
+        "Ready for an adventure!",
+        "Is this... the one?"
+    };
+
     [Header("Cancel")]
     [SerializeField] private Selectable returnButton;
     [SerializeField] private string cancelActionPath = "UI/Cancel";
@@ -164,6 +189,8 @@ public class CharacterCreationController : MonoBehaviour
     private GameObject _lastNavigable;
     private string _characterName = DefaultName;
     private bool _nameSet;
+    private float _nextBarkTime;
+    private int _lastBark = -1;
 
     private void Start()
     {
@@ -412,14 +439,35 @@ public class CharacterCreationController : MonoBehaviour
         {
             if (stylePicker != null)
                 stylePicker.Hide();
-            colourPicker.Open(slot.ApplyColour, slot.selectedColor, slot.palette);
+            colourPicker.Open(colour => OnColourChosen(slot, colour), slot.selectedColor, slot.palette);
         }
     }
 
     private void OnStyleChosen(CharacterColourSlot slot, int index)
     {
         slot.ApplyStyle(index);
-        colourPicker.Open(slot.ApplyColour, slot.selectedColor, slot.palette);
+        TryBark(styleBarks);
+        colourPicker.Open(colour => OnColourChosen(slot, colour), slot.selectedColor, slot.palette);
+    }
+
+    private void OnColourChosen(CharacterColourSlot slot, Color colour)
+    {
+        slot.ApplyColour(colour);
+        TryBark(colourBarks);
+    }
+
+    private void TryBark(List<string> lines)
+    {
+        if (previewBarker == null || lines == null || lines.Count == 0) return;
+        if (Time.unscaledTime < _nextBarkTime || UnityEngine.Random.value > barkChance) return;
+
+        int index = UnityEngine.Random.Range(0, lines.Count);
+        if (lines.Count > 1 && index == _lastBark)
+            index = (index + UnityEngine.Random.Range(1, lines.Count)) % lines.Count;
+        _lastBark = index;
+
+        _nextBarkTime = Time.unscaledTime + barkCooldown;
+        previewBarker.Say(lines[index]);
     }
 
     private void OnColourPickerClosed()

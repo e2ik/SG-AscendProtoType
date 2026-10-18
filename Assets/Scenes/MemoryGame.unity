@@ -466,18 +466,31 @@ MonoBehaviour:
     so becareful!
   showIntro: 1
   countdownSeconds: 3
+  countdownDelay: 1
+  countdownStepDuration: 1
+  resultsDelay: 1.5
+  minimumReward: 1
   playArea: {fileID: 1562577048}
   columns: 4
   rows: 3
   gridParent: {fileID: 1334736984}
   cardPrefab: {fileID: 4076503215498020582, guid: 4d74a81f55c60e24a99c107a828c3aa0, type: 3}
-  spacing: {x: 5, y: 12}
+  spacing: {x: 0, y: 0}
   cardAspect: 0.72
+  usePrefabSize: 0
+  maxCardWidth: 80
   faceSprites:
   - {fileID: 21300000, guid: 6008b9a7939673e459b15a4535b1e0a5, type: 3}
   - {fileID: 21300000, guid: 33729daa032814a45b43e2526602f1f3, type: 3}
   - {fileID: 21300000, guid: 09532d177b267464c93c9ed0ce86b876, type: 3}
   reuseTintSaturation: 0.6
+  faceColors:
+  - {r: 0.7987421, g: 0.19842951, b: 0.19842951, a: 1}
+  - {r: 0.3390255, g: 0.8616352, b: 0.28992122, a: 1}
+  - {r: 0.21504286, g: 0.71987426, b: 0.8238993, a: 1}
+  - {r: 0.6541081, g: 0.25490203, b: 0.8352941, a: 1}
+  - {r: 0.899371, g: 0.6044869, b: 0.14989509, a: 1}
+  tintEveryPair: 1
   missesPerPair: 0.6
   flipBonus: {fileID: 11400000, guid: fdf9ba1e3bf380a43a7868c545db802b, type: 2}
   enduranceOverride: 0
@@ -489,6 +502,9 @@ MonoBehaviour:
   flipsText: {fileID: 439366409}
   flipsFormat: 'Flips: {0}'
   testConfig: {fileID: 11400000, guid: 9b9227b703bdfb54d98722c7d0c1f90a, type: 2}
+  previewFaceUp: 1
+  previewColumns: 4
+  previewRows: 3
   flipSound: 
   matchSound: 
   mismatchSound: 
@@ -565,10 +581,10 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
+  m_CellSize: {x: 80, y: 111.11111}
   m_Spacing: {x: 0, y: 0}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+  m_Constraint: 1
+  m_ConstraintCount: 4
 --- !u!114 &1334736986
 MonoBehaviour:
   m_ObjectHideFlags: 0
