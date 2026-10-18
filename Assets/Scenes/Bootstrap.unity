@@ -1011,6 +1011,11 @@ MonoBehaviour:
       clip: {fileID: 8300000, guid: d94212e2be049f7478ec87ab0d16c275, type: 3}
       volume: 1
       resumePosition: 0
+  - state: 5
+    track:
+      clip: {fileID: 8300000, guid: fb2b11a6d3c71924aa5bae2a7e22e148, type: 3}
+      volume: 1
+      resumePosition: 0
   instructionsTrack:
     clip: {fileID: 8300000, guid: 37c7eb2cdb678be4e8ed0525a1fbcb56, type: 3}
     volume: 1
