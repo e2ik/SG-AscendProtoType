@@ -533,6 +533,7 @@ GameObject:
   - component: {fileID: 1222042139}
   - component: {fileID: 1222042138}
   - component: {fileID: 1222042140}
+  - component: {fileID: 1222042141}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -734,6 +735,7 @@ MonoBehaviour:
   choicesDelay: 0.4
   defaultBlipKey: NPCblip
   blipEveryNCharacters: 2
+  wrapChoiceNavigation: 1
 --- !u!114 &1222042135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -979,6 +981,40 @@ MonoBehaviour:
     minAmount: 0.3
     maxAmount: 1
     speed: 1.5
+--- !u!114 &1222042141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1222042125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a46520be9b298b4baadedf7a276b61a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MusicManager
+  mixerGroup: {fileID: -3174964899582683976, guid: d1ee26eeef7dc444592c2f860e26224f, type: 2}
+  crossfadeDuration: 1
+  stateTracks:
+  - state: 0
+    track:
+      clip: {fileID: 8300000, guid: 92cb0bb3b3012de438716f43d4aab677, type: 3}
+      volume: 1
+      resumePosition: 0
+  - state: 3
+    track:
+      clip: {fileID: 8300000, guid: 67ccfe75955f6b34c9a0f134626786ac, type: 3}
+      volume: 1
+      resumePosition: 0
+  - state: 4
+    track:
+      clip: {fileID: 8300000, guid: d94212e2be049f7478ec87ab0d16c275, type: 3}
+      volume: 1
+      resumePosition: 0
+  instructionsTrack:
+    clip: {fileID: 8300000, guid: 37c7eb2cdb678be4e8ed0525a1fbcb56, type: 3}
+    volume: 1
+    resumePosition: 0
 --- !u!114 &1251588402 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5962907931249311159, guid: c2902ecfb8d995b488557d654f9b685b, type: 3}

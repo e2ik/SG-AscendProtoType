@@ -5,6 +5,7 @@ public class Barker : MonoBehaviour
 {
     [SerializeField] private SpeechBubble bubblePrefab;
     [SerializeField] private float offsetY = 1f;
+    [SerializeField] [Min(0.01f)] private float bubbleScale = 1f;
 
     [Header("Random Barks")]
     [SerializeField] private bool autoBark = true;
@@ -45,12 +46,12 @@ public class Barker : MonoBehaviour
         _current = null;
     }
 
-    public SpeechBubble Say(string message, float duration = -1f)
+    public SpeechBubble Say(string message, float duration = -1f, float scale = 1f)
     {
         if (_current != null)
             _current.Close();
 
-        _current = SpeechBubble.Spawn(bubblePrefab, transform, FillTokens(message), offsetY, duration);
+        _current = SpeechBubble.Spawn(bubblePrefab, transform, FillTokens(message), offsetY, duration, bubbleScale * scale);
         return _current;
     }
 

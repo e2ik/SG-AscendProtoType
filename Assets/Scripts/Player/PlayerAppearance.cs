@@ -8,6 +8,16 @@ public class PlayerAppearance : MonoBehaviour
     [SerializeField] private SpriteRenderer clothesTop;
     [SerializeField] private SpriteRenderer clothesBottom;
     [SerializeField] private SpriteRenderer shoes;
+    [SerializeField] private bool applySaveOnStart;
+
+    private void Start()
+    {
+        if (!applySaveOnStart) return;
+
+        var save = SaveManager.Instance != null ? SaveManager.Instance.CurrentSave : null;
+        if (save != null)
+            Apply(save.character);
+    }
 
     public void Apply(CharacterData data)
     {

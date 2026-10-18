@@ -42,6 +42,7 @@ public class SpeechBubble : MonoBehaviour
     private Renderer _renderer;
     private float _offsetY;
     private Vector3 _baseScale = Vector3.one;
+    private Vector3 _prefabScale = Vector3.one;
     private Coroutine _routine;
     private Vector3 _shoveBasePosition;
     private Quaternion _shoveBaseRotation;
@@ -56,6 +57,7 @@ public class SpeechBubble : MonoBehaviour
         if (text == null) text = GetComponentInChildren<TMP_Text>(true);
         if (canvasGroup == null) canvasGroup = GetComponentInChildren<CanvasGroup>(true);
         _baseScale = scaleRoot.localScale;
+        _prefabScale = _baseScale;
 
         if (textOnTop && text != null)
             RaiseText();
@@ -139,13 +141,19 @@ public class SpeechBubble : MonoBehaviour
         }
     }
 
-    public static SpeechBubble Spawn(SpeechBubble prefab, Transform source, string message, float offsetY, float duration = -1f)
+    public static SpeechBubble Spawn(SpeechBubble prefab, Transform source, string message, float offsetY, float duration = -1f, float scale = 1f)
     {
         if (prefab == null || source == null || string.IsNullOrEmpty(message)) return null;
 
         var bubble = Instantiate(prefab);
+        bubble.SetScale(scale);
         bubble.Show(source, message, offsetY, duration);
         return bubble;
+    }
+
+    public void SetScale(float scale)
+    {
+        _baseScale = _prefabScale * Mathf.Max(0.01f, scale);
     }
 
     public void Show(Transform source, string message, float offsetY, float duration = -1f)

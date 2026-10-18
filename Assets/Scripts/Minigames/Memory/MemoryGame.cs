@@ -41,6 +41,13 @@ public class MemoryGame : MinigameBase
     [SerializeField] private TMP_Text flipsText;
     [SerializeField] private string flipsFormat = "Flips: {0}";
 
+    [Header("Flips Lost Feedback")]
+    [SerializeField] private Color flipsLostColor = new Color(1f, 0.55f, 0.55f, 1f);
+    [SerializeField] [Min(0.01f)] private float flipsLostDuration = 0.45f;
+    [SerializeField] [Min(0f)] private float flipsShoveAmount = 4f;
+    [SerializeField] [Min(1f)] private float flipsShovesPerSecond = 30f;
+    [SerializeField] [Min(1f)] private float flipsPunchScale = 1.15f;
+
     [Header("Testing")]
     [SerializeField] private MemoryGameConfig testConfig;
     [SerializeField] private bool previewFaceUp = true;
@@ -55,6 +62,10 @@ public class MemoryGame : MinigameBase
     public int Pairs { get; private set; }
     public int AllowedFlips { get; private set; }
     public int FlipsLeft { get; private set; }
+
+    public event System.Action PairMatched;
+    public event System.Action PairMismatched;
+    public event System.Action<bool> RunFinished;
 
     protected override bool HigherIsBetter => false;
     protected override bool FailedRunsCount => false;
@@ -74,10 +85,16 @@ public class MemoryGame : MinigameBase
     private bool _resolving;
     private int _matchedPairs;
     private float _elapsed;
+    private bool _flipsBaseCaptured;
+    private Color _flipsBaseColor;
+    private Vector2 _flipsBasePosition;
+    private Vector3 _flipsBaseScale;
+    private Coroutine _flipsFeedback;
 
     protected override void OnSetup()
     {
         StopAllCoroutines();
+        ResetFlipsFeedback();
         ApplyConfig();
         BuildGrid();
 
@@ -306,18 +323,26 @@ public class MemoryGame : MinigameBase
             if (_matchedPairs >= Pairs)
             {
                 Score = _elapsed;
+                RunFinished?.Invoke(true);
                 EndRun(true);
+            }
+            else
+            {
+                PairMatched?.Invoke();
             }
             yield break;
         }
 
         FlipsLeft--;
         UpdateFlipsText();
+        PlayFlipsLost();
         PlaySound(mismatchSound);
         while (a.IsFlipping || b.IsFlipping)
             yield return null;
         a.FlashWrong();
         b.FlashWrong();
+        if (FlipsLeft > 0)
+            PairMismatched?.Invoke();
         yield return new WaitForSeconds(mismatchRevealTime);
 
         a.Conceal();
@@ -327,6 +352,7 @@ public class MemoryGame : MinigameBase
         if (FlipsLeft <= 0)
         {
             Score = _matchedPairs;
+            RunFinished?.Invoke(false);
             EndRun(false);
         }
     }
@@ -335,6 +361,69 @@ public class MemoryGame : MinigameBase
     {
         if (flipsText != null)
             flipsText.text = string.Format(flipsFormat, FlipsLeft, AllowedFlips);
+    }
+
+    private void CaptureFlipsBase()
+    {
+        if (_flipsBaseCaptured || flipsText == null) return;
+        _flipsBaseCaptured = true;
+        _flipsBaseColor = flipsText.color;
+        _flipsBasePosition = flipsText.rectTransform.anchoredPosition;
+        _flipsBaseScale = flipsText.rectTransform.localScale;
+    }
+
+    private void ResetFlipsFeedback()
+    {
+        if (_flipsFeedback != null)
+        {
+            StopCoroutine(_flipsFeedback);
+            _flipsFeedback = null;
+        }
+
+        if (flipsText == null || !_flipsBaseCaptured) return;
+        flipsText.color = _flipsBaseColor;
+        flipsText.rectTransform.anchoredPosition = _flipsBasePosition;
+        flipsText.rectTransform.localScale = _flipsBaseScale;
+    }
+
+    private void PlayFlipsLost()
+    {
+        if (flipsText == null) return;
+        CaptureFlipsBase();
+        ResetFlipsFeedback();
+        _flipsFeedback = StartCoroutine(FlipsLostRoutine());
+    }
+
+    private IEnumerator FlipsLostRoutine()
+    {
+        var rect = flipsText.rectTransform;
+        float shoveTimer = 0f;
+        Vector2 offset = Vector2.zero;
+
+        for (float t = 0f; t < flipsLostDuration; t += Time.deltaTime)
+        {
+            float p = t / flipsLostDuration;
+            float fade = 1f - p;
+
+            shoveTimer += Time.deltaTime;
+            if (shoveTimer >= 1f / flipsShovesPerSecond)
+            {
+                shoveTimer = 0f;
+                float strength = flipsShoveAmount * fade;
+                offset = new Vector2(Mathf.Round(Random.Range(-strength, strength)), Mathf.Round(Random.Range(-strength, strength)));
+            }
+
+            float pulse = p < 0.15f ? p / 0.15f : 1f - (p - 0.15f) / 0.85f;
+            rect.anchoredPosition = _flipsBasePosition + offset;
+            rect.localScale = _flipsBaseScale * Mathf.Lerp(1f, flipsPunchScale, pulse);
+            flipsText.color = Color.Lerp(_flipsBaseColor, flipsLostColor, pulse);
+            yield return null;
+        }
+
+        rect.anchoredPosition = _flipsBasePosition;
+        rect.localScale = _flipsBaseScale;
+        flipsText.color = _flipsBaseColor;
+        _flipsFeedback = null;
     }
 
     private void KeepFocusOnCards()
