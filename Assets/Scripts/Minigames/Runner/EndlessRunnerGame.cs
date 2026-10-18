@@ -226,5 +226,5 @@ public class EndlessRunnerGame : MinigameBase
         return Mathf.Min(maxReward, Mathf.FloorToInt(bestScore / metresPerPoint));
     }
 
-    protected override string FormatScore(float score) => $"{Mathf.FloorToInt(score)} m";
+    protected override string FormatScore(float score) => $"{Mathf.FloorToInt(score)}m";
 }
